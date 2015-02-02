@@ -1,0 +1,35 @@
+.ListView {
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+
+  &-Scroll {
+    background: #eee;
+    position: absolute;
+    right: -10px;
+    top: 0;
+    bottom: 0;
+    width: 9px;
+    border-left: 1px solid #ccc;
+    transition: right 0.3s;
+
+    &--animate {
+      right: 0;
+    }
+  }
+
+  &-ScrollHandle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    background: rgba(#000, 0.2);
+  }
+
+  &-Content {
+    position: absolute;
+    width: 100%;
+  }
+}
