@@ -11,16 +11,7 @@ var Workspace = require('./Workspace');
 
 require('./App.styl');
 
-
-var emptyState = Immutable.fromJS({
-  playing: false,
-  library: {
-    artists: {},
-    albums: {},
-    tracks: {}
-  }
-});
-
+var emptyState = require('../emptyState');
 
 var App = React.createClass({
 

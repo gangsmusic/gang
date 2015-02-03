@@ -5,14 +5,17 @@
   right: 0;
   bottom: 0;
   overflow: hidden;
+  box-sizing: border-box;
+  border-left: 1px solid #ccc;
 
   &-Artists {
     top: 0;
     left: 0;
-    width: calc(50% \+ 1px);
+    width: 50%;
     height: 50%;
     position: absolute;
-
+    box-sizing: border-box;
+    border-right: 1px solid #ccc;
   }
 
   &-Albums {
@@ -27,16 +30,23 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: calc(50% \+ 1px);
+    height: 50%;
     position: absolute;
   }
 
   &-Row {
-    text-indent: 8px;
+    padding: 0 8px;
     line-height: 23px;
     border-bottom: 1px solid #ccc;
     cursor: pointer;
     -webkit-user-select: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    &--selected {
+      background: rgba(#00f, 0.2);
+    }
   }
 
   &-Section {
@@ -44,6 +54,7 @@
       line-height: 23px;
       text-indent: 8px;
       background: rgba(#000, 0.1);
+      border-bottom: 1px solid #ccc;
       border-top: 1px solid #ccc;
     }
   }

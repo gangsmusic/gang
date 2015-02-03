@@ -1,13 +1,14 @@
 module.exports = {
+
   contextTypes: {
     dispatcher: require('./DispatcherShape').isRequired,
   },
 
-  dispatch: function(ev, data) {
+  dispatch(ev, data) {
     this.context.dispatcher.dispatch(ev, data);
   },
 
-  get: function(keyPath) {
+  get(keyPath) {
     var state = this.context.dispatcher.state;
     if (typeof keyPath === 'string') {
       return state.get(keyPath);

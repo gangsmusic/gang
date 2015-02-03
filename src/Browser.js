@@ -5,46 +5,69 @@ var Column = FixedDataTable.Column;
 var Immutable = require('immutable');
 var debug = require('debug')('gang:browser');
 var ListView = require('./ListView');
+var Pure = require('./Pure');
 
 require('./Browser.styl');
 
 
 var Item = React.createClass({
 
-  mixins: [React.addons.PureRenderMixin],
+  propTypes: {
+    item: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.instanceOf(Immutable.Map)
+    ]).isRequired,
+    selected: React.PropTypes.bool,
+    onClick: React.PropTypes.func
+  },
+
+  mixins: [Pure],
 
   onClick() {
     if (this.props.onClick) {
-      this.props.onClick(this.props.item);
+      if (this.props.selected) {
+        this.props.onClick(null);
+      } else {
+        this.props.onClick(this.props.item);
+      }
     }
   },
 
   render() {
     var {item, onClick, ...props} = this.props;
+    var className = React.addons.classSet({
+      'Browser-Row': true,
+      'Browser-Row--selected': this.props.selected
+    });
     return (
-      <div className='Browser-Row' onClick={this.onClick} {...props}>
-        {item.get('name')}
+      <div className={className} onClick={this.onClick} {...props}>
+        {typeof item === 'string' ? item : item.get('name')}
       </div>
     );
   }
 
 });
 
-var itemComponent = <Item />;
-
 var AutoListView = React.createClass({
+
+  mixins: [Pure],
+
+  getDefaultProps() {
+    return {
+      itemComponent: <Item />
+    };
+  },
 
   getInitialState() {
     return {
-      width: 0,
       height: 0
     };
   },
 
   onWindowResize() {
     if (this.isMounted()) {
-      var {width, height} = this.getDOMNode().getBoundingClientRect();
-      this.setState({width, height});
+      var {height} = this.getDOMNode().getBoundingClientRect();
+      this.setState({height});
     }
   },
 
@@ -58,9 +81,8 @@ var AutoListView = React.createClass({
   },
 
   render() {
-    var {className, ...tableProps} = this.props;
-    tableProps.itemComponent = itemComponent;
-    var table = (this.state.height && this.state.width) ? <ListView width={this.state.width} height={this.state.height - 24} {...tableProps} /> : null;
+    var {className, ...listProps} = this.props;
+    var table = this.state.height ? <ListView height={this.state.height - 24} {...listProps} /> : null;
     return (
       <div className={className}>
         <div className='Browser-Section-Title'>{this.props.title}</div>
@@ -72,23 +94,33 @@ var AutoListView = React.createClass({
 });
 
 
+function distinct(collection, key) {
+  return collection.map(x => x.get(key)).toOrderedSet().toList().filter(x => typeof x === 'string');
+}
+
+
 var Browser = React.createClass({
 
   mixins: [require('./GangComponent')],
 
   getInitialState() {
     return {
-      artist: null
+      artist: null,
+      album: null
     };
   },
 
   onArtistClicked(artist) {
-    if (artist.get('id') !== this.state.artist) {
-      debug('select artist', artist.toString());
-      this.setState({
-        artist: artist.get('id')
-      });
-    }
+    debug('select artist', artist);
+    this.setState({
+      artist,
+      album: null
+    });
+  },
+
+  onAlbumClicked(album) {
+    debug('select album', album);
+    this.setState({album})
   },
 
   onTrackClicked(track) {
@@ -96,19 +128,22 @@ var Browser = React.createClass({
   },
 
   render() {
-    var artists = Immutable.List(this.get(['library', 'artists']).values()).sortBy(x => x.get('name'));
+    var tracks = this.get(['tracks']);
+    var artists = distinct(tracks, 'artist').sortBy();
 
-    var tracks = Immutable.List(this.get(['library', 'tracks']).values());
-    if (this.state.artist !== null) {
+    if (this.state.artist) {
       tracks = tracks.filter(x => x.get('artist') === this.state.artist);
     }
 
-    var albums = Immutable.List(this.get(['library', 'albums']).values());
+    var albums = distinct(tracks, 'album').sortBy();
+    if (this.state.album) {
+      tracks = tracks.filter(x => x.get('album') === this.state.album);
+    }
 
     return (
       <div className='Browser'>
-        <AutoListView className='Browser-Artists' title='Artists' itemHeight={24} onItemClick={this.onArtistClicked} items={artists} />
-        <AutoListView className='Browser-Albums' title='Albums' itemHeight={24} items={albums} />
+        <AutoListView className='Browser-Artists' title='Artists' itemHeight={24} selectedItem={this.state.artist} onItemClick={this.onArtistClicked} items={artists} />
+        <AutoListView className='Browser-Albums' title='Albums' itemHeight={24} selectedItem={this.state.album} onItemClick={this.onAlbumClicked} items={albums} />
         <AutoListView className='Browser-Tracks' title='Tracks' itemHeight={24} onItemClick={this.onTrackClicked} items={tracks} />
       </div>
     );

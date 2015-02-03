@@ -9,18 +9,18 @@ require('./ListView.styl');
 
 var ListView = React.createClass({
 
-  mixins: [React.addons.PureRenderMixin],
+  mixins: [require('./Pure')],
 
   propTypes: {
     height: React.PropTypes.number.isRequired,
-    width: React.PropTypes.number.isRequired,
     itemHeight: React.PropTypes.number.isRequired,
     itemComponent: React.PropTypes.element.isRequired,
     items: React.PropTypes.shape({
       count: React.PropTypes.func.isRequired,
       get: React.PropTypes.func.isRequired
     }).isRequired,
-    onItemClick: React.PropTypes.func
+    onItemClick: React.PropTypes.func,
+    selectedItem: React.PropTypes.any
   },
 
   getDefaultProps() {
@@ -70,7 +70,7 @@ var ListView = React.createClass({
   },
 
   getMaxScrollTop() {
-    return this.getHeight() - this.getContentHeight();
+    return Math.min(0, this.getHeight() - this.getContentHeight());
   },
 
   getHeight() {
@@ -109,12 +109,10 @@ var ListView = React.createClass({
     }
   },
 
-  renderItem(item, idx) {
-    return React.addons.cloneWithProps(this.props.itemComponent, {
-      key: idx,
-      item: item,
-      onClick: this.props.onItemClick
-    });
+  renderItem(item, key) {
+    var selected = Immutable.is(item, this.props.selectedItem);
+    var onClick = this.props.onItemClick;
+    return React.addons.cloneWithProps(this.props.itemComponent, {key, item, selected, onClick});
   },
 
   render() {
@@ -133,27 +131,25 @@ var ListView = React.createClass({
     var sliceStart = undefined;
     var sliceEnd = undefined;
 
-    var stubTop = null;
+    var stubTopHeight = 0;
     if (scrollTop) {
       sliceStart = Math.floor(-scrollTop / this.props.itemHeight);
-      stubTop = <div className='ListView-Stub' style={{height: sliceStart * this.props.itemHeight}} />;
+      if (sliceStart < 0) {
+        sliceStart = 0;
+      }
+      stubTopHeight = sliceStart * this.props.itemHeight;
     }
 
-    var stubBottom = null;
     if (scrollTop > this.getMaxScrollTop()) {
-      var trailItems = Math.floor((scrollTop - this.getMaxScrollTop()) / this.props.itemHeight);
-      stubBottom = <div className='ListView-Stub' style={{height: trailItems * this.props.itemHeight}} />;
-      sliceEnd = items.count() - trailItems;
+      sliceEnd = items.count() - Math.floor((scrollTop - this.getMaxScrollTop()) / this.props.itemHeight);
     }
 
     items = items.slice(sliceStart, sliceEnd);
 
     return (
-      <div className='ListView' style={{height: this.props.height, width: this.props.width}}>
-        <div className='ListView-Content' onWheel={this.onWheel} style={{top: this.getScrollTop()}}>
-          {stubTop}
+      <div className='ListView' style={{height: this.props.height}}>
+        <div className='ListView-Content' onWheel={this.onWheel} style={{top: this.getScrollTop() + stubTopHeight}}>
           {items.map(this.renderItem).toArray()}
-          {stubBottom}
         </div>
         {scrollBar}
       </div>
