@@ -31,6 +31,54 @@ var broadcastDebug = debug('gang:broadcast');
 
 import * as actions from '../shared/actions';
 
+import Player from './Player';
+
+const player = new Player;
+
+function executeAction(name) {
+  if (actions[name]) {
+    var newState = actions[name](state);
+    if (!Immutable.is(newState, state)) {
+      state = newState;
+      broadcastDebug('action', name);
+      io.sockets.emit('action', name);
+    }
+  }
+}
+
+function mergeState(data) {
+  var newState = state.mergeDeep(data);
+  if (!Immutable.is(newState, state)) {
+    state = newState;
+    broadcastDebug('state', data);
+    io.sockets.emit('state', data);
+  }
+}
+
+player.on('stop', function() {
+  mergeState({
+    playing: false,
+    duration: null,
+    progress: null
+  });
+});
+
+player.on('progress', function(progress) {
+  mergeState({progress});
+});
+
+player.on('duration', function(duration) {
+  mergeState({duration});
+});
+
+player.on('pause', function() {
+  mergeState({playing: false});
+});
+
+player.on('play', function() {
+  mergeState({playing: true});
+});
+
 io.on('connection', function(socket) {
   conectionDebug('connected');
 
@@ -40,21 +88,20 @@ io.on('connection', function(socket) {
     eventDebug(data.type, data.payload);
 
     if (data.type === 'state') {
-      var newState = state.mergeDeep(data.payload);
-      if (!Immutable.is(newState, state)) {
-        state = newState;
-        broadcastDebug('state', state);
-        io.sockets.emit('state', state);
-      }
+      mergeState(data.payload);
     } else if (data.type === 'action') {
       if (actions[data.payload]) {
-        var newState = actions[data.payload](state);
-        if (!Immutable.is(newState, state)) {
-          state = newState;
-          broadcastDebug('action', data.payload);
-          io.sockets.emit('action', data.payload);
-        }
+        executeAction(data.payload);
       }
+    } else if (data.type === 'play') {
+      if (data.payload) {
+        mergeState({current: data.payload});
+        player.play(data.payload.url);
+      } else {
+        player.play();
+      }
+    } else if (data.type === 'pause') {
+      player.pause();
     }
 
   });

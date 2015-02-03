@@ -70,8 +70,8 @@ var App = React.createClass({
   },
 
   onState(data) {
+    debugState('', data);
     var serverState = (this._pendingState || this.state).serverState.mergeDeep(data);
-    debugState('', serverState.toJS());
     this.setState({serverState});
   },
 

@@ -125,6 +125,7 @@ var Browser = React.createClass({
 
   onTrackClicked(track) {
     debug('select track', track.toString());
+    this.dispatch('play', track);
   },
 
   render() {
