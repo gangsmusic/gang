@@ -23,13 +23,14 @@ console.log('api listenging on 0.0.0.0:3001');
 
 var state = require('../shared/emptyState');
 
-state = state.set('tracks', JSON.parse(fs.readFileSync('itunes-library.json', 'utf-8')));
+// state = state.set('tracks', JSON.parse(fs.readFileSync('itunes-library.json', 'utf-8')));
 
 var conectionDebug = debug('gang:connection');
 var eventDebug = debug('gang:event');
 var broadcastDebug = debug('gang:broadcast');
 
 import * as actions from '../shared/actions';
+import S from 'string';
 
 import Player from './Player';
 
@@ -50,7 +51,7 @@ function mergeState(data) {
   var newState = state.mergeDeep(data);
   if (!Immutable.is(newState, state)) {
     state = newState;
-    broadcastDebug('state', data);
+    broadcastDebug('state', S(JSON.stringify(data)).truncate(120).s);
     io.sockets.emit('state', data);
   }
 }
@@ -106,3 +107,9 @@ io.on('connection', function(socket) {
 
   });
 });
+
+
+import itunesLoader from './itunes-loader';
+
+itunesLoader().then(tracks => mergeState({tracks}));
+
