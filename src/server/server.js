@@ -29,6 +29,8 @@ var conectionDebug = debug('gang:connection');
 var eventDebug = debug('gang:event');
 var broadcastDebug = debug('gang:broadcast');
 
+import * as actions from '../shared/actions';
+
 io.on('connection', function(socket) {
   conectionDebug('connected');
 
@@ -44,6 +46,16 @@ io.on('connection', function(socket) {
         broadcastDebug('state', state);
         io.sockets.emit('state', state);
       }
+    } else if (data.type === 'action') {
+      if (actions[data.payload]) {
+        var newState = actions[data.payload](state);
+        if (!Immutable.is(newState, state)) {
+          state = newState;
+          broadcastDebug('action', data.payload);
+          io.sockets.emit('action', data.payload);
+        }
+      }
     }
+
   });
 });

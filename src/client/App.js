@@ -2,6 +2,7 @@ var React = require('react');
 var SocketIO = require('socket.io-client');
 var Immutable = require('immutable');
 var debugState = require('debug')('gang:state');
+var debugAction = require('debug')('gang:action');
 var debugDispatch = require('debug')('gang:dispatch');
 
 var Player = require('./Player');
@@ -11,7 +12,9 @@ var Workspace = require('./Workspace');
 
 require('./App.styl');
 
-var emptyState = require('../shared/emptyState');
+import emptyState from '../shared/emptyState';
+import * as actions from '../shared/actions';
+
 
 var App = React.createClass({
 
@@ -27,10 +30,19 @@ var App = React.createClass({
     });
   },
 
+  execute(name) {
+    debugDispatch('action', name);
+    this._socket.emit('event', {
+      type: 'action',
+      payload: name
+    });
+  },
+
   getChildContext() {
     return {
       dispatcher: {
         dispatch: this.dispatch,
+        execute: this.execute,
         state: this.state.serverState
       }
     };
@@ -60,9 +72,13 @@ var App = React.createClass({
   onState(data) {
     var serverState = (this._pendingState || this.state).serverState.mergeDeep(data);
     debugState('', serverState.toJS());
-    this.setState({
-      serverState: serverState
-    });
+    this.setState({serverState});
+  },
+
+  onAction(name) {
+    var serverState = actions[name]((this._pendingState || this.state).serverState);
+    debugAction(name);
+    this.setState({serverState});
   },
 
   componentDidMount() {
@@ -70,6 +86,7 @@ var App = React.createClass({
     this._socket.on('connect', this.onConnect);
     this._socket.on('disconnect', this.onDisconnect);
     this._socket.on('state', this.onState);
+    this._socket.on('action', this.onAction);
   },
 
   renderDisconnected() {

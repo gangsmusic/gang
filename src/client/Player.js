@@ -7,11 +7,11 @@ var Player = React.createClass({
   mixins: [require('./GangComponent')],
 
   play() {
-    this.dispatch('state', {playing: true});
+    this.execute('play');
   },
 
   pause() {
-    this.dispatch('state', {playing: false});
+    this.execute('pause');
   },
 
   render() {
