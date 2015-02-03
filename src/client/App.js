@@ -11,7 +11,7 @@ var Workspace = require('./Workspace');
 
 require('./App.styl');
 
-var emptyState = require('../emptyState');
+var emptyState = require('../shared/emptyState');
 
 var App = React.createClass({
 

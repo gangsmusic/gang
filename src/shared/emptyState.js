@@ -1,6 +1,6 @@
 var Immutable = require('immutable');
 
-module.exports = Immutable.fromJS({
+export default Immutable.fromJS({
   playing: false,
   tracks: []
 });

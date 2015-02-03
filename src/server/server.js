@@ -2,7 +2,8 @@ var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var debug = require('debug');
 var fs = require('fs');
-var config = require('./webpack.config');
+var Immutable = require('immutable');
+var config = require('../../webpack.config');
 
 new WebpackDevServer(webpack(config), {
   publicPath: config.output.publicPath,
@@ -20,8 +21,7 @@ var Server = require('socket.io');
 var io = new Server(3001);
 console.log('api listenging on 0.0.0.0:3001');
 
-var Immutable = require('immutable');
-var state = require('./emptyState');
+var state = require('../shared/emptyState');
 
 state = state.set('tracks', JSON.parse(fs.readFileSync('itunes-library.json', 'utf-8')));
 

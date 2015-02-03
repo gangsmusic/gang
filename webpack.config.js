@@ -9,7 +9,7 @@ var config = {
     'fixed-data-table/dist/fixed-data-table.css',
     'webpack-dev-server/client?http://0.0.0.0:3000',
     'webpack/hot/only-dev-server',
-    './src/index'
+    './src/client/index'
   ],
   output: {
     path: path.join(__dirname, 'build'),
@@ -17,7 +17,7 @@ var config = {
     filename: '[hash].js'
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js']
   },
   module: {
     loaders: [
@@ -34,8 +34,8 @@ var config = {
         loader: 'file-loader?name=[sha512:hash:base36:7].[ext]'
       },
       {
-        test: /\.jsx?$/,
-        loaders: ['react-hot', 'jsx?harmony&es5'],
+        test: /\.js$/,
+        loaders: ['react-hot', '6to5?experimental'],
         exclude: /node_modules/
       }
     ]
