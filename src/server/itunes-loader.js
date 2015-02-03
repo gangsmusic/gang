@@ -1,4 +1,4 @@
-import plist            from 'plist';
+import plist            from 'plist-native';
 import shellescape      from 'shell-escape';
 import {promisify}      from 'bluebird';
 
@@ -23,7 +23,7 @@ function find() {
 
 function parse(filename) {
   debug(`parsing ${filename}`)
-  return readFile(filename, 'utf-8')
+  return readFile(filename)
     .then(function(xml) {
       var library = plist.parse(xml);
       var tracks = [];
