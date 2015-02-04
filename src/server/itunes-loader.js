@@ -25,11 +25,11 @@ function parse(filename) {
   debug(`parsing ${filename}`)
   return readFile(filename)
     .then(function(xml) {
-      var library = plist.parse(xml);
-      var tracks = [];
+      const library = plist.parse(xml);
+      const tracks = [];
       var track;
 
-      for (var id in library.Tracks) {
+      for (let id in library.Tracks) {
         track = library.Tracks[id];
         if (track['Track Type'] === 'File' || track.Kind === 'Internet audio stream') {
           tracks.push({

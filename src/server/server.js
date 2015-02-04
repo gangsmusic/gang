@@ -23,8 +23,6 @@ console.log('api listenging on 0.0.0.0:3001');
 
 var state = require('../shared/emptyState');
 
-// state = state.set('tracks', JSON.parse(fs.readFileSync('itunes-library.json', 'utf-8')));
-
 var conectionDebug = debug('gang:connection');
 var eventDebug = debug('gang:event');
 var broadcastDebug = debug('gang:broadcast');
@@ -32,9 +30,9 @@ var broadcastDebug = debug('gang:broadcast');
 import * as actions from '../shared/actions';
 import S from 'string';
 
-import Player from './Player';
+import MPV from './mpv.js';
 
-const player = new Player;
+const player = new MPV('/Applications/mpv.app/Contents/MacOS/mpv');
 
 function executeAction(name) {
   if (actions[name]) {
@@ -56,29 +54,9 @@ function mergeState(data) {
   }
 }
 
-player.on('stop', function() {
-  mergeState({
-    playing: false,
-    duration: null,
-    progress: null
-  });
-});
-
-player.on('progress', function(progress) {
-  mergeState({progress});
-});
-
-player.on('duration', function(duration) {
-  mergeState({duration});
-});
-
-player.on('pause', function() {
-  mergeState({playing: false});
-});
-
-player.on('play', function() {
-  mergeState({playing: true});
-});
+player.on('playing', playing => mergeState({playing}));
+player.on('progress', progress => mergeState({progress}));
+player.on('duration', duration => mergeState({duration}));
 
 io.on('connection', function(socket) {
   conectionDebug('connected');
@@ -98,6 +76,7 @@ io.on('connection', function(socket) {
       if (data.payload) {
         mergeState({current: data.payload});
         player.play(data.payload.url);
+        //player.play(decodeURIComponent(require('url').parse(data.payload.url).path));
       } else {
         player.play();
       }
