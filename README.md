@@ -1,7 +1,8 @@
 # gang
 
+install [mpv](http://mpv.io/)
+
 ```bash
-brew install ffmpeg sox
 npm install
 npm start
 ```
