@@ -5,6 +5,7 @@ export default Immutable.fromJS({
   progress: null,
   current: null,
   playing: false,
+  idle: true,
   tracks: [],
   playQueue: []
 });

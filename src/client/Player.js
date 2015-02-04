@@ -1,10 +1,9 @@
-import React    from 'react';
-import numeral  from 'numeral';
-
+const React = require('react');
+const numeral = require('numeral');
 
 require('./Player.styl');
 
-var Player = React.createClass({
+const Player = React.createClass({
 
   mixins: [require('./GangComponent')],
 
@@ -17,6 +16,7 @@ var Player = React.createClass({
   },
 
   render() {
+    const playing = this.get('playing') && !this.get('idle');
     var current = null;
     if (this.get('current')) {
       const track = this.get('current').toJS();
@@ -35,8 +35,8 @@ var Player = React.createClass({
     }
     return (
       <div className='Player'>
-        <button onClick={this.play} disabled={this.get('playing')}>play</button>
-        <button onClick={this.pause} disabled={!this.get('playing')}>pause</button>
+        <button onClick={this.play} disabled={playing}>play</button>
+        <button onClick={this.pause} disabled={!playing}>pause</button>
         {current}
         {playhead}
       </div>

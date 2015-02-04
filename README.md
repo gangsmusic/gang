@@ -1,7 +1,5 @@
 # gang
 
-install [mpv](http://mpv.io/)
-
 ```bash
 npm install
 npm start

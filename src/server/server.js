@@ -32,7 +32,7 @@ import S from 'string';
 
 import MPV from './mpv.js';
 
-const player = new MPV('/Applications/mpv.app/Contents/MacOS/mpv');
+const player = new MPV;
 
 function executeAction(name) {
   if (actions[name]) {
@@ -57,6 +57,7 @@ function mergeState(data) {
 player.on('playing', playing => mergeState({playing}));
 player.on('progress', progress => mergeState({progress}));
 player.on('duration', duration => mergeState({duration}));
+player.on('idle', idle => mergeState({idle}));
 
 io.on('connection', function(socket) {
   conectionDebug('connected');
@@ -76,7 +77,6 @@ io.on('connection', function(socket) {
       if (data.payload) {
         mergeState({current: data.payload});
         player.play(data.payload.url);
-        //player.play(decodeURIComponent(require('url').parse(data.payload.url).path));
       } else {
         player.play();
       }

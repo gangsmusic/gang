@@ -13,10 +13,8 @@ const debugIpc = require('debug')('gang:mpv-ipc');
 
 export default class MPV extends EventEmitter {
 
-  constructor(bin) {
+  constructor() {
     const socketPath = path.join(tmpdir(), 'gang.mpv.sock');
-    debug(`socket path ${socketPath}`);
-    debug(`spawning ${bin}`);
 
     this._connected = false;
     this._commandQueue = [];
@@ -28,7 +26,11 @@ export default class MPV extends EventEmitter {
       }
     });
 
-    this._mpv = spawn(bin, ['-no-video', '--idle', '--input-unix-socket=' + socketPath], {
+    const mpvBin = path.join(__dirname, '..', '..', 'vendor', 'mpv');
+    debug(`socket path ${socketPath}`);
+    debug(`spawning ${mpvBin}`);
+
+    this._mpv = spawn(mpvBin, ['-no-video', '--idle', '--input-unix-socket=' + socketPath], {
       stdio: ['ignore', 'pipe', 'pipe']
     });
 
@@ -110,9 +112,6 @@ export default class MPV extends EventEmitter {
           break;
         case 'idle':
           this.emit('idle', data.data);
-          if (data.data) {
-            this.emit('playing', false);
-          }
           break;
         case 'paused-for-cache':
           this.emit('caching', data.data);
