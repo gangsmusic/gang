@@ -30,7 +30,7 @@ export default class MPV extends EventEmitter {
     debug(`socket path ${socketPath}`);
     debug(`spawning ${mpvBin}`);
 
-    this._mpv = spawn(mpvBin, ['-no-video', '--idle', '--input-unix-socket=' + socketPath], {
+    this._mpv = spawn(mpvBin, ['-no-video', '--quiet', '--idle', '--input-unix-socket=' + socketPath], {
       stdio: ['ignore', 'pipe', 'pipe']
     });
 
@@ -155,6 +155,7 @@ export default class MPV extends EventEmitter {
     ].forEach((prop, idx) => this._execute('observe_property', idx, prop));
     this._commandQueue.forEach(payload => this._send(payload));
     this._commandQueue = [];
+    this.play(path.join(__dirname, '..', '..', 'vendor', 'silence.mp3'));
   }
 
 }

@@ -1,2 +1,2 @@
-export var play = require('./play');
-export var pause = require('./pause');
+export const play = require('./play');
+export const pause = require('./pause');

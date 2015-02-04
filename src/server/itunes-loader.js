@@ -1,13 +1,26 @@
-import plist            from 'plist-native';
-import shellescape      from 'shell-escape';
-import {promisify}      from 'bluebird';
+const plist = require('plist-native');
+const shellescape = require('shell-escape');
+const promisify = require('bluebird').promisify;
 
-const exec      = promisify(require('child_process').exec);
-const readFile  = promisify(require('fs').readFile);
-const debug     = require('debug')('gang:itunes-loader');
+const exec = promisify(require('child_process').exec);
+const readFile = promisify(require('fs').readFile);
+const debug = require('debug')('gang:itunes-loader');
 
 const filename = 'iTunes Music Library.xml';
 
+/**
+ * javascript representation of itunes track
+ * @typedef {{id: string, name: string, artist: string, album: string, name:string}} Track
+ */
+
+/**
+ * @typedef {Array<Track>} Library
+ */
+
+/**
+ * finds path to itunes library xml
+ * @return {Promise<String>}
+ */
 function find() {
   const cmd = shellescape(['mdfind', '-name', filename]);
   debug('finding itunes xml', cmd);
@@ -21,12 +34,18 @@ function find() {
     });
 }
 
+/**
+ * parse itunes library xml into javascript array
+ * @param {string} filename
+ * @return {Promise<Library>}
+ */
 function parse(filename) {
-  debug(`parsing ${filename}`)
+  debug(`parsing ${filename}`);
   return readFile(filename)
     .then(function(xml) {
       const library = plist.parse(xml);
       const tracks = [];
+
       var track;
 
       for (let id in library.Tracks) {
@@ -47,6 +66,12 @@ function parse(filename) {
     });
 }
 
-export default function findAndLoad() {
+/**
+ * find and parse itunes library xml into javascript array
+ * @return {Promise<Library>}
+ */
+function loadAndParse() {
   return find().then(parse);
 }
+
+module.exports = loadAndParse;
