@@ -145,11 +145,14 @@ if (process.versions['atom-shell']) {
       app.quit();
   });
 
-  app.on('ready', function() {
+  function openMainWindow() {
     mainWindow = new BrowserWindow({width: 800, height: 600});
     mainWindow.loadUrl('http://localhost:3000');
     mainWindow.on('closed', function() {
       mainWindow = null;
     });
-  });
+  }
+
+  app.on('ready', openMainWindow);
+  app.on('activate-with-no-open-windows', openMainWindow);
 }
