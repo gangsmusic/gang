@@ -1,4 +1,4 @@
-const plist = require('plist-native');
+const plist = require('plist');
 const shellescape = require('shell-escape');
 const promisify = require('bluebird').promisify;
 
@@ -41,7 +41,7 @@ function find() {
  */
 function parse(filename) {
   debug(`parsing ${filename}`);
-  return readFile(filename)
+  return readFile(filename, 'utf8')
     .then(function(xml) {
       const library = plist.parse(xml);
       const tracks = [];
