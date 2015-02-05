@@ -113,7 +113,6 @@ var App = React.createClass({
       <div className='App'>
         <Player />
         <Workspace />
-        <StatusBar />
       </div>
     );
   },

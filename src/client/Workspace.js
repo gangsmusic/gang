@@ -9,7 +9,6 @@ var Workspace = React.createClass({
   render() {
     return (
       <div className='Workspace'>
-        <Sidebar />
         <Browser />
       </div>
     )
