@@ -9,4 +9,4 @@ before_script:
 script: make
 
 git:
-  depth: 1
+  depth: 2
