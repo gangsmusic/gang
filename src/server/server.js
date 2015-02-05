@@ -128,3 +128,28 @@ io.on('connection', function(socket:SocketIO.Socket) {
   socket.emit('library', {name: 'load', payload: library});
   socket.on('event', ({type, payload}) => handleClientEvent(type, payload));
 });
+
+/**
+ * If we are running inside atom-shell.
+ */
+if (process.versions['atom-shell']) {
+  var app = require('app');
+  var BrowserWindow = require('browser-window');
+
+  require('crash-reporter').start();
+
+  var mainWindow = null;
+
+  app.on('window-all-closed', function() {
+    if (process.platform != 'darwin')
+      app.quit();
+  });
+
+  app.on('ready', function() {
+    mainWindow = new BrowserWindow({width: 800, height: 600});
+    mainWindow.loadUrl('http://localhost:3000');
+    mainWindow.on('closed', function() {
+      mainWindow = null;
+    });
+  });
+}
