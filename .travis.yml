@@ -1,0 +1,12 @@
+os:
+  - osx
+
+before_script:
+  - wget https://github.com/atom/atom-shell/releases/download/v0.21.1/atom-shell-v0.21.1-darwin-x64.zip
+  - unzip atom-shell-v0.21.1-darwin-x64.zip
+  - npm install
+
+script: make
+
+git:
+  depth: 1
