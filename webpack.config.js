@@ -1,12 +1,11 @@
 var os = require('os');
 var path = require('path');
 var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin')
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var config = {
   entry: [
     'stylus-normalize/normalize.styl',
-    'fixed-data-table/dist/fixed-data-table.css',
     'webpack-dev-server/client?http://0.0.0.0:3000',
     'webpack/hot/only-dev-server',
     './src/client/index'

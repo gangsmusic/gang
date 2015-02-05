@@ -1,13 +1,12 @@
-var React = require('react/lib/ReactWithAddons');
-var classSet = require('react/lib/cx');
-var Immutable = require('immutable');
-var debounceCore = require('fixed-data-table/internal/debounceCore');
-
+const React = require('react');
+const cloneWithProps = require('react/lib/cloneWithProps');
+const classSet = require('react/lib/cx');
+const Immutable = require('immutable');
+const debounce = require('debounce');
 
 require('./ListView.styl');
 
-
-var ListView = React.createClass({
+const ListView = React.createClass({
 
   mixins: [require('./Pure')],
 
@@ -33,17 +32,17 @@ var ListView = React.createClass({
 
   getInitialState() {
 
-    this.hideScrollAnimate = debounceCore(function() {
+    this.hideScrollAnimate = debounce(function() {
       this.setState({
         scrollBarAnimate: false
       });
-    }, 1000, this);
+    }.bind(this), 1000);
 
-    this.hideScrollShow = debounceCore(function() {
+    this.hideScrollShow = debounce(function() {
       this.setState({
         scrollBarShow: false
       });
-    }, 1300, this);
+    }.bind(this), 1300);
 
     return {
       scrollTop: 0,
@@ -112,7 +111,7 @@ var ListView = React.createClass({
   renderItem(item, key) {
     var selected = Immutable.is(item, this.props.selectedItem);
     var onClick = this.props.onItemClick;
-    return React.addons.cloneWithProps(this.props.itemComponent, {key, item, selected, onClick});
+    return cloneWithProps(this.props.itemComponent, {key, item, selected, onClick});
   },
 
   render() {
