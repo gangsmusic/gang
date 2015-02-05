@@ -1,5 +1,4 @@
-var Immutable = require('immutable');
-
+const Immutable = require('immutable');
 
 function immutableEqual(objA, objB) {
   if (objA === objB) {

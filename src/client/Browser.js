@@ -1,7 +1,4 @@
 var React = require('react/lib/ReactWithAddons');
-var FixedDataTable = require('fixed-data-table');
-var Table = FixedDataTable.Table;
-var Column = FixedDataTable.Column;
 var Immutable = require('immutable');
 var debug = require('debug')('gang:browser');
 var ListView = require('./ListView');
@@ -50,34 +47,12 @@ var Item = React.createClass({
 
 var AutoListView = React.createClass({
 
-  mixins: [Pure],
+  mixins: [Pure, require('./LayoutMixin')],
 
   getDefaultProps() {
     return {
       itemComponent: <Item />
     };
-  },
-
-  getInitialState() {
-    return {
-      height: 0
-    };
-  },
-
-  onWindowResize() {
-    if (this.isMounted()) {
-      var {height} = this.getDOMNode().getBoundingClientRect();
-      this.setState({height});
-    }
-  },
-
-  componentDidMount() {
-    window.addEventListener('resize', this.onWindowResize);
-    this.onWindowResize();
-  },
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.onWindowResize);
   },
 
   render() {
@@ -101,7 +76,13 @@ function distinct(collection, key) {
 
 var Browser = React.createClass({
 
-  mixins: [require('./GangComponent')],
+  mixins: [require('./GangComponent').Mixin],
+
+  statics: {
+    observe: {
+      library: ['tracks']
+    }
+  },
 
   getInitialState() {
     return {
@@ -129,7 +110,7 @@ var Browser = React.createClass({
   },
 
   render() {
-    var tracks = this.getLibrary();
+    var tracks = this.state.library_tracks;
     var artists = distinct(tracks, 'artist').sortBy();
 
     if (this.state.artist) {

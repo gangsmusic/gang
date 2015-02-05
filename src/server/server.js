@@ -81,7 +81,7 @@ function executeLibraryUtilFn(name, payload) {
   }
 }
 
-itunesLoader().then(tracks => executeLibraryUtilFn('load', tracks));
+itunesLoader().then(tracks => executeLibraryUtilFn('load', {tracks}));
 
 player.on('playing', playing => mergeState({playing}));
 player.on('progress', progress => mergeState({progress}));

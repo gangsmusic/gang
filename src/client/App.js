@@ -12,6 +12,7 @@ const emptyState = require('../shared/emptyState');
 const emptyLibrary = require('../shared/emptyLibrary');
 const actions = require('../shared/actions');
 const libraryUtils = require('../shared/libraryUtils');
+const {DISPATCHERS} = require('./GangComponent');
 
 
 require('./App.styl');
@@ -19,8 +20,11 @@ require('./App.styl');
 
 var App = React.createClass({
 
+  mixins: [require('./Pure')],
+
   childContextTypes: {
-    dispatcher: require('./DispatcherShape')
+    dispatch: React.PropTypes.func.isRequired,
+    execute: React.PropTypes.func.isRequired
   },
 
   dispatch(ev, data) {
@@ -41,60 +45,51 @@ var App = React.createClass({
 
   getChildContext() {
     return {
-      dispatcher: {
-        dispatch: this.dispatch,
-        execute: this.execute,
-        state: this.state.serverState,
-        library: this.state.library
-      }
+      dispatch: this.dispatch,
+      execute: this.execute
     };
   },
 
   getInitialState() {
     return {
-      connected: false,
-      serverState: emptyState,
-      library: emptyLibrary
+      connected: false
     };
   },
 
   onConnect() {
     this.setState({
-      connected: true,
-      serverState: emptyState,
-      library: emptyLibrary
+      connected: true
     });
   },
 
   onDisconnect() {
     this.setState({
-      connected: false,
-      serverState: emptyState
+      connected: false
     });
+    DISPATCHERS.player.data = require('../shared/emptyState');
+    DISPATCHERS.library.data = require('../shared/emptyLibrary');
   },
 
   onState(data) {
     debugState('', data);
-    var serverState = (this._pendingState || this.state).serverState.mergeDeep(data);
-    this.setState({serverState});
+    DISPATCHERS.player.data = DISPATCHERS.player.data.mergeDeep(data);
   },
 
   onLibrary({name, payload}) {
-    const oldLibrary = (this._pendingState || this.state).library;
+    const oldLibrary = DISPATCHERS.library.data;
     const utilFn = libraryUtils[name];
     if (!utilFn) {
       throw new Error(`unknown library util function ${name}`);
     }
     const library = utilFn(payload, oldLibrary);
     if (!Immutable.is(oldLibrary, library)) {
-      this.setState({library});
+      DISPATCHERS.library.data = library;
     }
   },
 
   onAction(name) {
-    var serverState = actions[name]((this._pendingState || this.state).serverState);
     debugAction(name);
-    this.setState({serverState});
+    DISPATCHERS.player.data = actions[name](DISPATCHERS.player.data);
   },
 
   componentDidMount() {

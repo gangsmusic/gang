@@ -5,7 +5,13 @@ require('./Player.styl');
 
 const Player = React.createClass({
 
-  mixins: [require('./GangComponent')],
+  mixins: [require('./GangComponent').Mixin],
+
+  statics: {
+    observe: {
+      player: ['duration', 'idle', 'current', 'playing', 'progress']
+    }
+  },
 
   play() {
     this.dispatch('play');
@@ -18,25 +24,25 @@ const Player = React.createClass({
   seek(e) {
     const rect = e.target.getBoundingClientRect();
     const componentX = e.clientX - rect.left;
-    const position = this.get('duration') * componentX / rect.width;
+    const position = this.state.player_duration * componentX / rect.width;
     this.dispatch('seek', position);
   },
 
   render() {
-    const idle = this.get('idle');
-    const playing = this.get('playing') && !idle;
+    const idle = this.state.player_idle;
+    const playing = this.state.player_playing && !idle;
     var current = null;
-    if (this.get('current') && !idle) {
-      const track = this.get('current').toJS();
+    if (this.state.player_current && !idle) {
+      const track = this.state.player_current.toJS();
       current = <div className='Player-Current'>{`${track.artist} - ${track.name}`}</div>;
     }
     var playhead = null;
-    if (this.get('progress') !== null && this.get('duration') !== null && !idle) {
-      const currentTime = numeral(this.get('progress')).format('00:00');
-      const durationTime = numeral(this.get('duration')).format('00:00');
+    if (this.state.player_progress !== null && this.state.player_duration !== null && !idle) {
+      const currentTime = numeral(this.state.player_progress).format('00:00');
+      const durationTime = numeral(this.state.player_duration).format('00:00');
       playhead = (
         <div className='Player-Playhead'>
-          <progress onClick={this.seek} className='Player-Progress' value={this.get('progress')} max={this.get('duration')} />
+          <progress onClick={this.seek} className='Player-Progress' value={this.state.player_progress} max={this.state.player_duration} />
           <div className='Player-Time'>{`${currentTime} / ${durationTime}`}</div>
         </div>
       );

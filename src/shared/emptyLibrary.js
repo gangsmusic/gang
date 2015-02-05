@@ -1,3 +1,5 @@
 const Immutable = require('immutable');
 
-module.exports = Immutable.List();
+module.exports = Immutable.fromJS({
+  tracks: []
+});

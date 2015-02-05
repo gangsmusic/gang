@@ -4,7 +4,7 @@ require('./StatusBar.styl');
 
 var StatusBar = React.createClass({
 
-  mixins: [require('./GangComponent')],
+  mixins: [require('./GangComponent').Mixin],
 
   onClick() {
     this.dispatch('state', {bar: 'spam'});
