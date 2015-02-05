@@ -129,7 +129,7 @@ var Browser = React.createClass({
   },
 
   render() {
-    var tracks = this.get(['tracks']);
+    var tracks = this.getLibrary();
     var artists = distinct(tracks, 'artist').sortBy();
 
     if (this.state.artist) {

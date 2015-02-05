@@ -7,6 +7,5 @@ module.exports = Immutable.fromJS({
   playing: false,
   idle: true,
   volume: 0,
-  tracks: [],
   playQueue: []
 });

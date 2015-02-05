@@ -9,11 +9,10 @@ const MPV = require('./mpv');
 const actions = require('../shared/actions');
 const webpackConfig = require('../../webpack.config');
 const itunesLoader = require('./itunes-loader');
+const libraryUtils = require('../shared/libraryUtils');
 
-/**
- * @type {Immutable.Map<string, any>}
- */
 var state = require('../shared/emptyState');
+var library = require('../shared/emptyLibrary');
 
 const connectionDebug = debug('gang:connection');
 const eventDebug = debug('gang:event');
@@ -36,6 +35,13 @@ new WebpackDevServer(webpack(webpackConfig), {
   }
 });
 
+
+function sendBroadcast(name, data) {
+  broadcastDebug(name, S(JSON.stringify(data)).truncate(120).s);
+  io.sockets.emit(name, data);
+}
+
+
 /**
  * execute action and broadcast state
  * @param {string} name
@@ -47,8 +53,7 @@ function executeAction(name) {
   const newState = actions[name](state);
   if (!Immutable.is(newState, state)) {
     state = newState;
-    broadcastDebug('action', name);
-    io.sockets.emit('action', name);
+    sendBroadcast('action', name);
   }
 }
 
@@ -60,12 +65,23 @@ function mergeState(data) {
   const newState = state.mergeDeep(data);
   if (!Immutable.is(newState, state)) {
     state = newState;
-    broadcastDebug('state', S(JSON.stringify(data)).truncate(120).s);
-    io.sockets.emit('state', data);
+    sendBroadcast('state', data);
   }
 }
 
-itunesLoader().then(tracks => mergeState({tracks}));
+function executeLibraryUtilFn(name, payload) {
+  const utilFn = libraryUtils[name];
+  if (!utilFn) {
+    throw new Error(`unknown library util function ${name}`);
+  }
+  const newLibrary = utilFn(payload, library);
+  if (!Immutable.is(library, newLibrary)) {
+    library = newLibrary;
+    sendBroadcast('library', {name, payload});
+  }
+}
+
+itunesLoader().then(tracks => executeLibraryUtilFn('load', tracks));
 
 player.on('playing', playing => mergeState({playing}));
 player.on('progress', progress => mergeState({progress}));
@@ -106,5 +122,6 @@ function handleClientEvent(type, payload) {
 io.on('connection', function(socket:SocketIO.Socket) {
   connectionDebug('connected');
   socket.emit('state', state);
+  socket.emit('library', {name: 'load', payload: library});
   socket.on('event', ({type, payload}) => handleClientEvent(type, payload));
 });

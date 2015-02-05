@@ -1,19 +1,20 @@
-var React = require('react');
-var SocketIO = require('socket.io-client');
-var Immutable = require('immutable');
-var debugState = require('debug')('gang:state');
-var debugAction = require('debug')('gang:action');
-var debugDispatch = require('debug')('gang:dispatch');
+const React = require('react');
+const SocketIO = require('socket.io-client');
+const Immutable = require('immutable');
+const debugState = require('debug')('gang:state');
+const debugAction = require('debug')('gang:action');
+const debugDispatch = require('debug')('gang:dispatch');
 
-var Player = require('./Player');
-var StatusBar = require('./StatusBar');
-var Workspace = require('./Workspace');
+const Player = require('./Player');
+const StatusBar = require('./StatusBar');
+const Workspace = require('./Workspace');
+const emptyState = require('../shared/emptyState');
+const emptyLibrary = require('../shared/emptyLibrary');
+const actions = require('../shared/actions');
+const libraryUtils = require('../shared/libraryUtils');
 
 
 require('./App.styl');
-
-import emptyState from '../shared/emptyState';
-import * as actions from '../shared/actions';
 
 
 var App = React.createClass({
@@ -43,7 +44,8 @@ var App = React.createClass({
       dispatcher: {
         dispatch: this.dispatch,
         execute: this.execute,
-        state: this.state.serverState
+        state: this.state.serverState,
+        library: this.state.library
       }
     };
   },
@@ -51,14 +53,16 @@ var App = React.createClass({
   getInitialState() {
     return {
       connected: false,
-      serverState: emptyState
+      serverState: emptyState,
+      library: emptyLibrary
     };
   },
 
   onConnect() {
     this.setState({
       connected: true,
-      serverState: emptyState
+      serverState: emptyState,
+      library: emptyLibrary
     });
   },
 
@@ -75,6 +79,18 @@ var App = React.createClass({
     this.setState({serverState});
   },
 
+  onLibrary({name, payload}) {
+    const oldLibrary = (this._pendingState || this.state).library;
+    const utilFn = libraryUtils[name];
+    if (!utilFn) {
+      throw new Error(`unknown library util function ${name}`);
+    }
+    const library = utilFn(payload, oldLibrary);
+    if (!Immutable.is(oldLibrary, library)) {
+      this.setState({library});
+    }
+  },
+
   onAction(name) {
     var serverState = actions[name]((this._pendingState || this.state).serverState);
     debugAction(name);
@@ -86,6 +102,7 @@ var App = React.createClass({
     this._socket.on('connect', this.onConnect);
     this._socket.on('disconnect', this.onDisconnect);
     this._socket.on('state', this.onState);
+    this._socket.on('library', this.onLibrary);
     this._socket.on('action', this.onAction);
   },
 

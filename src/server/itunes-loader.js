@@ -68,10 +68,9 @@ function parse(filename) {
 
 /**
  * find and parse itunes library xml into javascript array
+ * @function
  * @return {Promise<Library>}
  */
-function loadAndParse() {
+module.exports = function() {
   return find().then(parse);
-}
-
-module.exports = loadAndParse;
+};

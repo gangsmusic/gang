@@ -12,6 +12,10 @@ module.exports = {
     this.context.dispatcher.execute(name);
   },
 
+  getLibrary() {
+    return this.context.dispatcher.library;
+  },
+
   get(keyPath) {
     var state = this.context.dispatcher.state;
     if (typeof keyPath === 'string') {
