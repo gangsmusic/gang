@@ -3,17 +3,26 @@ var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-var config = {
-  entry: [
-    'stylus-normalize/normalize.styl',
+var prod = process.env.NODE_ENV === 'production';
+
+var entry = [
+  'stylus-normalize/normalize.styl',
+  './src/client/index'
+];
+
+if (!prod) {
+  entry = [
     'webpack-dev-server/client?http://0.0.0.0:3000',
-    'webpack/hot/only-dev-server',
-    './src/client/index'
-  ],
+    'webpack/hot/only-dev-server'
+  ].concat(entry);
+}
+
+var config = {
+  entry: entry,
   output: {
     path: path.join(__dirname, 'build'),
     publicPath: '',
-    filename: '[hash].js'
+    filename: 'client.js'
   },
   resolve: {
     extensions: ['', '.js']
@@ -34,23 +43,31 @@ var config = {
       },
       {
         test: /\.js$/,
-        loaders: ['react-hot', '6to5?experimental'],
+        loaders: prod ? ['6to5?experimental'] : ['react-hot', '6to5?experimental'],
         exclude: /node_modules/
       }
     ]
   },
-  devtool: 'inline-sourcemap',
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"development"'
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
     }),
     new webpack.optimize.DedupePlugin(),
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     new HtmlWebpackPlugin({
       title: 'gang'
-    })
+    }),
   ]
 };
+
+if (!prod) {
+  config.devtool = 'inline-sourcemap';
+  config.plugins.push(new webpack.HotModuleReplacementPlugin());
+} else {
+  config.plugins.push(new webpack.optimize.UglifyJsPlugin({compress: {
+      warnings: false
+    }})
+  );
+}
 
 module.exports = config;

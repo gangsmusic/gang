@@ -93,7 +93,13 @@ var App = React.createClass({
   },
 
   componentDidMount() {
-    this._socket = SocketIO.connect('http://' + window.location.hostname + ':3001');
+    var url;
+    if (window.location.protocol === 'file:') {
+      url = 'http://127.0.0.1:3001';
+    } else {
+      url = 'http://' + window.location.hostname + ':3001';
+    }
+    this._socket = SocketIO.connect(url);
     this._socket.on('connect', this.onConnect);
     this._socket.on('disconnect', this.onDisconnect);
     this._socket.on('state', this.onState);

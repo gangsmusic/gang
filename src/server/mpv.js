@@ -10,6 +10,13 @@ const debug = require('debug')('gang:mpv');
 const debugMpv = require('debug')('gang:mpv-out');
 const debugIpc = require('debug')('gang:mpv-ipc');
 
+var vendorPath;
+if (process.versions['atom-shell'] && process.env.NODE_ENV === 'production') {
+  vendorPath = path.join(process.resourcesPath, 'vendor');
+} else {
+  vendorPath = path.join(path.dirname(__filename), '..', '..', 'vendor');
+}
+
 
 export default class MPV extends EventEmitter {
 
@@ -26,7 +33,7 @@ export default class MPV extends EventEmitter {
       }
     });
 
-    const mpvBin = path.join(__dirname, '..', '..', 'vendor', 'mpv');
+    const mpvBin = path.join(vendorPath, 'mpv');
     debug(`socket path ${socketPath}`);
     debug(`spawning ${mpvBin}`);
 
@@ -160,7 +167,7 @@ export default class MPV extends EventEmitter {
     ].forEach((prop, idx) => this._execute('observe_property', idx, prop));
     this._commandQueue.forEach(payload => this._send(payload));
     this._commandQueue = [];
-    this.play(path.join(__dirname, '..', '..', 'vendor', 'silence.mp3'));
+    this.play(path.join(vendorPath, 'silence.mp3'));
   }
 
 }

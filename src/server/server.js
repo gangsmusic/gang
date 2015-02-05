@@ -1,5 +1,4 @@
-const webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
+const path = require('path');
 const debug = require('debug');
 const fs = require('fs');
 const SocketIO = require('socket.io');
@@ -7,7 +6,6 @@ const S = require('string');
 const Immutable = require('immutable');
 const MPV = require('./mpv');
 const actions = require('../shared/actions');
-const webpackConfig = require('../../webpack.config');
 const itunesLoader = require('./itunes-loader');
 const libraryUtils = require('../shared/libraryUtils');
 
@@ -23,18 +21,25 @@ connectionDebug('api listening on 0.0.0.0:3001');
 
 const player = new MPV;
 
-new WebpackDevServer(webpack(webpackConfig), {
-  publicPath: webpackConfig.output.publicPath,
-  hot: true,
-  stats: { colors: true, modules: false, chunks: false }
-}).listen(3000, undefined, 511, function (err) {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log('webpack listening on 0.0.0.0:3000');
-  }
-});
+if (process.env.NODE_ENV !== 'production') {
 
+  const webpack = require('webpack');
+  const WebpackDevServer = require('webpack-dev-server');
+  const webpackConfig = require('../../webpack.config.client');
+
+  new WebpackDevServer(webpack(webpackConfig), {
+    publicPath: webpackConfig.output.publicPath,
+    hot: true,
+    stats: {colors: true, modules: false, chunks: false}
+  }).listen(3000, undefined, 511, function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('webpack listening on 0.0.0.0:3000');
+      }
+    });
+
+}
 
 function sendBroadcast(name, data) {
   broadcastDebug(name, S(JSON.stringify(data)).truncate(120).s);
@@ -147,7 +152,11 @@ if (process.versions['atom-shell']) {
 
   function openMainWindow() {
     mainWindow = new BrowserWindow({width: 800, height: 600});
-    mainWindow.loadUrl('http://localhost:3000');
+    if (process.env.NODE_ENV === 'production') {
+      mainWindow.loadUrl('file://' + path.join(__dirname, 'index.html'));
+    } else {
+      mainWindow.loadUrl('http://localhost:3000');
+    }
     mainWindow.on('closed', function() {
       mainWindow = null;
     });
