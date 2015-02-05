@@ -4,7 +4,7 @@ Gang.app: build
 	cp -R build Gang.app/Contents/Resources/app
 	rm Gang.app/Contents/Resources/atom.icns
 	cp gang.icns Gang.app/Contents/Resources/
-	mv Gang.App/Contents/MacOS/Atom Gang.App/Contents/MacOS/Gang
+	mv Gang.app/Contents/MacOS/Atom Gang.app/Contents/MacOS/Gang
 	sed 's/atom.icns/gang.icns/' < Atom.app/Contents/Info.plist | sed 's/Atom</Gang</' > Gang.app/Contents/Info.plist
 
 build:
