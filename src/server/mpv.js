@@ -67,6 +67,11 @@ export default class MPV extends EventEmitter {
     this._setProperty('pause', false);
   }
 
+  seek(pos) {
+    debug('seek', pos);
+    this._setProperty('time-pos', pos);
+  }
+
   _setProperty(name, val) {
     this._execute('set_property', name, val);
   }

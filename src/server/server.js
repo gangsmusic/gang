@@ -114,6 +114,9 @@ function handleClientEvent(type, payload) {
     case 'pause':
       player.pause();
       break;
+    case 'seek':
+      player.seek(payload);
+      break;
     default:
       throw new Error(`unsupported event type ${type}`);
   }
