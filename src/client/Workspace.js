@@ -1,16 +1,18 @@
 var React = require('react');
-var Sidebar = require('./Sidebar');
 var Browser = require('./Browser');
+import {Box} from './Box';
 
-require('./Workspace.styl');
+const WorkspaceStyle = {
+  flex: 1
+};
 
 var Workspace = React.createClass({
 
   render() {
     return (
-      <div className='Workspace'>
+      <Box style={WorkspaceStyle}>
         <Browser />
-      </div>
+      </Box>
     )
   }
 

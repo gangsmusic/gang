@@ -1,7 +1,12 @@
 const React = require('react');
 const numeral = require('numeral');
+import {HBox, Box} from './Box';
+import {rgba} from './StyleUtils';
 
-require('./Player.styl');
+const PlayerStyle = {
+  height: 60,
+  background: rgba(0, 0, 0, 0.1)
+};
 
 const Player = React.createClass({
 
@@ -34,26 +39,30 @@ const Player = React.createClass({
     var current = null;
     if (this.state.player_current && !idle) {
       const track = this.state.player_current.toJS();
-      current = <div className='Player-Current'>{`${track.artist} - ${track.name}`}</div>;
+      current = <Box>{`${track.artist} - ${track.name}`}</Box>;
     }
     var playhead = null;
     if (this.state.player_progress !== null && this.state.player_duration !== null && !idle) {
       const currentTime = numeral(this.state.player_progress).format('00:00');
       const durationTime = numeral(this.state.player_duration).format('00:00');
       playhead = (
-        <div className='Player-Playhead'>
-          <progress onClick={this.seek} className='Player-Progress' value={this.state.player_progress} max={this.state.player_duration} />
-          <div className='Player-Time'>{`${currentTime} / ${durationTime}`}</div>
-        </div>
+        <Box>
+          <progress onClick={this.seek} value={this.state.player_progress} max={this.state.player_duration} />
+          <div>{`${currentTime} / ${durationTime}`}</div>
+        </Box>
       );
     }
     return (
-      <div className='Player'>
-        <button onClick={this.play} disabled={playing}>play</button>
-        <button onClick={this.pause} disabled={!playing}>pause</button>
-        {current}
-        {playhead}
-      </div>
+      <Box style={PlayerStyle}>
+        <HBox>
+          <button onClick={this.play} disabled={playing}>play</button>
+          <button onClick={this.pause} disabled={!playing}>pause</button>
+        </HBox>
+        <HBox>
+          {current}
+          {playhead}
+        </HBox>
+      </Box>
     );
   }
 

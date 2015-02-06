@@ -3,8 +3,38 @@ const cloneWithProps = require('react/lib/cloneWithProps');
 const classSet = require('react/lib/cx');
 const Immutable = require('immutable');
 const debounce = require('debounce');
+import {Box} from './Box';
+import {border, borderStyle, rgba} from './StyleUtils';
 
-require('./ListView.styl');
+const ListViewStyle = {
+  self: {
+    overflow: 'hidden'
+  },
+  content: {
+    position: 'absolute',
+    width: '100%'
+  },
+  scrollHandle: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    border: border(1, borderStyle.solid, '#ccc'),
+    background: rgba(0, 0, 0, 0.2)
+  },
+  scrollBar: {
+    background: '#eee',
+    position: 'absolute',
+    right: '-10px',
+    top: 0,
+    bottom: 0,
+    width: '9px',
+    borderLeft: border(1, borderStyle.solid, '#ccc'),
+    transition: 'right 0.3s'
+  },
+  scrollBarAnimate: {
+    right: 0
+  }
+};
 
 const ListView = React.createClass({
 
@@ -116,12 +146,19 @@ const ListView = React.createClass({
 
   render() {
     var items = this.props.items;
-
+    var {scrollBarAnimate, scrollBarShow} = this.state;
     var scrollBar = null;
-    if (this.state.scrollBarShow) {
+    if (scrollBarShow) {
       scrollBar = (
-        <div className={classSet({'ListView-Scroll': true, 'ListView-Scroll--animate': this.state.scrollBarAnimate})}>
-          <div className='ListView-ScrollHandle' style={{height: this.getScrollHandleHeight(), top: this.getScrollHandleTop()}} />
+        <div 
+          style={{...ListViewStyle.scrollBar, ...(scrollBarAnimate && ListViewStyle.scrollBarAnimate)}}>
+          <div
+            style={{
+              ...ListViewStyle.scrollHandle,
+              height: this.getScrollHandleHeight(),
+              top: this.getScrollHandleTop()
+            }}
+            />
         </div>
       );
     }
@@ -146,12 +183,12 @@ const ListView = React.createClass({
     items = items.slice(sliceStart, sliceEnd);
 
     return (
-      <div className='ListView' style={{height: this.props.height}}>
-        <div className='ListView-Content' onWheel={this.onWheel} style={{top: this.getScrollTop() + stubTopHeight}}>
+      <Box style={{...ListViewStyle.self, height: this.props.height}}>
+        <Box style={ListViewStyle.content} onWheel={this.onWheel} style={{top: this.getScrollTop() + stubTopHeight}}>
           {items.map(this.renderItem).toArray()}
-        </div>
+        </Box>
         {scrollBar}
-      </div>
+      </Box>
     )
   }
 

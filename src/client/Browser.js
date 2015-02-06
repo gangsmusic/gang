@@ -3,9 +3,26 @@ var Immutable = require('immutable');
 var debug = require('debug')('gang:browser');
 var ListView = require('./ListView');
 var Pure = require('./Pure');
+import {Box, HBox} from './Box';
+import {rgba, border, borderStyle} from './StyleUtils';
 
-require('./Browser.styl');
-
+const ItemStyle = {
+  self: {
+    padding: '0 8px',
+    lineHeight: '23px',
+    borderBottom: border(1, borderStyle.solid, '#ccc'),
+    cursor: 'pointer',
+    WebkitUserSelect: 'none',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden'
+  },
+  onSelected: {
+    self: {
+      background: rgba(0, 0, 255, 0.2)
+    }
+  }
+}
 
 var Item = React.createClass({
 
@@ -31,19 +48,30 @@ var Item = React.createClass({
   },
 
   render() {
-    var {item, onClick, ...props} = this.props;
-    var className = React.addons.classSet({
-      'Browser-Row': true,
-      'Browser-Row--selected': this.props.selected
-    });
+    var {item, onClick, selected, ...props} = this.props;
     return (
-      <div className={className} onClick={this.onClick} {...props}>
+      <div {...props} style={{...ItemStyle.self, ...(selected && ItemStyle.onSelected.self)}} onClick={this.onClick}>
         {typeof item === 'string' ? item : item.get('name')}
       </div>
     );
   }
 
 });
+
+
+const AutoListViewStyle = {
+  self: {
+    flex: 1
+  },
+  title: {
+    lineHeight: '23px',
+    textIndent: '8px',
+    background: rgba(0, 0, 0, 0.1),
+    borderBottom: border(1, borderStyle.solid, '#ccc'),
+    borderTop: border(1, borderStyle.solid, '#ccc')
+  }
+};
+
 
 var AutoListView = React.createClass({
 
@@ -56,13 +84,13 @@ var AutoListView = React.createClass({
   },
 
   render() {
-    var {className, ...listProps} = this.props;
+    var {style, ...listProps} = this.props;
     var table = this.state.height ? <ListView height={this.state.height - 24} {...listProps} /> : null;
     return (
-      <div className={className}>
-        <div className='Browser-Section-Title'>{this.props.title}</div>
+      <Box style={{...AutoListViewStyle.self, ...style}}>
+        <div style={AutoListViewStyle.title}>{this.props.title}</div>
         {table}
-      </div>
+      </Box>
     );
   }
 
@@ -73,6 +101,20 @@ function distinct(collection, key) {
   return collection.map(x => x.get(key)).toOrderedSet().toList().filter(x => typeof x === 'string');
 }
 
+const BrowserStyle = {
+  self: {
+    flex: 1
+  },
+  top: {
+    flex: 1
+  },
+  bottom: {
+    flex: 1
+  },
+  artists: {
+    borderRight: border(1, borderStyle.solid, '#ccc')
+  }
+};
 
 var Browser = React.createClass({
 
@@ -123,11 +165,28 @@ var Browser = React.createClass({
     }
 
     return (
-      <div className='Browser'>
-        <AutoListView className='Browser-Artists' title='Artists' itemHeight={24} selectedItem={this.state.artist} onItemClick={this.onArtistClicked} items={artists} />
-        <AutoListView className='Browser-Albums' title='Albums' itemHeight={24} selectedItem={this.state.album} onItemClick={this.onAlbumClicked} items={albums} />
-        <AutoListView className='Browser-Tracks' title='Tracks' itemHeight={24} onItemClick={this.onTrackClicked} items={tracks} />
-      </div>
+      <Box style={BrowserStyle.self}>
+        <HBox style={BrowserStyle.top}>
+          <AutoListView
+            style={BrowserStyle.artists}
+            title="Artists"
+            itemHeight={24}
+            selectedItem={this.state.artist}
+            onItemClick={this.onArtistClicked}
+            items={artists}
+            />
+          <AutoListView
+            title="Albums"
+            itemHeight={24}
+            selectedItem={this.state.album}
+            onItemClick={this.onAlbumClicked}
+            items={albums}
+            />
+        </HBox>
+        <Box style={BrowserStyle.bottom}>
+          <AutoListView title='Tracks' itemHeight={24} onItemClick={this.onTrackClicked} items={tracks} />
+        </Box>
+      </Box>
     );
   }
 

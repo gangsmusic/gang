@@ -1,7 +1,18 @@
+BIN = $(PWD)/node_modules/.bin
 APP_NAME = Gang
 
 # targets which are not files
-.PHONY: build app clean
+.PHONY: build app clean install start
+
+start:
+	@$(BIN)/nodemon \
+		-w src/server \
+		-w src/shared \
+		-w webpack.config.js \
+		src/server/index.js
+
+install:
+	npm install
 
 app: $(APP_NAME).app
 
@@ -15,8 +26,8 @@ $(APP_NAME).app: build Atom.app
 	sed 's/atom.icns/gang.icns/' < Atom.app/Contents/Info.plist | sed 's/Atom</$(APP_NAME)</' > $(APP_NAME).app/Contents/Info.plist
 
 build:
-	NODE_ENV=production ./node_modules/.bin/webpack --bail -c --config webpack.config.client.js
-	NODE_ENV=production ./node_modules/.bin/webpack --bail -c --config webpack.config.server.js
+	NODE_ENV=production $(BIN)/webpack --bail -c --config webpack.config.client.js
+	NODE_ENV=production $(BIN)/webpack --bail -c --config webpack.config.server.js
 	cp package.atom.json build/package.json
 	cd build && npm install
 

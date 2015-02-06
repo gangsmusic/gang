@@ -6,7 +6,6 @@ const debugAction = require('debug')('gang:action');
 const debugDispatch = require('debug')('gang:dispatch');
 
 const Player = require('./Player');
-const StatusBar = require('./StatusBar');
 const Workspace = require('./Workspace');
 const emptyState = require('../shared/emptyState');
 const emptyLibrary = require('../shared/emptyLibrary');
@@ -14,9 +13,18 @@ const actions = require('../shared/actions');
 const libraryUtils = require('../shared/libraryUtils');
 const {DISPATCHERS} = require('./GangComponent');
 
+import {Box} from './Box';
 
 require('./App.styl');
 
+const AppStyle = {
+  height: '100vh',
+  fontWeight: 300,
+  fontFamily: 'Roboto',
+  fontSize: '16px',
+  overflow: 'hidden',
+  WebkitFontSmoothing: 'antialiased'
+};
 
 var App = React.createClass({
 
@@ -107,24 +115,23 @@ var App = React.createClass({
     this._socket.on('action', this.onAction);
   },
 
-  renderDisconnected() {
-    return (
-      <div className='App'>
-      </div>
-    );
-  },
-
   renderConnected() {
     return (
-      <div className='App'>
+      <Box>
         <Player />
         <Workspace />
-      </div>
+      </Box>
     );
   },
 
   render() {
-    return this.state.connected ? this.renderConnected() : this.renderDisconnected();
+    var {connected} = this.state;
+    return (
+      <Box style={AppStyle}>
+        {connected && <Player />}
+        {connected && <Workspace />}
+      </Box>
+    );
   }
 
 });
