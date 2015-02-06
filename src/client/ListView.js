@@ -4,7 +4,7 @@ const classSet = require('react/lib/cx');
 const Immutable = require('immutable');
 const debounce = require('debounce');
 import {Box} from './Box';
-import {border, borderStyle, rgba} from './StyleUtils';
+import {border, borderStyle, rgba, translate3d} from './StyleUtils';
 
 const ListViewStyle = {
   self: {
@@ -184,7 +184,10 @@ const ListView = React.createClass({
 
     return (
       <Box style={{...ListViewStyle.self, height: this.props.height}}>
-        <Box style={ListViewStyle.content} onWheel={this.onWheel} style={{top: this.getScrollTop() + stubTopHeight}}>
+        <Box
+          style={ListViewStyle.content}
+          onWheel={this.onWheel}
+          style={{transform: translate3d(0, this.getScrollTop() + stubTopHeight, 0)}}>
           {items.map(this.renderItem).toArray()}
         </Box>
         {scrollBar}

@@ -26,3 +26,7 @@ export function rgb(r, g, b) {
 export function rgba(r, g, b, a) {
   return `rgba(${r}, ${g}, ${b}, ${a})`;
 }
+
+export function translate3d(x, y, z) {
+  return `translate3d(${x}px, ${y}px, ${z}px)`;
+}
