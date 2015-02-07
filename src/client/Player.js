@@ -12,31 +12,68 @@ const PlayerStyle = {
     height: 60,
     background: colors.background
   },
-  playButton: {
-    ...VBoxStyle,
-    width: 60,
-    height: 60,
-    justifyContent: 'center',
-    color: colors.controls,
-    background: 'none',
-    border: 'none',
-    outline: 'none'
+  controls: {
+    width: 32 * 3 + 16,
+    justifyContent: 'space-between',
+    alignItems: 'center'
   }
 };
+
+const IconButtonStyle = {
+  fontSize: 24,
+  height: 32,
+  width: 32,
+  lineHeight: '32px',
+  textAlign: 'center',
+  color: colors.controls,
+  cursor: 'pointer'
+};
+
+const IconButtonDisabledStyle = {
+  ...IconButtonStyle,
+  color: colors.controlsDisabled,
+  cursor: 'default'
+};
+
+
+const IconButton = React.createClass({
+
+  render() {
+    const {disabled, icon, style, ...props} = this.props;
+    const style = Object.assign({}, disabled ? IconButtonDisabledStyle : IconButtonStyle, style);
+    return <Icon {...props} style={style} name={icon} />;
+  }
+
+});
+
 
 const PlayPauseButton = React.createClass({
 
   render() {
-    var {playing, onPlay, onPause, ...props} = this.props;
-    var icon = playing ? 'pause' : 'play';
-    var onClick = playing ? onPause : onPlay;
+    const {playing, onPlay, onPause, ...props} = this.props;
+    const icon = playing ? 'pause' : 'play';
+    const onClick = playing ? onPause : onPlay;
+    return <IconButton {...props} icon={icon} onClick={onClick} />;
+  }
+
+});
+
+
+const PlayerControls = React.createClass({
+
+  render() {
+    const {playing, disabled, onPlay, onPause, onNext, onPrev} = this.props;
     return (
-      <button {...props} onClick={onClick}>
-        <Icon name={icon} />
-      </button>
+      <HBox style={PlayerStyle.controls}>
+        <IconButton icon='backward' disabled={disabled} onClick={onPrev} />
+        <PlayPauseButton onPlay={onPlay} onPause={onPause} playing={playing} disabled={disabled} />
+        <IconButton icon='forward' disabled={disabled} onClick={onNext} />
+      </HBox>
     );
   }
+
 });
+
 
 const Player = React.createClass({
 
@@ -44,16 +81,35 @@ const Player = React.createClass({
 
   statics: {
     observe: {
-      player: ['duration', 'idle', 'current', 'playing', 'progress']
+      player: ['duration', 'idle', 'current', 'playing', 'progress'],
+      library: ['tracks']
     }
   },
 
   play() {
-    this.dispatch('play');
+    if (this.state.player_progress !== null) {
+      this.dispatch('play');
+    } else if (this.state.player_current) {
+      this.dispatch('play', this.state.player_current);
+    }
   },
 
   pause() {
     this.dispatch('pause');
+  },
+
+  next() {
+    const index = this.state.library_tracks.indexOf(this.state.player_current);
+    if (index !== -1 && index < this.state.library_tracks.count() - 1) {
+      this.dispatch('play', this.state.library_tracks.get(index + 1));
+    }
+  },
+
+  prev() {
+    const index = this.state.library_tracks.indexOf(this.state.player_current);
+    if (index > 0) {
+      this.dispatch('play', this.state.library_tracks.get(index - 1));
+    }
   },
 
   seek(position) {
@@ -81,11 +137,13 @@ const Player = React.createClass({
     }
     return (
       <HBox style={PlayerStyle.self}>
-        <PlayPauseButton
-          style={PlayerStyle.playButton}
+        <PlayerControls
           playing={player_playing}
+          disabled={!player_current}
           onPlay={this.play}
           onPause={this.pause}
+          onNext={this.next}
+          onPrev={this.prev}
           />
         <HBox>
           {current}

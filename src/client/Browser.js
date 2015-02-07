@@ -131,7 +131,8 @@ var Browser = React.createClass({
 
   statics: {
     observe: {
-      library: ['tracks']
+      library: ['tracks'],
+      player: ['current']
     }
   },
 
@@ -193,7 +194,13 @@ var Browser = React.createClass({
             />
         </HBox>
         <VBox style={BrowserStyle.bottom}>
-          <AutoListView title='Tracks' itemHeight={24} onItemClick={this.onTrackClicked} items={tracks} />
+          <AutoListView
+            title='Tracks'
+            itemHeight={24}
+            selectedItem={this.state.player_current}
+            onItemClick={this.onTrackClicked}
+            items={tracks}
+            />
         </VBox>
       </VBox>
     );

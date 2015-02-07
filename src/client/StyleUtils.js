@@ -26,7 +26,7 @@ export function rgba(r, g, b, a) {
 }
 
 export function translate3d(x, y, z) {
-  return `translate3d(${x}px, ${y}px, ${z}px)`;
+  return `translate3d(${Math.round(x)}px, ${Math.round(y)}px, ${Math.round(z)}px)`;
 }
 
 export function boxShadow(offsetX, offsetY, blurRadius, spreadRadius, color) {
