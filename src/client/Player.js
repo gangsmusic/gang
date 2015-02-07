@@ -1,6 +1,6 @@
 const React = require('react');
 const numeral = require('numeral');
-import {HBox, Box} from './Box';
+import {HBox, VBox} from './Layout';
 import {rgba} from './StyleUtils';
 import Icon from './Icon';
 import {Mixin as GangComponentMixin} from './GangComponent';
@@ -56,29 +56,29 @@ const Player = React.createClass({
   },
 
   render() {
-    const idle = this.state.player_idle;
-    const playing = this.state.player_playing && !idle;
+    let {player_current, player_duration, player_progress, player_playing, player_idle} = this.state;
+    player_playing = player_playing && !player_idle;
     var current = null;
-    if (this.state.player_current && !idle) {
-      const track = this.state.player_current.toJS();
-      current = <Box>{`${track.artist} - ${track.name}`}</Box>;
+    if (player_current && !player_idle) {
+      const track = player_current.toJS();
+      current = <VBox>{`${track.artist} - ${track.name}`}</VBox>;
     }
     var playhead = null;
-    var showProgress = this.state.player_progress !== null && this.state.player_duration !== null && !idle;
-    if (this.state.player_progress !== null && this.state.player_duration !== null && !idle) {
-      const currentTime = numeral(this.state.player_progress).format('00:00');
-      const durationTime = numeral(this.state.player_duration).format('00:00');
+    var showProgress = player_progress !== null && player_duration !== null && !player_idle;
+    if (showProgress) {
+      const currentTime = numeral(player_progress).format('00:00');
+      const durationTime = numeral(player_duration).format('00:00');
       playhead = (
-        <Box>
+        <VBox>
           <div>{`${currentTime} / ${durationTime}`}</div>
-        </Box>
+        </VBox>
       );
     }
     return (
       <HBox style={PlayerStyle.self}>
         <PlayPauseButton
           style={PlayerStyle.playButton}
-          playing={playing}
+          playing={player_playing}
           onPlay={this.play}
           onPause={this.pause}
           />
@@ -89,8 +89,8 @@ const Player = React.createClass({
         {showProgress &&
           <ProgressBar
             onSeek={this.seek}
-            value={this.state.player_progress}
-            max={this.state.player_duration}
+            value={player_progress}
+            max={player_duration}
             />}
       </HBox>
     );

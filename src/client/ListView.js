@@ -3,7 +3,7 @@ const cloneWithProps = require('react/lib/cloneWithProps');
 const classSet = require('react/lib/cx');
 const Immutable = require('immutable');
 const debounce = require('debounce');
-import {Box} from './Box';
+import {VBox} from './Layout';
 import {border, borderStyle, rgba, translate3d} from './StyleUtils';
 
 const ListViewStyle = {
@@ -183,15 +183,15 @@ const ListView = React.createClass({
     items = items.slice(sliceStart, sliceEnd);
 
     return (
-      <Box style={{...ListViewStyle.self, height: this.props.height}}>
-        <Box
+      <VBox style={{...ListViewStyle.self, height: this.props.height}}>
+        <VBox
           style={ListViewStyle.content}
           onWheel={this.onWheel}
           style={{transform: translate3d(0, this.getScrollTop() + stubTopHeight, 0)}}>
           {items.map(this.renderItem).toArray()}
-        </Box>
+        </VBox>
         {scrollBar}
-      </Box>
+      </VBox>
     )
   }
 

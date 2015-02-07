@@ -3,7 +3,7 @@ var Immutable = require('immutable');
 var debug = require('debug')('gang:browser');
 var ListView = require('./ListView');
 var Pure = require('./Pure');
-import {Box, HBox} from './Box';
+import {VBox, HBox} from './Layout';
 import {rgba, border, borderStyle, boxShadow} from './StyleUtils';
 
 const ItemStyle = {
@@ -90,10 +90,10 @@ var AutoListView = React.createClass({
     var {style, ...listProps} = this.props;
     var table = this.state.height ? <ListView height={this.state.height - 24} {...listProps} /> : null;
     return (
-      <Box style={{...AutoListViewStyle.self, ...style}}>
+      <VBox style={{...AutoListViewStyle.self, ...style}}>
         <div style={AutoListViewStyle.title}>{this.props.title}</div>
         {table}
-      </Box>
+      </VBox>
     );
   }
 
@@ -168,7 +168,7 @@ var Browser = React.createClass({
     }
 
     return (
-      <Box style={BrowserStyle.self}>
+      <VBox style={BrowserStyle.self}>
         <HBox style={BrowserStyle.top}>
           <AutoListView
             style={BrowserStyle.artists}
@@ -186,10 +186,10 @@ var Browser = React.createClass({
             items={albums}
             />
         </HBox>
-        <Box style={BrowserStyle.bottom}>
+        <VBox style={BrowserStyle.bottom}>
           <AutoListView title='Tracks' itemHeight={24} onItemClick={this.onTrackClicked} items={tracks} />
-        </Box>
-      </Box>
+        </VBox>
+      </VBox>
     );
   }
 

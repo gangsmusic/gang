@@ -1,6 +1,6 @@
 var React = require('react');
 var Browser = require('./Browser');
-import {Box} from './Box';
+import {VBox} from './Layout';
 
 const WorkspaceStyle = {
   flex: 1
@@ -10,9 +10,9 @@ var Workspace = React.createClass({
 
   render() {
     return (
-      <Box style={WorkspaceStyle}>
+      <VBox style={WorkspaceStyle}>
         <Browser />
-      </Box>
+      </VBox>
     )
   }
 

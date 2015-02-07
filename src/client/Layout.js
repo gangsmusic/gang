@@ -8,7 +8,7 @@
 import React from 'react';
 import {border, borderStyle} from './StyleUtils';
 
-const BaseStyle = {
+export const BoxStyle = {
   boxSizing: 'border-box',
   position: 'relative',
   border: border(0, borderStyle.solid, 'black'),
@@ -20,22 +20,22 @@ const BaseStyle = {
   flexShrink: 0
 };
 
-const BoxStyle = {
-  ...BaseStyle,
+export const VBoxStyle = {
+  ...BoxStyle,
   flexDirection: 'column'
 };
 
-const HBoxStyle = {
-  ...BaseStyle,
+export const HBoxStyle = {
+  ...BoxStyle,
   flexDirection: 'row'
 }
 
-export let Box = React.createClass({
+export let VBox = React.createClass({
 
   render() {
     var {style, children, ...props} = this.props;
     return (
-      <div {...props} style={{...BoxStyle, ...style}}>
+      <div {...props} style={{...VBoxStyle, ...style}}>
         {children}
       </div>
     );
@@ -53,5 +53,3 @@ export let HBox = React.createClass({
     );
   }
 });
-
-export default Box;

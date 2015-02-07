@@ -16,7 +16,7 @@ const actions = require('../shared/actions');
 const libraryUtils = require('../shared/libraryUtils');
 const {DISPATCHERS} = require('./GangComponent');
 
-import {Box} from './Box';
+import {VBox} from './Layout';
 
 const AppStyle = {
   height: '100vh',
@@ -119,10 +119,10 @@ var App = React.createClass({
   render() {
     var {connected} = this.state;
     return (
-      <Box style={AppStyle}>
+      <VBox style={AppStyle}>
         {connected && <Player />}
         {connected && <Workspace />}
-      </Box>
+      </VBox>
     );
   }
 

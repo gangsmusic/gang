@@ -1,6 +1,6 @@
 import React from 'react';
 import Hoverable from './Hoverable';
-import {Box} from './Box';
+import {VBox} from './Layout';
 import emptyFunction from './emptyFunction';
 import {rgb, boxShadow} from './StyleUtils';
 
@@ -48,24 +48,24 @@ let ProgressBar = React.createClass({
     var {hover, barGhostWidth} = this.state;
     var width = `${value / max * 100}%`;
     return (
-      <Box
+      <VBox
         {...props}
         {...this.hoverableProps}
         style={ProgressBarStyle.self}
         onClick={this.onClick}
         onMouseMove={this.onMouseMove}
         onSeek={undefined}>
-        <Box style={{
+        <VBox style={{
           ...ProgressBarStyle.bar,
           width,
           ...(hover && ProgressBarStyle.onHover.bar)
           }} />
-        <Box style={{
+        <VBox style={{
           ...ProgressBarStyle.barGhost,
           width: barGhostWidth,
           ...(hover && ProgressBarStyle.onHover.barGhost)
           }} />
-      </Box>
+      </VBox>
     );
   },
 
