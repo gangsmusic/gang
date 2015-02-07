@@ -16,19 +16,17 @@ const ListViewStyle = {
   },
   scrollHandle: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    border: border(1, borderStyle.solid, '#ccc'),
+    left: 2,
+    right: 2,
+    borderRadius: 8,
     background: rgba(0, 0, 0, 0.2)
   },
   scrollBar: {
-    background: '#eee',
     position: 'absolute',
-    right: '-10px',
+    right: '-9px',
     top: 0,
     bottom: 0,
     width: '9px',
-    borderLeft: border(1, borderStyle.solid, '#ccc'),
     transition: 'right 0.3s'
   },
   scrollBarAnimate: {

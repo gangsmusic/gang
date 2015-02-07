@@ -5,14 +5,16 @@ import {rgba} from './StyleUtils';
 import Icon from './Icon';
 import {Mixin as GangComponentMixin} from './GangComponent';
 import ProgressBar from './ProgressBar';
+import {colors} from './Theme';
 
 const PlayerStyle = {
   self: {
     height: 60,
-    background: rgba(0, 0, 0, 0.1)
+    background: colors.background
   },
   playButton: {
     width: 60,
+    color: colors.controls,
     background: 'none',
     border: 'none',
     outline: 'none'

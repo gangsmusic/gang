@@ -5,14 +5,16 @@ import ListView from './ListView';
 import Pure from './Pure';
 import {VBox, HBox} from './Layout';
 import {rgba, border, borderStyle, boxShadow} from './StyleUtils';
+import {colors} from './Theme';
 
 const debugBrowser = debug('gang:browser');
 
 const ItemStyle = {
   self: {
     padding: '0 8px',
+    fontSize: '90%',
     lineHeight: '23px',
-    boxShadow: boxShadow(0, 1, 1, 1, '#F9F9F9'),
+    boxShadow: boxShadow(0, 1, 0, 0, '#F9F9F9'),
     cursor: 'pointer',
     WebkitUserSelect: 'none',
     whiteSpace: 'nowrap',
@@ -21,7 +23,9 @@ const ItemStyle = {
   },
   onSelected: {
     self: {
-      background: rgba(0, 0, 255, 0.2)
+      background: colors.selected,
+      color: colors.selectedText,
+      fontWeight: 'bold'
     }
   }
 }
@@ -70,8 +74,8 @@ const AutoListViewStyle = {
     textIndent: '8px',
     fontWeight: 'bold',
     fontSize: '80%',
-    color: '#666666',
-    background: rgba(0, 0, 0, 0.1),
+    color: colors.fadedText,
+    background: colors.background,
     borderBottom: border(1, borderStyle.solid, '#ccc'),
     borderTop: border(1, borderStyle.solid, '#ccc')
   }
