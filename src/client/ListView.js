@@ -10,10 +10,6 @@ const ListViewStyle = {
   self: {
     overflow: 'hidden'
   },
-  content: {
-    position: 'absolute',
-    width: '100%'
-  },
   scrollHandle: {
     position: 'absolute',
     left: 2,
@@ -183,7 +179,6 @@ const ListView = React.createClass({
     return (
       <VBox style={{...ListViewStyle.self, height: this.props.height}}>
         <VBox
-          style={ListViewStyle.content}
           onWheel={this.onWheel}
           style={{transform: translate3d(0, this.getScrollTop() + stubTopHeight, 0)}}>
           {items.map(this.renderItem).toArray()}
