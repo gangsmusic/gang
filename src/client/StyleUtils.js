@@ -28,3 +28,11 @@ export function rgba(r, g, b, a) {
 export function translate3d(x, y, z) {
   return `translate3d(${x}px, ${y}px, ${z}px)`;
 }
+
+export function boxShadow(offsetX, offsetY, blurRadius, spreadRadius, color) {
+  return `${offsetX}px ${offsetY}px ${blurRadius}px ${spreadRadius}px ${color}`;
+}
+
+export function insetBoxShadow(offsetX, offsetY, blurRadius, spreadRadius, color) {
+  return `inset ${boxShadow(offsetX, offsetY, blurRadius, spreadRadius, color)}`;
+}

@@ -3,6 +3,8 @@ const numeral = require('numeral');
 import {HBox, Box} from './Box';
 import {rgba} from './StyleUtils';
 import Icon from './Icon';
+import {Mixin as GangComponentMixin} from './GangComponent';
+import ProgressBar from './ProgressBar';
 
 const PlayerStyle = {
   self: {
@@ -33,7 +35,7 @@ const PlayPauseButton = React.createClass({
 
 const Player = React.createClass({
 
-  mixins: [require('./GangComponent').Mixin],
+  mixins: [GangComponentMixin],
 
   statics: {
     observe: {
@@ -49,10 +51,7 @@ const Player = React.createClass({
     this.dispatch('pause');
   },
 
-  seek(e) {
-    const rect = e.target.getBoundingClientRect();
-    const componentX = e.clientX - rect.left;
-    const position = this.state.player_duration * componentX / rect.width;
+  seek(position) {
     this.dispatch('seek', position);
   },
 
@@ -65,12 +64,12 @@ const Player = React.createClass({
       current = <Box>{`${track.artist} - ${track.name}`}</Box>;
     }
     var playhead = null;
+    var showProgress = this.state.player_progress !== null && this.state.player_duration !== null && !idle;
     if (this.state.player_progress !== null && this.state.player_duration !== null && !idle) {
       const currentTime = numeral(this.state.player_progress).format('00:00');
       const durationTime = numeral(this.state.player_duration).format('00:00');
       playhead = (
         <Box>
-          <progress onClick={this.seek} value={this.state.player_progress} max={this.state.player_duration} />
           <div>{`${currentTime} / ${durationTime}`}</div>
         </Box>
       );
@@ -87,6 +86,12 @@ const Player = React.createClass({
           {current}
           {playhead}
         </HBox>
+        {showProgress &&
+          <ProgressBar
+            onSeek={this.seek}
+            value={this.state.player_progress}
+            max={this.state.player_duration}
+            />}
       </HBox>
     );
   }

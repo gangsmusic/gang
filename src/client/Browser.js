@@ -4,13 +4,13 @@ var debug = require('debug')('gang:browser');
 var ListView = require('./ListView');
 var Pure = require('./Pure');
 import {Box, HBox} from './Box';
-import {rgba, border, borderStyle} from './StyleUtils';
+import {rgba, border, borderStyle, boxShadow} from './StyleUtils';
 
 const ItemStyle = {
   self: {
     padding: '0 8px',
     lineHeight: '23px',
-    borderBottom: border(1, borderStyle.solid, '#ccc'),
+    boxShadow: boxShadow(0, 1, 1, 1, '#F9F9F9'),
     cursor: 'pointer',
     WebkitUserSelect: 'none',
     whiteSpace: 'nowrap',
@@ -66,6 +66,9 @@ const AutoListViewStyle = {
   title: {
     lineHeight: '23px',
     textIndent: '8px',
+    fontWeight: 'bold',
+    fontSize: '80%',
+    color: '#666666',
     background: rgba(0, 0, 0, 0.1),
     borderBottom: border(1, borderStyle.solid, '#ccc'),
     borderTop: border(1, borderStyle.solid, '#ccc')
