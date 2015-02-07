@@ -1,5 +1,3 @@
-'use strict';
-
 import keyMirror from 'key-mirror';
 
 export function border(width, style, color) {

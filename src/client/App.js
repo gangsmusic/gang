@@ -1,5 +1,5 @@
 import "normalize.css/normalize.css";
-import "./fonts/index.css";
+import "./fonts/Roboto/index.css";
 
 const React = require('react');
 const SocketIO = require('socket.io-client');
@@ -114,15 +114,6 @@ var App = React.createClass({
     this._socket.on('state', this.onState);
     this._socket.on('library', this.onLibrary);
     this._socket.on('action', this.onAction);
-  },
-
-  renderConnected() {
-    return (
-      <Box>
-        <Player />
-        <Workspace />
-      </Box>
-    );
   },
 
   render() {

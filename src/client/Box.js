@@ -4,7 +4,6 @@
  * @todo There's too much code duplication, we can get rid of it when we port
  *       the codebase to React 0.13 with ES6 classes.
  */
-'use strict';
 
 import React from 'react';
 import {border, borderStyle} from './StyleUtils';
