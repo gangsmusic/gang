@@ -5,7 +5,7 @@ before_script:
   - unzip atom-shell-v0.21.1-darwin-x64.zip
   - npm install
 
-script: make
+script: make build
 
 git:
   depth: 2
