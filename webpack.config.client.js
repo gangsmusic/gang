@@ -6,7 +6,6 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var prod = process.env.NODE_ENV === 'production';
 
 var entry = [
-  'stylus-normalize/normalize.styl',
   './src/client/index'
 ];
 
@@ -32,10 +31,6 @@ var config = {
       {
         test: /\.css$/,
         loader: 'style!css'
-      },
-      {
-        test: /\.styl$/,
-        loader: 'style!css!stylus'
       },
       {
         test: /\.(ttf|woff|woff2|eot|svg|gif|png|jpg|mp3|mp4|webm|ogg)(\?.+)?$/,

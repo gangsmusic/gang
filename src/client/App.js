@@ -1,3 +1,6 @@
+import "normalize.css/normalize.css";
+import "./fonts/index.css";
+
 const React = require('react');
 const SocketIO = require('socket.io-client');
 const Immutable = require('immutable');
@@ -14,8 +17,6 @@ const libraryUtils = require('../shared/libraryUtils');
 const {DISPATCHERS} = require('./GangComponent');
 
 import {Box} from './Box';
-
-require('./App.styl');
 
 const AppStyle = {
   height: '100vh',
