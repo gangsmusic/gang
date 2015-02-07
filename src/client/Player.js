@@ -2,11 +2,34 @@ const React = require('react');
 const numeral = require('numeral');
 import {HBox, Box} from './Box';
 import {rgba} from './StyleUtils';
+import Icon from './Icon';
 
 const PlayerStyle = {
-  height: 60,
-  background: rgba(0, 0, 0, 0.1)
+  self: {
+    height: 60,
+    background: rgba(0, 0, 0, 0.1)
+  },
+  playButton: {
+    width: 60,
+    background: 'none',
+    border: 'none',
+    outline: 'none'
+  }
 };
+
+const PlayPauseButton = React.createClass({
+
+  render() {
+    var {playing, onPlay, onPause, ...props} = this.props;
+    var icon = playing ? 'pause' : 'play';
+    var onClick = playing ? onPause : onPlay;
+    return (
+      <button {...props} onClick={onClick}>
+        <Icon name={icon} />
+      </button>
+    );
+  }
+});
 
 const Player = React.createClass({
 
@@ -53,16 +76,18 @@ const Player = React.createClass({
       );
     }
     return (
-      <Box style={PlayerStyle}>
-        <HBox>
-          <button onClick={this.play} disabled={playing}>play</button>
-          <button onClick={this.pause} disabled={!playing}>pause</button>
-        </HBox>
+      <HBox style={PlayerStyle.self}>
+        <PlayPauseButton
+          style={PlayerStyle.playButton}
+          playing={playing}
+          onPlay={this.play}
+          onPause={this.pause}
+          />
         <HBox>
           {current}
           {playhead}
         </HBox>
-      </Box>
+      </HBox>
     );
   }
 
