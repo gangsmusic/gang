@@ -1,5 +1,5 @@
-const React = require('react');
-const numeral = require('numeral');
+import React from 'react';
+import numeral from 'numeral';
 import {HBox, VBox} from './Layout';
 import {rgba} from './StyleUtils';
 import Icon from './Icon';

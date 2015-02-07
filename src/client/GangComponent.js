@@ -1,7 +1,9 @@
-const React = require('react');
-const debug = require('debug')('gang:component');
-const Dispatcher = require('./Dispatcher');
-const Pure = require('./Pure');
+import React from 'react';
+import debug from 'debug'
+import Dispatcher from './Dispatcher';
+import Pure from './Pure';
+
+const debugComponent = debug('gang:component');
 
 const DISPATCHERS = exports.DISPATCHERS = {
   library: new Dispatcher(require('../shared/emptyLibrary')),
@@ -64,7 +66,7 @@ exports.Mixin = {
   },
 
   componentDidUpdate() {
-    debug('redraw', this.constructor.displayName);
+    debugComponent('redraw', this.constructor.displayName);
   }
 
 };

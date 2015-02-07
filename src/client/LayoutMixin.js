@@ -1,4 +1,4 @@
-module.exports = {
+let LayoutMixin = {
 
   getInitialState() {
     return {
@@ -24,3 +24,5 @@ module.exports = {
   }
 
 };
+
+export default LayoutMixin;

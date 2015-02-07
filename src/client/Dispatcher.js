@@ -1,5 +1,5 @@
-const {EventEmitter} = require('events');
-const Immutable = require('immutable');
+import {EventEmitter} from 'events';
+import Immutable from 'immutable';
 
 class Dispatcher extends EventEmitter {
 

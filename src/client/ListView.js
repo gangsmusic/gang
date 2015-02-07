@@ -1,8 +1,8 @@
-const React = require('react');
-const cloneWithProps = require('react/lib/cloneWithProps');
-const classSet = require('react/lib/cx');
-const Immutable = require('immutable');
-const debounce = require('debounce');
+import React from 'react';
+import cloneWithProps from 'react/lib/cloneWithProps';
+import classSet from 'react/lib/cx';
+import Immutable from 'immutable';
+import debounce from 'debounce';
 import {VBox} from './Layout';
 import {border, borderStyle, rgba, translate3d} from './StyleUtils';
 

@@ -1,10 +1,12 @@
-var React = require('react/lib/ReactWithAddons');
-var Immutable = require('immutable');
-var debug = require('debug')('gang:browser');
-var ListView = require('./ListView');
-var Pure = require('./Pure');
+import React from 'react/lib/ReactWithAddons';
+import Immutable from 'immutable';
+import debug from 'debug'
+import ListView from './ListView';
+import Pure from './Pure';
 import {VBox, HBox} from './Layout';
 import {rgba, border, borderStyle, boxShadow} from './StyleUtils';
+
+const debugBrowser = debug('gang:browser');
 
 const ItemStyle = {
   self: {
@@ -137,7 +139,7 @@ var Browser = React.createClass({
   },
 
   onArtistClicked(artist) {
-    debug('select artist', artist);
+    debugBrowser('select artist', artist);
     this.setState({
       artist,
       album: null
@@ -145,12 +147,12 @@ var Browser = React.createClass({
   },
 
   onAlbumClicked(album) {
-    debug('select album', album);
+    debugBrowser('select album', album);
     this.setState({album})
   },
 
   onTrackClicked(track) {
-    debug('select track', track.toString());
+    debugBrowser('select track', track.toString());
     this.dispatch('play', track);
   },
 

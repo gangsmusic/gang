@@ -1,5 +1,5 @@
-var React = require('react');
-var Browser = require('./Browser');
+import React from 'react';
+import Browser from './Browser';
 import {VBox} from './Layout';
 
 const WorkspaceStyle = {

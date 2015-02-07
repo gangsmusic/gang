@@ -6,8 +6,8 @@ if (process.env.NODE_ENV !== 'production') {
   require('debug').enable('gang:*');
 }
 
-var React = require('react/lib/ReactWithAddons');
-var App = require('./App');
+import React from 'react/lib/ReactWithAddons';
+import App from './App';
 
 React.initializeTouchEvents(true);
 React.render(<App />, document.body);

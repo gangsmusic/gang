@@ -1,4 +1,4 @@
-const Immutable = require('immutable');
+import Immutable from 'immutable';
 
 function immutableEqual(objA, objB) {
   if (objA === objB) {
@@ -20,7 +20,7 @@ function immutableEqual(objA, objB) {
 }
 
 
-exports.shouldComponentUpdate = function(nextProps, nextState) {
+export function shouldComponentUpdate(nextProps, nextState) {
     return !immutableEqual(this.state, nextState) ||
            !immutableEqual(this.props, nextProps);
 };

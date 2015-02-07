@@ -1,22 +1,21 @@
-import "normalize.css/normalize.css";
-import "./fonts/Roboto/index.css";
-
-const React = require('react');
-const SocketIO = require('socket.io-client');
-const Immutable = require('immutable');
-const debugState = require('debug')('gang:state');
-const debugAction = require('debug')('gang:action');
-const debugDispatch = require('debug')('gang:dispatch');
-
-const Player = require('./Player');
-const Workspace = require('./Workspace');
-const emptyState = require('../shared/emptyState');
-const emptyLibrary = require('../shared/emptyLibrary');
-const actions = require('../shared/actions');
-const libraryUtils = require('../shared/libraryUtils');
-const {DISPATCHERS} = require('./GangComponent');
-
+import 'normalize.css/normalize.css';
+import './fonts/Roboto/index.css';
+import React from 'react';
+import SocketIO from 'socket.io-client';
+import Immutable from 'immutable';
+import debug from 'debug';
+import emptyState from '../shared/emptyState';
+import emptyLibrary from '../shared/emptyLibrary';
+import actions from '../shared/actions';
+import libraryUtils from '../shared/libraryUtils';
+import Player from './Player';
+import Workspace from './Workspace';
+import {DISPATCHERS} from './GangComponent';
 import {VBox} from './Layout';
+
+const debugState = debug('gang:state');
+const debugAction = debug('gang:action');
+const debugDispatch = debug('gang:dispatch');
 
 const AppStyle = {
   height: '100vh',
