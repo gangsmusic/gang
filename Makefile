@@ -20,7 +20,7 @@ $(APP_NAME).app: build Atom.app
 	cp -R Atom.app $(APP_NAME).app
 	cp -R vendor $(APP_NAME).app/Contents/Resources/
 	cp -R build $(APP_NAME).app/Contents/Resources/app
-	rm $(APP_NAME).app/Contents/Resources/atom.icns
+	rm -f $(APP_NAME).app/Contents/Resources/atom.icns
 	cp gang.icns $(APP_NAME).app/Contents/Resources/
 	mv $(APP_NAME).app/Contents/MacOS/Atom $(APP_NAME).app/Contents/MacOS/$(APP_NAME)
 	sed 's/atom.icns/gang.icns/' < Atom.app/Contents/Info.plist | sed 's/Atom</$(APP_NAME)</' > $(APP_NAME).app/Contents/Info.plist
