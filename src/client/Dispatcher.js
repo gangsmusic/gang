@@ -16,7 +16,7 @@ class Dispatcher extends EventEmitter {
     const oldData = this._data;
     this._data = val;
     this._data.forEach((prop, key) => {
-      if (!Immutable.is(oldData.get(key), val.get('key'))) {
+      if (!Immutable.is(oldData.get(key), val.get(key))) {
         this.emit(key, prop);
       }
     });
