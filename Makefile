@@ -8,7 +8,7 @@ start:
 	@$(BIN)/nodemon \
 		-w src/server \
 		-w src/shared \
-		-w webpack.config.js \
+		-w webpack.config.client.js \
 		src/server/index.js
 
 install:
