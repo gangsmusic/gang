@@ -1,6 +1,6 @@
 import React from 'react';
 import numeral from 'numeral';
-import {HBox, VBox} from './Layout';
+import {HBox, VBox, VBoxStyle} from './Layout';
 import {rgba} from './StyleUtils';
 import Icon from './Icon';
 import {Mixin as GangComponentMixin} from './GangComponent';
@@ -13,7 +13,10 @@ const PlayerStyle = {
     background: colors.background
   },
   playButton: {
+    ...VBoxStyle,
     width: 60,
+    height: 60,
+    justifyContent: 'center',
     color: colors.controls,
     background: 'none',
     border: 'none',
