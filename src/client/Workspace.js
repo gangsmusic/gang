@@ -59,6 +59,7 @@ const WorkspaceStyle = {
     boxShadow: boxShadow(-1, 0, 2, 2, rgba(0, 0, 0, 0.04))
   },
   sidebar: {
+    background: rgba(0, 0, 0, 0.01),
     overflow: 'scroll',
     width: 250,
     paddingTop: 10

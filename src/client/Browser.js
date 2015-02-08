@@ -67,7 +67,8 @@ var Item = React.createClass({
 
 const AutoListViewStyle = {
   self: {
-    flex: 1
+    flex: 1,
+    borderBottom: border(1, border.style.solid, rgba(0, 0, 0, 0.1))
   },
   title: {
     lineHeight: '23px',
@@ -75,8 +76,8 @@ const AutoListViewStyle = {
     fontWeight: 'bold',
     fontSize: '80%',
     color: colors.fadedText,
-    background: colors.background,
-    borderBottom: border(1, border.style.solid, '#ccc')
+    background: rgba(0, 0, 0, 0.01),
+    boxShadow: boxShadow(0, 1, 2, 2, '#F9F9F9'),
   }
 };
 
@@ -120,10 +121,9 @@ const BrowserStyle = {
     flex: 1
   },
   artists: {
-    borderRight: border(1, border.style.solid, '#ccc')
+    borderRight: border(1, border.style.solid, rgba(0, 0, 0, 0.1))
   },
   tracks: {
-    borderTop: border(1, border.style.solid, '#ccc')
   }
 };
 
