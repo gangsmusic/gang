@@ -77,6 +77,12 @@ export default class MPV extends EventEmitter {
   seek(pos) {
     debug('seek', pos);
     this._setProperty('time-pos', pos);
+    this.resume();
+  }
+
+  setVolume(val) {
+    debug('setVolume', val);
+    this._setProperty('volume', val);
   }
 
   _setProperty(name, val) {
@@ -108,7 +114,9 @@ export default class MPV extends EventEmitter {
           this.emit('playing', !data.data);
           break;
         case 'volume':
-          this.emit('volume', data.data);
+          if (data.data !== null) {
+            this.emit('volume', data.data);
+          }
           break;
         case 'seeking':
           this.emit('seek', data.data);

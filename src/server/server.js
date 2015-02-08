@@ -122,6 +122,9 @@ function handleClientEvent(type, payload) {
     case 'seek':
       player.seek(payload);
       break;
+    case 'volume':
+      player.setVolume(payload);
+      break;
     default:
       throw new Error(`unsupported event type ${type}`);
   }

@@ -6,16 +6,19 @@ import Icon from './Icon';
 import {Mixin as GangComponentMixin} from './GangComponent';
 import ProgressBar from './ProgressBar';
 import {colors} from './Theme';
+import VolumeBar from './VolumeBar';
+import CurrentDisplay from './CurrentDisplay';
+
 
 const PlayerStyle = {
   self: {
     height: 60,
-    background: colors.background
+    background: colors.background,
+    alignItems: 'center'
   },
   controls: {
-    width: 32 * 3 + 16,
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    width: 130,
+    justifyContent: 'center'
   }
 };
 
@@ -65,9 +68,9 @@ const PlayerControls = React.createClass({
     const {playing, disabled, onPlay, onPause, onNext, onPrev} = this.props;
     return (
       <HBox style={PlayerStyle.controls}>
-        <IconButton icon='backward' disabled={disabled} onClick={onPrev} />
+        <IconButton icon='backward' disabled={disabled} onClick={onPrev} style={{fontSize: 20}} />
         <PlayPauseButton onPlay={onPlay} onPause={onPause} playing={playing} disabled={disabled} />
-        <IconButton icon='forward' disabled={disabled} onClick={onNext} />
+        <IconButton icon='forward' disabled={disabled} onClick={onNext} style={{fontSize: 20}} />
       </HBox>
     );
   }
@@ -117,23 +120,12 @@ const Player = React.createClass({
   },
 
   render() {
-    let {player_current, player_duration, player_progress, player_playing, player_idle} = this.state;
+    let {player_current, player_playing, player_idle, player_progress, player_duration} = this.state;
     player_playing = player_playing && !player_idle;
     var current = null;
     if (player_current && !player_idle) {
       const track = player_current.toJS();
       current = <VBox>{`${track.artist} - ${track.name}`}</VBox>;
-    }
-    var playhead = null;
-    var showProgress = player_progress !== null && player_duration !== null && !player_idle;
-    if (showProgress) {
-      const currentTime = numeral(player_progress).format('00:00');
-      const durationTime = numeral(player_duration).format('00:00');
-      playhead = (
-        <VBox>
-          <div>{`${currentTime} / ${durationTime}`}</div>
-        </VBox>
-      );
     }
     return (
       <HBox style={PlayerStyle.self}>
@@ -145,11 +137,11 @@ const Player = React.createClass({
           onNext={this.next}
           onPrev={this.prev}
           />
+        <VolumeBar />
         <HBox>
-          {current}
-          {playhead}
+          <CurrentDisplay />
         </HBox>
-        {showProgress &&
+        {!player_idle &&
           <ProgressBar
             onSeek={this.seek}
             value={player_progress}
