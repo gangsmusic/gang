@@ -34,9 +34,11 @@ exports.Mixin = {
       for (let dispatcherProp of this.constructor.observe[dispatcherName]) {
         let key = `${dispatcherName}_${dispatcherProp}`;
         this._stateObservers[key] = (val) => {
-          const partialState = {};
-          partialState[key] = val;
-          this.setState(partialState);
+          if (this.isMounted()) {
+            const partialState = {};
+            partialState[key] = val;
+            this.setState(partialState);
+          }
         };
         dispatcher.on(dispatcherProp, this._stateObservers[key]);
       }
