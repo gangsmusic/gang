@@ -12,18 +12,28 @@ import Player from './Player';
 import Workspace from './Workspace';
 import {DISPATCHERS} from './GangComponent';
 import {VBox} from './Layout';
+import {boxShadow, rgba, border} from './StyleUtils';
 
 const debugState = debug('gang:state');
 const debugAction = debug('gang:action');
 const debugDispatch = debug('gang:dispatch');
 
 const AppStyle = {
-  height: '100vh',
-  fontWeight: 300,
-  fontFamily: 'Roboto',
-  fontSize: '16px',
-  overflow: 'hidden',
-  WebkitFontSmoothing: 'antialiased'
+  self: {
+    height: '100vh',
+    fontWeight: 300,
+    fontFamily: 'Roboto',
+    fontSize: '16px',
+    overflow: 'hidden',
+    WebkitFontSmoothing: 'antialiased'
+  },
+  player: {
+    zIndex: 1000,
+    boxShadow: boxShadow(0, 1, 2, 2, rgba(0, 0, 0, 0.04))
+  },
+  workspace: {
+    zIndex: 999
+  }
 };
 
 var App = React.createClass({
@@ -118,9 +128,9 @@ var App = React.createClass({
   render() {
     var {connected} = this.state;
     return (
-      <VBox style={AppStyle}>
-        {connected && <Player />}
-        {connected && <Workspace />}
+      <VBox style={AppStyle.self}>
+        {connected && <Player style={AppStyle.player} />}
+        {connected && <Workspace style={AppStyle.workspace} />}
       </VBox>
     );
   }

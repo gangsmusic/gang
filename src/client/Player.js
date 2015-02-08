@@ -136,6 +136,7 @@ const Player = React.createClass({
 
   render() {
     let {player_current, player_playing, player_idle, player_progress, player_duration} = this.state;
+    let {style, ...props} = this.props;
     player_playing = player_playing && !player_idle;
     var current = null;
     if (player_current && !player_idle) {
@@ -143,7 +144,7 @@ const Player = React.createClass({
       current = <VBox>{`${track.artist} - ${track.name}`}</VBox>;
     }
     return (
-      <HBox style={PlayerStyle.self}>
+      <HBox {...props} style={{...PlayerStyle.self, ...style}}>
         <PlayerControls
           playing={player_playing}
           disabled={!player_current}

@@ -76,8 +76,7 @@ const AutoListViewStyle = {
     fontSize: '80%',
     color: colors.fadedText,
     background: colors.background,
-    borderBottom: border(1, border.style.solid, '#ccc'),
-    borderTop: border(1, border.style.solid, '#ccc')
+    borderBottom: border(1, border.style.solid, '#ccc')
   }
 };
 
@@ -122,6 +121,9 @@ const BrowserStyle = {
   },
   artists: {
     borderRight: border(1, border.style.solid, '#ccc')
+  },
+  tracks: {
+    borderTop: border(1, border.style.solid, '#ccc')
   }
 };
 
@@ -195,6 +197,7 @@ var Browser = React.createClass({
         </HBox>
         <VBox style={BrowserStyle.bottom}>
           <AutoListView
+            style={BrowserStyle.tracks}
             title='Tracks'
             itemHeight={24}
             selectedItem={this.state.player_current}
