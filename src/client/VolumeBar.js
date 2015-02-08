@@ -1,29 +1,17 @@
 import React from 'react';
-import {rgba} from './StyleUtils';
+import {rgba, border, borderStyle} from './StyleUtils';
 import {colors} from './Theme';
 import {Mixin as GangComponent} from './GangComponent';
-
+import ProgressBar from './ProgressBar'
+import {VBox} from './Layout';
 
 const VolumeBarStyle = {
   self: {
-    width: 100
-  },
-  idle: {
-    pointerEvents: 'none',
-    opacity: 0.3
-  },
-  canvas: {
-    background: rgba(0, 0, 0, 0.1),
-    cursor: 'pointer'
-  },
-  bar: {
-    background: colors.accent,
-    height: 12
+    borderBottom: border(1, borderStyle.solid, rgba(0, 0, 0, 0.05))
   }
 };
 
-
-const VolumeBar = React.createClass({
+let VolumeBar = React.createClass({
 
   mixins: [GangComponent],
 
@@ -33,33 +21,25 @@ const VolumeBar = React.createClass({
     }
   },
 
-  onClick(e) {
-    const {left, width} = this.getDOMNode().getBoundingClientRect();
-    const position = (e.clientX - left) / width;
-    this.dispatch('volume', Math.round(position * 100));
+  render() {
+    const {style, ...props} = this.props;
+    const {player_volume} = this.state;
+    const volume = player_volume === null ? 100 : player_volume;
+    return (
+      <ProgressBar
+        {...props}
+        style={{...VolumeBarStyle.self, ...style}}
+        value={volume}
+        max={100}
+        onSeek={this.onSeek}
+        />
+    );
   },
 
-  render() {
-    const {player_volume, player_idle} = this.state;
-    const volume = player_volume === null ? 100 : player_volume;
-    const barStyle = {
-      ...VolumeBarStyle.bar,
-      width: `${volume}%`
-    };
-    const selfStyle = {
-      ...VolumeBarStyle.self,
-      ...(player_idle && VolumeBarStyle.idle)
-    };
-    return (
-      <div style={selfStyle}>
-        <div style={VolumeBarStyle.canvas} onClick={this.onClick}>
-          <div style={barStyle} />
-        </div>
-      </div>
-    );
+  onSeek(volume) {
+    this.dispatch('volume', Math.round(volume));
   }
 
 });
 
-
-module.exports = VolumeBar;
+export default VolumeBar;

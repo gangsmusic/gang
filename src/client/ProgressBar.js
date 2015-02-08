@@ -7,9 +7,6 @@ import {colors} from './Theme';
 
 const ProgressBarStyle = {
   self: {
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
     width: '100%',
     height: 8,
     flex: 1,
@@ -22,7 +19,7 @@ const ProgressBarStyle = {
     height: 1,
     bottom: 0,
     background: colors.accent,
-    boxShadow: boxShadow(0, 0, 1, 1, colors.accent),
+    boxShadow: boxShadow(0, 0, 1, 0, colors.accent),
     transition: 'height 0.1s'
   },
   barGhost: {
@@ -30,7 +27,7 @@ const ProgressBarStyle = {
     height: 0,
     bottom: 0,
     background: rgba(0, 0, 0, 0.05),
-    borderRight: border(1, borderStyle.solid, rgba(0, 0, 0, 0.5)),
+    borderRight: border(1, borderStyle.solid, rgba(0, 0, 0, 0.1)),
     transition: 'height 0.1s',
   },
   onHover: {
@@ -47,14 +44,14 @@ let ProgressBar = React.createClass({
   mixins: [Hoverable],
 
   render() {
-    var {value, max, ...props} = this.props;
+    var {value, max, style, ...props} = this.props;
     var {hover, barGhostWidth} = this.state;
     var width = `${value / max * 100}%`;
     return (
       <VBox
         {...props}
         {...this.hoverableProps}
-        style={ProgressBarStyle.self}
+        style={{...ProgressBarStyle.self, ...style}}
         onClick={this.onClick}
         onMouseMove={this.onMouseMove}
         onSeek={undefined}>

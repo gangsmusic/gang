@@ -10,18 +10,6 @@ import VolumeBar from './VolumeBar';
 import CurrentDisplay from './CurrentDisplay';
 
 
-const PlayerStyle = {
-  self: {
-    height: 60,
-    background: colors.background,
-    alignItems: 'center'
-  },
-  controls: {
-    width: 130,
-    justifyContent: 'center'
-  }
-};
-
 const IconButtonStyle = {
   fontSize: 24,
   height: 32,
@@ -68,14 +56,41 @@ const PlayerControls = React.createClass({
     const {playing, disabled, onPlay, onPause, onNext, onPrev} = this.props;
     return (
       <HBox style={PlayerStyle.controls}>
-        <IconButton icon='backward' disabled={disabled} onClick={onPrev} style={{fontSize: 20}} />
+        <IconButton icon='backward' disabled={disabled} onClick={onPrev} style={{fontSize: 16}} />
         <PlayPauseButton onPlay={onPlay} onPause={onPause} playing={playing} disabled={disabled} />
-        <IconButton icon='forward' disabled={disabled} onClick={onNext} style={{fontSize: 20}} />
+        <IconButton icon='forward' disabled={disabled} onClick={onNext} style={{fontSize: 16}} />
       </HBox>
     );
   }
 
 });
+
+
+const PlayerStyle = {
+  self: {
+    height: 60,
+    background: colors.background,
+    alignItems: 'center'
+  },
+  controls: {
+    width: 130,
+    justifyContent: 'center'
+  },
+  progressBar: {
+    position: 'absolute',
+    left: 0,
+    bottom: 0
+  },
+  volumeBar: {
+    width: 100,
+    flex: 'inherit'
+  },
+  currentDisplay: {
+    flex: 1,
+    margin: '0px 20px',
+    justifyContent: 'space-between'
+  }
+};
 
 
 const Player = React.createClass({
@@ -137,12 +152,11 @@ const Player = React.createClass({
           onNext={this.next}
           onPrev={this.prev}
           />
-        <VolumeBar />
-        <HBox>
-          <CurrentDisplay />
-        </HBox>
+        <VolumeBar style={PlayerStyle.volumeBar} />
+        <CurrentDisplay style={PlayerStyle.currentDisplay} />
         {!player_idle &&
           <ProgressBar
+            style={PlayerStyle.progressBar}
             onSeek={this.seek}
             value={player_progress}
             max={player_duration}
