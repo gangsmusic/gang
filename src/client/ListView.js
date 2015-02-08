@@ -4,7 +4,7 @@ import classSet from 'react/lib/cx';
 import Immutable from 'immutable';
 import debounce from 'debounce';
 import {VBox} from './Layout';
-import {border, borderStyle, rgba, translate3d} from './StyleUtils';
+import {rgba, translate3d} from './StyleUtils';
 
 const ListViewStyle = {
   self: {

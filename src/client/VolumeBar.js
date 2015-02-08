@@ -1,5 +1,5 @@
 import React from 'react';
-import {rgba, border, borderStyle} from './StyleUtils';
+import {rgba, border} from './StyleUtils';
 import {colors} from './Theme';
 import {Mixin as GangComponent} from './GangComponent';
 import ProgressBar from './ProgressBar'
@@ -7,7 +7,7 @@ import {VBox} from './Layout';
 
 const VolumeBarStyle = {
   self: {
-    borderBottom: border(1, borderStyle.solid, rgba(0, 0, 0, 0.05))
+    borderBottom: border(1, border.style.solid, rgba(0, 0, 0, 0.05))
   }
 };
 

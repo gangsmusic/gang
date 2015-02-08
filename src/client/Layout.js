@@ -6,12 +6,12 @@
  */
 
 import React from 'react';
-import {border, borderStyle} from './StyleUtils';
+import {border} from './StyleUtils';
 
 export const BoxStyle = {
   boxSizing: 'border-box',
   position: 'relative',
-  border: border(0, borderStyle.solid, 'black'),
+  border: border(0, border.style.solid, 'black'),
   margin: 0,
   padding: 0,
   display: 'flex',

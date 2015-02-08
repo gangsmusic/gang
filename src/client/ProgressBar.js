@@ -2,7 +2,7 @@ import React from 'react';
 import Hoverable from './Hoverable';
 import {VBox} from './Layout';
 import emptyFunction from './emptyFunction';
-import {rgb, rgba, border, borderStyle, boxShadow} from './StyleUtils';
+import {rgb, rgba, border, boxShadow} from './StyleUtils';
 import {colors} from './Theme';
 
 const ProgressBarStyle = {
@@ -27,7 +27,7 @@ const ProgressBarStyle = {
     height: 0,
     bottom: 0,
     background: rgba(0, 0, 0, 0.05),
-    borderRight: border(1, borderStyle.solid, rgba(0, 0, 0, 0.1)),
+    borderRight: border(1, border.style.solid, rgba(0, 0, 0, 0.1)),
     transition: 'height 0.1s',
   },
   onHover: {

@@ -4,7 +4,7 @@ export function border(width, style, color) {
   return `${width}px ${style} ${color}`;
 }
 
-export let borderStyle = keyMirror({
+border.style = keyMirror({
   none: null,
   hidden: null,
   dotted: null,

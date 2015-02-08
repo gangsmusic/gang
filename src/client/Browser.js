@@ -4,7 +4,7 @@ import debug from 'debug'
 import ListView from './ListView';
 import Pure from './Pure';
 import {VBox, HBox} from './Layout';
-import {rgba, border, borderStyle, boxShadow} from './StyleUtils';
+import {rgba, border, boxShadow} from './StyleUtils';
 import {colors} from './Theme';
 
 const debugBrowser = debug('gang:browser');
@@ -76,8 +76,8 @@ const AutoListViewStyle = {
     fontSize: '80%',
     color: colors.fadedText,
     background: colors.background,
-    borderBottom: border(1, borderStyle.solid, '#ccc'),
-    borderTop: border(1, borderStyle.solid, '#ccc')
+    borderBottom: border(1, border.style.solid, '#ccc'),
+    borderTop: border(1, border.style.solid, '#ccc')
   }
 };
 
@@ -121,7 +121,7 @@ const BrowserStyle = {
     flex: 1
   },
   artists: {
-    borderRight: border(1, borderStyle.solid, '#ccc')
+    borderRight: border(1, border.style.solid, '#ccc')
   }
 };
 
