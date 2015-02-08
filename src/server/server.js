@@ -154,7 +154,7 @@ if (process.versions['atom-shell']) {
   });
 
   function openMainWindow() {
-    mainWindow = new BrowserWindow({width: 800, height: 600});
+    mainWindow = new BrowserWindow({width: 800, height: 600, frame: false});
     if (process.env.NODE_ENV === 'production') {
       mainWindow.loadUrl('file://' + path.join(__dirname, 'index.html'));
     } else {

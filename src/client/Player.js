@@ -11,6 +11,7 @@ import CurrentDisplay from './CurrentDisplay';
 
 
 const IconButtonStyle = {
+  WebkitAppRegion: 'no-drag',
   fontSize: 24,
   height: 32,
   width: 32,
@@ -68,6 +69,7 @@ const PlayerControls = React.createClass({
 
 const PlayerStyle = {
   self: {
+    WebkitAppRegion: 'drag',
     height: 60,
     background: colors.background,
     alignItems: 'center'

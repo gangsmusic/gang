@@ -12,7 +12,8 @@ const ProgressBarStyle = {
     flex: 1,
     cursor: 'pointer',
     background: 'transparent',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    WebkitAppRegion: 'no-drag'
   },
   bar: {
     position: 'absolute',
