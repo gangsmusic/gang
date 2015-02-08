@@ -7,16 +7,22 @@ import {Mixin as GangComponent} from './GangComponent';
 
 const CurrentDisplayStyle = {
   self: {
+    alignItems: 'center'
+  },
+  meta: {
+    marginRight: 10,
+  },
+  artist: {
+    fontSize: 12,
+    color: colors.fadedText
   },
   name: {
-    marginRight: 10,
     fontWeight: 'bold',
     fontSize: 14,
     color: colors.fadedText
   },
   playhead: {
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 12,
     color: colors.fadedText
   }
 };
@@ -43,11 +49,17 @@ const CurrentDisplay = React.createClass({
         <VBox style={CurrentDisplayStyle.playhead}>{`${currentTime} / ${durationTime}`}</VBox>
       );
     }
-
     return (
       <HBox {...props} style={{...CurrentDisplayStyle.self, ...style}}>
-        <VBox style={CurrentDisplayStyle.name}>
-          {player_current && player_current.get('name')}
+        <VBox style={CurrentDisplayStyle.meta}>
+          {player_current &&
+            <VBox style={CurrentDisplayStyle.name}>
+              {player_current.get('name')}
+            </VBox>}
+          {player_current &&
+            <VBox style={CurrentDisplayStyle.artist}>
+              {player_current.get('artist')}
+            </VBox>}
         </VBox>
         {playhead}
       </HBox>
