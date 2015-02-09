@@ -4,7 +4,6 @@ const fs = require('fs');
 const SocketIO = require('socket.io');
 const S = require('string');
 const Immutable = require('immutable');
-const mdns = require('mdns-js');
 const portfinder = require('portfinder');
 const open = require('open');
 const MPV = require('./mpv');
@@ -25,36 +24,6 @@ function start(ioPort) {
 
   const io = new SocketIO(ioPort);
   connectionDebug('api listening on 0.0.0.0:' + ioPort);
-
-  connectionDebug('starting mdns discovery');
-  const gangIoAd = mdns.createAdvertisement(mdns.tcp('gang-ipc'), ioPort, {'name': 'gang-ipc'});
-  gangIoAd.start();
-
-  connectionDebug('starting mdns browser');
-  var knownInstances = Immutable.Set();
-  const browser = mdns.createBrowser();
-  browser.on('ready', () => browser.discover());
-  browser.on('update', function(data) {
-    data.type.forEach(function(type) {
-      if (type.name === 'gang-ipc' && type.protocol === 'tcp') {
-        const localAddrs = getLocalAddrs();
-        const addresses = data.addresses;
-        for (let addr of addresses) {
-          if (localAddrs.indexOf(addr) === -1 && !knownInstances.contains(addr)) {
-            knownInstances = knownInstances.add(addr);
-            connectionDebug('monitoring ', addr);
-            var monitor = new PingMonitor(addr);
-            monitor.on('down', function() {
-              knownInstances = knownInstances.remove(addr);
-              connectionDebug(add + ' is down');
-              monitor.stop();
-            });
-            break;
-          }
-        }
-      }
-    });
-  });
 
   const player = new MPV;
 
