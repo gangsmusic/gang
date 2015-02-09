@@ -111,11 +111,12 @@ var App = React.createClass({
   },
 
   componentDidMount() {
+    const ioPort = parseInt(window.location.search.slice(1), 10);
     var url;
     if (window.location.protocol === 'file:') {
-      url = 'http://127.0.0.1:3001';
+      url = 'http://127.0.0.1:' + ioPort;
     } else {
-      url = 'http://' + window.location.hostname + ':3001';
+      url = 'http://' + window.location.hostname + ':' + ioPort;
     }
     this._socket = SocketIO.connect(url);
     this._socket.on('connect', this.onConnect);
