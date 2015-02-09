@@ -75,6 +75,7 @@ var App = React.createClass({
   },
 
   onConnect() {
+    this._socket.emit('client');
     this.setState({
       connected: true
     });

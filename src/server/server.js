@@ -142,10 +142,18 @@ function start(ioPort) {
   }
 
   io.on('connection', function(socket:SocketIO.Socket) {
-    connectionDebug('connected');
-    socket.emit('state', state);
-    socket.emit('library', {name: 'load', payload: library});
-    socket.on('event', ({type, payload}) => handleClientEvent(type, payload));
+    socket.on('client', function() {
+      connectionDebug('connected');
+      socket.emit('state', state);
+      socket.emit('library', {name: 'load', payload: library});
+      socket.on('event', ({type, payload}) => handleClientEvent(type, payload));
+    });
+    socket.on('server', function() {
+      connectionDebug('server connected');
+      socket.emit('manifest', {
+        version: 'git'
+      });
+    });
   });
 
   /**
