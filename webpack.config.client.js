@@ -50,7 +50,8 @@ var config = {
     new webpack.optimize.DedupePlugin(),
     new webpack.NoErrorsPlugin(),
     new HtmlWebpackPlugin({
-      title: 'gang'
+      filename: 'index.html',
+      template: 'src/client/index.html.tmpl'
     }),
   ]
 };

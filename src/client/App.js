@@ -33,6 +33,10 @@ const AppStyle = {
   },
   workspace: {
     zIndex: 999
+  },
+  splash: {
+    height: '100vh',
+    background: `url(${require('./img/splash.png')}) center/256px 256px no-repeat`
   }
 };
 
@@ -70,7 +74,8 @@ var App = React.createClass({
 
   getInitialState() {
     return {
-      connected: false
+      connected: false,
+      initialized: false
     };
   },
 
@@ -103,6 +108,11 @@ var App = React.createClass({
     const library = utilFn(payload, oldLibrary);
     if (!Immutable.is(oldLibrary, library)) {
       DISPATCHERS.library.data = library;
+      if (library.get('tracks').count()) {
+        this.setState({
+          initialized: true
+        });
+      }
     }
   },
 
@@ -128,11 +138,13 @@ var App = React.createClass({
   },
 
   render() {
-    var {connected} = this.state;
+    const {connected, initialized} = this.state;
+    const drawUi = connected && initialized;
     return (
       <VBox style={AppStyle.self}>
-        {connected && <Player style={AppStyle.player} />}
-        {connected && <Workspace style={AppStyle.workspace} />}
+        {drawUi && <Player style={AppStyle.player} />}
+        {drawUi && <Workspace style={AppStyle.workspace} />}
+        {!drawUi && <div style={AppStyle.splash} />}
       </VBox>
     );
   }
