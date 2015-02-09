@@ -104,7 +104,7 @@ const Player = React.createClass({
 
   statics: {
     observe: {
-      player: ['duration', 'idle', 'current', 'playing', 'progress'],
+      player: ['duration', 'idle', 'current', 'playing', 'progress', 'seekable'],
       library: ['tracks']
     }
   },
@@ -140,7 +140,7 @@ const Player = React.createClass({
   },
 
   render() {
-    let {player_current, player_playing, player_idle, player_progress, player_duration} = this.state;
+    let {player_current, player_playing, player_idle, player_progress, player_duration, player_seekable} = this.state;
     let {style, ...props} = this.props;
     player_playing = player_playing && !player_idle;
     var current = null;
@@ -160,7 +160,7 @@ const Player = React.createClass({
           />
         <VolumeBar style={PlayerStyle.volumeBar} />
         <CurrentDisplay style={PlayerStyle.currentDisplay} />
-        {!player_idle &&
+        {!player_idle && player_seekable &&
           <ProgressBar
             style={PlayerStyle.progressBar}
             onSeek={this.seek}

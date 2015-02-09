@@ -104,7 +104,8 @@ function start(ioPort) {
   player.on('duration', duration => mergeState({duration}));
   player.on('idle', idle => mergeState({idle}));
   player.on('volume', volume => mergeState({volume}));
-
+  player.on('seekable', seekable => mergeState({seekable}));
+  
   /**
    * handle data from client connection
    * @param {string} type

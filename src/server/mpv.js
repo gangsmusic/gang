@@ -130,6 +130,9 @@ export default class MPV extends EventEmitter {
             this.emit('duration', data.data);
           }
           break;
+        case 'partially-seekable':
+          this.emit('seekable', !data.data);
+          break;
         case 'idle':
           this.emit('idle', data.data);
           break;
@@ -171,7 +174,7 @@ export default class MPV extends EventEmitter {
     this._connected = true;
     [
       'volume', 'pause', 'path', 'time-pos', 'idle', 'paused-for-cache',
-      'seeking', 'playlist', 'seekable', 'playtime-remaining'
+      'seeking', 'playlist', 'partially-seekable', 'playtime-remaining'
     ].forEach((prop, idx) => this._execute('observe_property', idx, prop));
     this._commandQueue.forEach(payload => this._send(payload));
     this._commandQueue = [];
