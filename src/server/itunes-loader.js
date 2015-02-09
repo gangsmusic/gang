@@ -1,4 +1,4 @@
-const libxmljs = require('libxmljs');
+const plist = require('plist');
 const shellescape = require('shell-escape');
 const promisify = require('bluebird').promisify;
 
@@ -43,36 +43,23 @@ function parse(filename) {
   debug(`parsing ${filename}`);
   return readFile(filename, 'utf8')
     .then(function(xml) {
-      const library = libxmljs.parseXml(xml);
+      const library = plist.parse(xml);
       const tracks = [];
 
-      var dicts = library.get('/plist/dict/key[text() = "Tracks"]').nextElement().find('dict');
-      let getInfo = (key, dict) => dict.get(`key[text() = "${key}"]`)
-                                && dict.get(`key[text() = "${key}"]`).nextElement().text();
+      var track;
 
-      dicts.forEach(track => {
-        const type = getInfo('Track Type', track);
-        const kind = getInfo('Kind', track);
-
-        if (type === 'File' || kind === 'Internet audio stream') {
-          const location = getInfo('Location', track);
-          // TODO some unknown iTunes library bug (?) that adds `localhost` to file
-          // location, so instead of
-          // file:///path/to/file/mp3
-          // we have to deal with
-          // file://localhost/path/to/file/mp3
-          const url = location && location.replace('/localhost/', '//');
-          debug('track.Location', url);
-
-          const id = getInfo('Persistent ID', track);
-          const name = getInfo('Name', track);
-          const artist = getInfo('Album Artist', track)
-              || getInfo('Artist', track)
-              || '-= unknown artist =-';
-          const album = getInfo('Album', track);
-          tracks.push({id, name, artist, album, url});
+      for (let id in library.Tracks) {
+        track = library.Tracks[id];
+        if (track['Track Type'] === 'File' || track.Kind === 'Internet audio stream') {
+          tracks.push({
+            id: track['Persistent ID'],
+            name: track.Name,
+            artist: track['Album Artist'] || track.Artist || '-= unknown artist =-',
+            album: track.Album,
+            url: track.Location
+          });
         }
-      });
+      }
 
       debug('done');
       return tracks;
