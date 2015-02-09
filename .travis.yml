@@ -9,3 +9,6 @@ script: make build
 
 git:
   depth: 2
+
+notifications:
+  slack: kindbeetle:xmZXVu669uR6nqCRmGGVMYTv
