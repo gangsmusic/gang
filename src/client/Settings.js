@@ -2,7 +2,7 @@ import React from 'react';
 import {border, boxShadow, rgba} from './StyleUtils';
 import {HBox, VBox} from './Layout';
 import Menu from './Menu';
-import Focusable from './Focusable';
+import TextInput from './TextInput';
 
 const SettingsStyle = {
   self: {
@@ -95,43 +95,6 @@ let ProfileSettings = React.createClass({
       <VBox style={ProfileSettingsStyle.self}>
         <TextInput placeholder="Name" />
       </VBox>
-    );
-  }
-});
-
-let TextInputStyle = {
-  self: {
-    outline: 'none',
-    padding: 7,
-    color: rgba(0, 0, 0, 0.5),
-    fontSize: 14,
-    border: border.style.none,
-    borderBottom: border(1, border.style.solid, rgba(0, 0, 0, 0.1))
-  },
-  onFocus: {
-    self: {
-      borderBottom: border(1, border.style.solid, rgba(0, 0, 0, 0.2)),
-      background: rgba(0, 0, 0, 0.01)
-    }
-  }
-};
-
-let TextInput = React.createClass({
-  mixins: [Focusable],
-
-  render() {
-    let {...props} = this.props;
-    let {focus} = this.state;
-    return (
-      <input
-        {...props}
-        {...this.focusableProps}
-        type="text"
-        style={{
-          ...TextInputStyle.self,
-          ...(focus && TextInputStyle.onFocus.self)
-        }}
-        />
     );
   }
 });

@@ -1,13 +1,16 @@
 import React from 'react';
 import {VBox, HBox} from './Layout';
-import {rgba} from './StyleUtils';
-import {colors} from './Theme';
+import {rgba, border} from './StyleUtils';
+import {colors, NonSelectableMixin} from './Theme';
 import emptyFunction from './emptyFunction';
 import Hoverable from './Hoverable';
 import Icon from './Icon';
 
 let MenuItemStyle = {
   self: {
+    ...NonSelectableMixin,
+    userSelect: 'none',
+    WebkitUserSelect: 'none',
     padding: 10,
     fontSize: 14,
     fontWeight: 'bold',
@@ -31,7 +34,7 @@ let MenuItemStyle = {
   }
 };
 
-let MenuItem = React.createClass({
+export let MenuItem = React.createClass({
   mixins: [Hoverable],
 
   render() {
@@ -58,12 +61,12 @@ let MenuItem = React.createClass({
   }
 });
 
-let Menu = React.createClass({
+export let Menu = React.createClass({
 
   render() {
     let {items, style, active, ...props} = this.props;
     return (
-      <VBox style={{...Menu.self, ...style}}>
+      <VBox style={style}>
         {items.map(item =>
           <MenuItem
             active={active === item.id}
@@ -79,6 +82,33 @@ let Menu = React.createClass({
     return {
       onActive: emptyFunction
     };
+  }
+});
+
+const MenuSeparatorStyle = {
+  self: {
+    ...NonSelectableMixin,
+    paddingTop: 15,
+    paddingRight: 5,
+    paddingBottom: 2,
+    paddingLeft: 5,
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: colors.fadedText,
+    textTransform: 'uppercase',
+    borderBottom: border(1, border.style.solid, rgba(0, 0, 0, 0.1))
+  }
+};
+
+export let MenuSeparator = React.createClass({
+
+  render() {
+    let {children, ...props} = this.props;
+    return (
+      <VBox {...props} style={MenuSeparatorStyle.self}>
+        {children}
+      </VBox>
+    );
   }
 });
 

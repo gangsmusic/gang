@@ -11,3 +11,10 @@ export let colors = {
 
   selectedText: rgb(255, 255, 255),
 };
+
+export let NonSelectableMixin = {
+  userSelect: 'none',
+  WebkitUserSelect: 'none',
+  cursor: 'default'
+};
+
