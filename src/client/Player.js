@@ -32,8 +32,11 @@ const IconButton = React.createClass({
 
   render() {
     const {disabled, icon, style, ...props} = this.props;
-    const styleMod = Object.assign({}, disabled ? IconButtonDisabledStyle : IconButtonStyle, style);
-    return <Icon {...props} style={styleMod} name={icon} />;
+    const iconStyle = {
+      ...(disabled ? IconButtonDisabledStyle : IconButtonStyle),
+      style
+    };
+    return <Icon {...props} style={iconStyle} name={icon} />;
   }
 
 });

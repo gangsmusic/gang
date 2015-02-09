@@ -4,13 +4,14 @@ const fs = require('fs');
 const SocketIO = require('socket.io');
 const S = require('string');
 const Immutable = require('immutable');
-const mdns = require('mdns');
+const mdns = require('mdns-js');
 const portfinder = require('portfinder');
 const open = require('open');
 const MPV = require('./mpv');
 const actions = require('../shared/actions');
 const itunesLoader = require('./itunes-loader');
 const libraryUtils = require('../shared/libraryUtils');
+const {getLocalAddrs, PingMonitor} = require('./util');
 
 var state = require('../shared/emptyState');
 var library = require('../shared/emptyLibrary');
@@ -25,8 +26,35 @@ function start(ioPort) {
   const io = new SocketIO(ioPort);
   connectionDebug('api listening on 0.0.0.0:' + ioPort);
 
-  const gangIoAd = mdns.createAdvertisement(mdns.tcp('gang-io'), ioPort);
+  connectionDebug('starting mdns discovery');
+  const gangIoAd = mdns.createAdvertisement(mdns.tcp('gang-ipc'), ioPort, {'name': 'gang-ipc'});
   gangIoAd.start();
+
+  connectionDebug('starting mdns browser');
+  var knownInstances = Immutable.Set();
+  const browser = mdns.createBrowser();
+  browser.on('ready', () => browser.discover());
+  browser.on('update', function(data) {
+    data.type.forEach(function(type) {
+      if (type.name === 'gang-ipc' && type.protocol === 'tcp') {
+        const localAddrs = getLocalAddrs();
+        const addresses = data.addresses;
+        for (let addr of addresses) {
+          if (localAddrs.indexOf(addr) === -1 && !knownInstances.contains(addr)) {
+            knownInstances = knownInstances.add(addr);
+            connectionDebug('monitoring ', addr);
+            var monitor = new PingMonitor(addr);
+            monitor.on('down', function() {
+              knownInstances = knownInstances.remove(addr);
+              connectionDebug(add + ' is down');
+              monitor.stop();
+            });
+            break;
+          }
+        }
+      }
+    });
+  });
 
   const player = new MPV;
 
@@ -50,6 +78,11 @@ function start(ioPort) {
 
   }
 
+  /**
+   * send event to all connected clients
+   * @param {string} name
+   * @param {any} data
+   */
   function sendBroadcast(name, data) {
     broadcastDebug(name, S(JSON.stringify(data)).truncate(120).s);
     io.sockets.emit(name, data);
@@ -177,7 +210,9 @@ function start(ioPort) {
     app.on('ready', openMainWindow);
     app.on('activate-with-no-open-windows', openMainWindow);
   } else {
-    open('http://127.0.0.1:' + webpackPort + '?' + ioPort);
+    if (!process.env.DEBUG) {
+      open('http://127.0.0.1:' + webpackPort + '?' + ioPort);
+    }
   }
 
 }
