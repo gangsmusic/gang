@@ -94,7 +94,7 @@ var AutoListView = React.createClass({
 
   render() {
     var {style, ...listProps} = this.props;
-    var table = this.state.height ? <ListView height={this.state.height - 24} {...listProps} /> : null;
+    var table = this.state.height ? <ListView {...listProps} height={this.state.height - 24} /> : null;
     return (
       <VBox style={{...AutoListViewStyle.self, ...style}}>
         <div style={AutoListViewStyle.title}>{this.props.title}</div>
@@ -186,6 +186,8 @@ var Browser = React.createClass({
             selectedItem={this.state.artist}
             onItemClick={this.onArtistClicked}
             items={artists}
+            tabIndex={1}
+            keyboardNav={true}
             />
           <AutoListView
             title="Albums"
@@ -193,6 +195,8 @@ var Browser = React.createClass({
             selectedItem={this.state.album}
             onItemClick={this.onAlbumClicked}
             items={albums}
+            tabIndex={2}
+            keyboardNav={true}
             />
         </HBox>
         <VBox style={BrowserStyle.bottom}>
@@ -203,6 +207,7 @@ var Browser = React.createClass({
             selectedItem={this.state.player_current}
             onItemClick={this.onTrackClicked}
             items={tracks}
+            tabIndex={3}
             />
         </VBox>
       </VBox>

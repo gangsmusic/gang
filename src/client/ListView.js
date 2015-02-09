@@ -8,7 +8,8 @@ import {rgba, translate3d} from './StyleUtils';
 
 const ListViewStyle = {
   self: {
-    overflow: 'hidden'
+    overflow: 'hidden',
+    outline: 'none'
   },
   scrollHandle: {
     position: 'absolute',
@@ -43,7 +44,8 @@ const ListView = React.createClass({
       get: React.PropTypes.func.isRequired
     }).isRequired,
     onItemClick: React.PropTypes.func,
-    selectedItem: React.PropTypes.any
+    selectedItem: React.PropTypes.any,
+    keyboardNav: React.PropTypes.bool
   },
 
   getDefaultProps() {
@@ -138,13 +140,74 @@ const ListView = React.createClass({
     return cloneWithProps(this.props.itemComponent, {key, item, selected, onClick});
   },
 
+  selectItem(mod) {
+    const {items, selectedItem, onItemClick} = this.props;
+    if (!items.count()) {
+      return;
+    }
+    var index = items.indexOf(selectedItem);
+    index += mod;
+    index = Math.min(Math.max(0, index), items.count() - 1);
+    onItemClick(items.get(index));
+  },
+
+  onKeyDown(e) {
+    if (e.key === 'ArrowDown') {
+      this.selectItem(1);
+    } else if (e.key === 'ArrowUp') {
+      this.selectItem(-1);
+    }
+  },
+
+  getScrollSlice() {
+    const {items, itemHeight} = this.props;
+    const scrollTop = this.getScrollTop();
+
+    var sliceStart = 0;
+    var sliceEnd = items.count();
+
+    var stubTopHeight = 0;
+    if (scrollTop) {
+      sliceStart = Math.floor(-scrollTop / itemHeight);
+      if (sliceStart < 0) {
+        sliceStart = 0;
+      }
+      stubTopHeight = sliceStart * itemHeight;
+    }
+
+    if (scrollTop > this.getMaxScrollTop()) {
+      sliceEnd = items.count() - Math.floor((scrollTop - this.getMaxScrollTop()) / itemHeight);
+    }
+    return {sliceStart, sliceEnd, stubTopHeight};
+  },
+
+  componentDidUpdate(prevProps) {
+    const {items, selectedItem, itemHeight} = this.props;
+    if (Immutable.is(items, prevProps.items) &&
+        Immutable.is(selectedItem, prevProps.items) &&
+        itemHeight === prevProps.itemHeight) {
+      return;
+    }
+    const selectedIndex = items.indexOf(selectedItem);
+    if (selectedIndex === -1) {
+      return;
+    }
+    const {sliceStart, sliceEnd} = this.getScrollSlice();
+    var scrollTop = this.getScrollTop();
+    if ((selectedIndex < sliceStart + 1) || (selectedIndex >= sliceEnd)) {
+      this.setState({
+        scrollTop: -(selectedIndex * itemHeight)
+      });
+    }
+  },
+
   render() {
-    var items = this.props.items;
-    var {scrollBarAnimate, scrollBarShow} = this.state;
+    const {height, itemHeight, itemComponent, items, onItemClick, selectedItem, keyboardNav, ...props} = this.props;
+    const {scrollBarAnimate, scrollBarShow} = this.state;
     var scrollBar = null;
     if (scrollBarShow) {
       scrollBar = (
-        <div 
+        <div
           style={{...ListViewStyle.scrollBar, ...(scrollBarAnimate && ListViewStyle.scrollBarAnimate)}}>
           <div
             style={{
@@ -156,36 +219,19 @@ const ListView = React.createClass({
         </div>
       );
     }
-    var scrollTop = this.getScrollTop();
-
-    var sliceStart = undefined;
-    var sliceEnd = undefined;
-
-    var stubTopHeight = 0;
-    if (scrollTop) {
-      sliceStart = Math.floor(-scrollTop / this.props.itemHeight);
-      if (sliceStart < 0) {
-        sliceStart = 0;
-      }
-      stubTopHeight = sliceStart * this.props.itemHeight;
-    }
-
-    if (scrollTop > this.getMaxScrollTop()) {
-      sliceEnd = items.count() - Math.floor((scrollTop - this.getMaxScrollTop()) / this.props.itemHeight);
-    }
-
-    items = items.slice(sliceStart, sliceEnd);
-
+    const scrollTop = this.getScrollTop();
+    const {sliceStart, sliceEnd, stubTopHeight} = this.getScrollSlice();
+    const itemsInView = items.slice(sliceStart, sliceEnd);
     return (
-      <VBox style={{...ListViewStyle.self, height: this.props.height}}>
+      <VBox {...props} style={{...ListViewStyle.self, height: this.props.height}} onKeyDown={keyboardNav && this.onKeyDown}>
         <VBox
           onWheel={this.onWheel}
-          style={{transform: translate3d(0, this.getScrollTop() + stubTopHeight, 0)}}>
-          {items.map(this.renderItem).toArray()}
+          style={{transform: translate3d(0, scrollTop + stubTopHeight, 0)}}>
+            {itemsInView.map(this.renderItem).toArray()}
         </VBox>
         {scrollBar}
       </VBox>
-    )
+    );
   }
 
 });
