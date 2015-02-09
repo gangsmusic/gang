@@ -177,7 +177,7 @@ function start(ioPort) {
     app.on('ready', openMainWindow);
     app.on('activate-with-no-open-windows', openMainWindow);
   } else {
-    open('http://localhost:' + webpackPort + '?' + ioPort);
+    open('http://127.0.0.1:' + webpackPort + '?' + ioPort);
   }
 
 }

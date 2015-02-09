@@ -11,6 +11,9 @@ start:
 		-w webpack.config.client.js \
 		src/server/index.js
 
+dev:
+	@DEBUG=gang:* make start
+
 install:
 	npm install
 
