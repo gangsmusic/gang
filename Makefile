@@ -19,7 +19,7 @@ install:
 
 app: $(APP_NAME).app
 
-$(APP_NAME).app: build Atom.app
+$(APP_NAME).app: clean build Atom.app
 	cp -R Atom.app $(APP_NAME).app
 	cp -R vendor $(APP_NAME).app/Contents/Resources/
 	cp -R build $(APP_NAME).app/Contents/Resources/app

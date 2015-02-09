@@ -1,7 +1,8 @@
-const libxmljs = require('libxmljs');
 const shellescape = require('shell-escape');
 const promisify = require('bluebird').promisify;
-
+const itunes = require("itunes-data");
+const fs = require('fs');
+const parser = itunes.parser();
 const exec = promisify(require('child_process').exec);
 const readFile = promisify(require('fs').readFile);
 const debug = require('debug')('gang:itunes-loader');
@@ -17,73 +18,74 @@ const filename = 'iTunes Music Library.xml';
  * @typedef {Array<Track>} Library
  */
 
-/**
- * finds path to itunes library xml
- * @return {Promise<String>}
- */
-function find() {
-  const cmd = shellescape(['mdfind', '-name', filename]);
-  debug('finding itunes xml', cmd);
-  return exec(cmd)
-    .then(function(stdout) {
-      const source = stdout[0];
-      if (!source || !source.trim()) {
-        throw new Error(`${filename} not found`);
+export class ItunesLoader {
+
+  constructor(onAdd) {
+    this.onAdd = onAdd;
+  }
+
+  /**
+   * find and add itunes library tracks
+   * @function
+   */
+  loadLibrary() {
+    this.find().then(this.parse.bind(this));
+  };
+
+  /**
+   * finds path to itunes library xml
+   * @return {Promise<String>}
+   */
+  find() {
+    const cmd = shellescape(['mdfind', '-name', filename]);
+    debug('finding itunes xml', cmd);
+    return exec(cmd)
+        .then(function(stdout) {
+          const source = stdout[0];
+          if (!source || !source.trim()) {
+            throw new Error(`${filename} not found`);
+          }
+          return source.trim();
+        });
+  }
+
+  /**
+   * parse itunes library xml into library
+   * @param {string} filename
+   */
+  parse(filename) {
+    debug(`parsing ${filename}`);
+    const stream = fs.createReadStream(filename);
+
+    var tracks = [];
+    parser.on("track", function(track) {
+      const type = track['Track Type'];
+      const kind = track.Kind;
+
+      if (type === 'File' || kind === 'Internet audio stream') {
+        const location = track.Location;
+        // TODO some unknown iTunes library bug (?) that adds `localhost` to file
+        // location, so instead of
+        // file:///path/to/file/mp3
+        // we have to deal with
+        // file://localhost/path/to/file/mp3
+        const url = location && location.replace('/localhost/', '//');
+        //debug('track.Location', url);
+
+        const id = track['Persistent ID'];
+        const name = track['Name'];
+        const artist = track['Album Artist']
+            || track.Artist
+            || '-= unknown artist =-';
+        const album = track.Album;
+        tracks.push({id, name, artist, album, url});
       }
-      return source.trim();
+    }.bind(this));
+    stream.pipe(parser);
+    stream.on('end', () => {
+      debug('total tracks processed', tracks.length);
+      this.onAdd({tracks});
     });
+  }
+
 }
-
-/**
- * parse itunes library xml into javascript array
- * @param {string} filename
- * @return {Promise<Library>}
- */
-function parse(filename) {
-  debug(`parsing ${filename}`);
-  return readFile(filename, 'utf8')
-    .then(function(xml) {
-      const library = libxmljs.parseXml(xml);
-      const tracks = [];
-
-      var dicts = library.get('/plist/dict/key[text() = "Tracks"]').nextElement().find('dict');
-      let getInfo = (key, dict) => dict.get(`key[text() = "${key}"]`)
-                                && dict.get(`key[text() = "${key}"]`).nextElement().text();
-
-      dicts.forEach(track => {
-        const type = getInfo('Track Type', track);
-        const kind = getInfo('Kind', track);
-
-        if (type === 'File' || kind === 'Internet audio stream') {
-          const location = getInfo('Location', track);
-          // TODO some unknown iTunes library bug (?) that adds `localhost` to file
-          // location, so instead of
-          // file:///path/to/file/mp3
-          // we have to deal with
-          // file://localhost/path/to/file/mp3
-          const url = location && location.replace('/localhost/', '//');
-          debug('track.Location', url);
-
-          const id = getInfo('Persistent ID', track);
-          const name = getInfo('Name', track);
-          const artist = getInfo('Album Artist', track)
-              || getInfo('Artist', track)
-              || '-= unknown artist =-';
-          const album = getInfo('Album', track);
-          tracks.push({id, name, artist, album, url});
-        }
-      });
-
-      debug('done');
-      return tracks;
-    });
-}
-
-/**
- * find and parse itunes library xml into javascript array
- * @function
- * @return {Promise<Library>}
- */
-module.exports = function() {
-  return find().then(parse);
-};
