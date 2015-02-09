@@ -1,4 +1,3 @@
-const plist = require('plist');
 const libxmljs = require('libxmljs');
 const shellescape = require('shell-escape');
 const promisify = require('bluebird').promisify;
