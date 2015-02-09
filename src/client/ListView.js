@@ -184,7 +184,7 @@ const ListView = React.createClass({
   componentDidUpdate(prevProps) {
     const {items, selectedItem, itemHeight} = this.props;
     if (Immutable.is(items, prevProps.items) &&
-        Immutable.is(selectedItem, prevProps.items) &&
+        Immutable.is(selectedItem, prevProps.selectedItem) &&
         itemHeight === prevProps.itemHeight) {
       return;
     }
