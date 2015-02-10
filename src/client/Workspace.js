@@ -51,7 +51,7 @@ let LocalParty = React.createClass({
     let items = this.state.LocalPartyStore.map(item => ({
       id: item.name,
       icon: 'user',
-      title: item.name
+      title: `${item.name}@${item.host}`
     })).toArray();
     return (
       <Menu
