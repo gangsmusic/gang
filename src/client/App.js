@@ -11,6 +11,9 @@ import {boxShadow, rgba, border} from './StyleUtils';
 import Dispatcher from '../Dispatcher';
 import LibraryStore from '../LibraryStore';
 import ActionTypes from '../ActionTypes';
+import UiStore from './UiStore';
+import StateFromStore from '../StateFromStore';
+import {uiSetConnected} from '../Actions';
 
 const debugState = debug('gang:state');
 const debugAction = debug('gang:action');
@@ -40,11 +43,7 @@ const AppStyle = {
 
 var App = React.createClass({
 
-  mixins: [require('./Pure')],
-
-  childContextTypes: {
-    dispatch: React.PropTypes.func.isRequired
-  },
+  mixins: [StateFromStore(UiStore)],
 
   dispatch(ev, data) {
     debugDispatch(ev, data);
@@ -54,40 +53,17 @@ var App = React.createClass({
     });
   },
 
-  getChildContext() {
-    return {
-      dispatch: this.dispatch
-    };
-  },
-
-  getInitialState() {
-    return {
-      connected: false,
-      initialized: false
-    };
-  },
-
   onConnect() {
     this._socket.emit('client');
-    this.setState({
-      connected: true
-    });
+    uiSetConnected(true);
   },
 
   onDisconnect() {
-    this.setState({
-      connected: false,
-      initialized: false
-    });
+    uiSetConnected(false);
   },
 
   onDispatchAction(action) {
     Dispatcher.dispatch(action);
-    if (action.type === ActionTypes.BOOTSTRAP_STORES) {
-      this.setState({
-        initialized: true
-      });
-    }
   },
 
   componentDidMount() {
@@ -110,8 +86,7 @@ var App = React.createClass({
   },
 
   render() {
-    const {connected, initialized} = this.state;
-    const drawUi = connected && initialized;
+    const drawUi = this.state.UiStore.connected && this.state.UiStore.ready;
     return (
       <VBox style={AppStyle.self}>
         {drawUi && <Player style={AppStyle.player} />}

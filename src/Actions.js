@@ -68,4 +68,25 @@ export function uiSeek(position: number) {
   });
 }
 
+export function uiChangeScreen(screen: string) {
+  Dispatcher.dispatch({
+    type: ActionTypes.UI_CHANGE_SCREEN,
+    payload: screen
+  });
+}
+
+export function uiSetConnected(connected: boolean) {
+  Dispatcher.dispatch({
+    type: ActionTypes.UI_SET_CONNECTED,
+    payload: connected
+  });
+}
+
+export function uiChangeSettingsScreen(screen: string) {
+  Dispatcher.dispatch({
+    type: ActionTypes.UI_CHANGE_SETTINGS_SCREEN,
+    payload: screen
+  });
+}
+
 module.hot && module.hot.decline();

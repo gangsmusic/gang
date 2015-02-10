@@ -3,6 +3,9 @@ import {border, boxShadow, rgba} from './StyleUtils';
 import {HBox, VBox} from './Layout';
 import Menu from './Menu';
 import TextInput from './TextInput';
+import {uiChangeSettingsScreen} from '../Actions';
+import StateFromStore from '../StateFromStore';
+import UiStore from './UiStore';
 
 const SettingsStyle = {
   self: {
@@ -52,33 +55,29 @@ const SCREENS = [
 
 let Settings = React.createClass({
 
+  mixins: [StateFromStore(UiStore)],
+
   render() {
-    let {activeScreen} = this.state;
+    let {settingsScreen} = this.state.UiStore;
     return (
       <HBox style={SettingsStyle.self}>
         <VBox style={SettingsStyle.sidebar}>
           <Menu
             style={SettingsStyle.menu}
             items={SCREENS}
-            active={activeScreen}
+            active={settingsScreen}
             onActive={this.onActiveScreen}
             />
         </VBox>
         <VBox style={SettingsStyle.main}>
-          {activeScreen === 'profile' && <ProfileSettings />}
+          {settingsScreen === 'profile' && <ProfileSettings />}
         </VBox>
       </HBox>
     );
   },
 
-  getInitialState() {
-    return {
-      activeScreen: 'profile'
-    };
-  },
-
   onActiveScreen(activeScreen) {
-    this.setState({activeScreen});
+    uiChangeSettingsScreen(activeScreen);
   }
 });
 

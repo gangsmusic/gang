@@ -8,6 +8,8 @@ import Settings from './Settings';
 import {Menu, MenuSeparator} from './Menu';
 import StateFromStore from '../StateFromStore';
 import LocalPartyStore from '../LocalPartyStore';
+import UiStore from './UiStore';
+import {uiChangeScreen} from '../Actions';
 
 const SCREENS = [
   {
@@ -63,9 +65,11 @@ let LocalParty = React.createClass({
 
 let Workspace = React.createClass({
 
+  mixins: [StateFromStore(UiStore)],
+
   render() {
     let {style, ...props} = this.props;
-    let {activeScreen} = this.state;
+    let {activeScreen} = this.state.UiStore;
     return (
       <HBox {...props} style={{...WorkspaceStyle.self, ...style}}>
         <VBox style={WorkspaceStyle.sidebar}>
@@ -87,12 +91,8 @@ let Workspace = React.createClass({
     )
   },
 
-  getInitialState() {
-    return {activeScreen: 'browser'};
-  },
-
   onActiveScreen(activeScreen) {
-    this.setState({activeScreen});
+    uiChangeScreen(activeScreen);
   }
 
 });
