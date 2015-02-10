@@ -1,5 +1,6 @@
 import debug from 'debug';
 import {EventEmitter} from 'events';
+import invariant from './invariant';
 import Dispatcher from './Dispatcher';
 import ActionTypes from './ActionTypes';
 
@@ -7,9 +8,15 @@ const CHANGE_EVENT = 'change';
 
 const log = debug('gang:Store');
 
+let _ALLOW_STORE_CREATE = false;
+
 class Store extends EventEmitter {
 
   constructor() {
+    invariant(
+      _ALLOW_STORE_CREATE, 
+      'Store instance could only be created via Store.getInstance() static method'
+    );
     this.dispatcher = Dispatcher;
     this.handled = this.dispatcher.register(this._handleAction.bind(this));
     this.state = null;
@@ -58,6 +65,19 @@ class Store extends EventEmitter {
 
   removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
+  }
+
+  static getInstance() {
+    _ALLOW_STORE_CREATE = true;
+    try {
+      global.__STORE_INSTANCES = global.__STORE_INSTANCES || {};
+      if (global.__STORE_INSTANCES[this.name] === undefined) {
+        global.__STORE_INSTANCES[this.name] = new this();
+      }
+      return global.__STORE_INSTANCES[this.name];
+    } finally {
+      _ALLOW_STORE_CREATE = false;
+    }
   }
 }
 

@@ -37,4 +37,4 @@ class LocalPartyStore extends Store {
 
 }
 
-export default new LocalPartyStore();
+export default LocalPartyStore.getInstance();
