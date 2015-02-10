@@ -69,6 +69,7 @@ export let Menu = React.createClass({
       <VBox style={style}>
         {items.map(item =>
           <MenuItem
+            key={item.id}
             active={active === item.id}
             onClick={this.props.onActive.bind(null, item.id)}
             icon={item.icon}>
