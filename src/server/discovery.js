@@ -27,6 +27,7 @@ export class Discovery extends EventEmitter {
         if (match) {
           let [_, name, port, host] = match;
           port = parseInt(port, 10);
+          host = host.replace(/\.$/, '');
           debug('change event', name, host, port);
           this.emit(EVENT_NAME, {name, port, host});
         }
