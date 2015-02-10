@@ -20,7 +20,9 @@ function StateFromStore(...stores) {
     },
 
     _handleStoreChange(store) {
-      this.setState({[store.name]: store.getState()});
+      if (this.isMounted()) {
+        this.setState({[store.name]: store.getState()});
+      }
     }
 
   };
