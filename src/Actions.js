@@ -1,8 +1,11 @@
 import ActionTypes from './ActionTypes';
 import Dispatcher from './Dispatcher';
 
-export function bootstrapStores(...stores) {
-  let payload = stores.map(store => ({name: store.name, state: store.dehydrate()}));
+export function bootstrapStores() {
+  let payload = Dispatcher.stores
+    .filter(store => !store.isServerOnly)
+    .map(store => ({name: store.name, state: store.dehydrate()}))
+    .toArray();
   return {
     type: ActionTypes.BOOTSTRAP_STORES,
     payload

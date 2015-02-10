@@ -18,7 +18,7 @@ class Store extends EventEmitter {
       'Store instance could only be created via Store.getInstance() static method'
     );
     this.dispatcher = Dispatcher;
-    this.handled = this.dispatcher.register(this._handleAction.bind(this));
+    this.handled = this.dispatcher.registerStore(this);
     this.state = null;
   }
 
@@ -28,6 +28,10 @@ class Store extends EventEmitter {
 
   getState() {
     throw new Error('not implemented');
+  }
+
+  get isServerOnly() {
+    return false;
   }
 
   _handleAction(action) {

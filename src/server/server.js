@@ -166,7 +166,7 @@ function start(ioPort) {
       connectionDebug('connected');
       socket.emit('state', state);
       socket.emit('library', {name: 'load', payload: library});
-      socket.emit('dispatch-action', bootstrapStores(LocalPartyStore));
+      socket.emit('dispatch-action', bootstrapStores());
       socket.on('event', ({type, payload}) => handleClientEvent(type, payload));
     });
     socket.on('server', function() {
