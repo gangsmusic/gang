@@ -10,6 +10,7 @@ import {VBox} from './Layout';
 import {boxShadow, rgba, border} from './StyleUtils';
 import Dispatcher from '../Dispatcher';
 import LibraryStore from '../LibraryStore';
+import ActionTypes from '../ActionTypes';
 
 const debugState = debug('gang:state');
 const debugAction = debug('gang:action');
@@ -81,7 +82,7 @@ var App = React.createClass({
 
   onDispatchAction(action) {
     Dispatcher.dispatch(action);
-    if (LibraryStore.tracks.count()) {
+    if (action.type === ActionTypes.BOOTSTRAP_STORES) {
       this.setState({
         initialized: true
       });
