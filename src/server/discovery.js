@@ -1,7 +1,10 @@
+import debug from 'debug';
 import {EventEmitter} from 'events';
 import {spawn} from 'child_process';
 import es from 'event-stream';
 
+const log = debug('gang:discovery');
+const EVENT_NAME = 'change';
 
 /**
  * const d = new Discovery;
@@ -22,11 +25,10 @@ export class Discovery extends EventEmitter {
       .pipe(es.map(function(line, cb) {
         const match = /(\w+)\._gang-ipc\._tcp\s+SRV\s+\d+\s+\d+\s+(\d+)\s+([^\s]+)/.exec(line);
         if (match) {
-          this.emit('data', {
-            name: match[1],
-            port: parseInt(match[2], 10),
-            domain: match[3]
-          });
+          let [_, name, port, domain] = match;
+          port = parseInt(port, 10);
+          debug('change event', name, domain, port);
+          this.emit(EVENT_NAME, {name, port, domain});
         }
         cb();
       }.bind(this)));
@@ -39,13 +41,21 @@ export class Discovery extends EventEmitter {
     }
   }
 
+  addChangeListener(func) {
+    this.on(EVENT_NAME, func);
+  }
+
+  removeChangeListener(func) {
+    this.off(EVENT_NAME, func);
+  }
+
 }
 
 
 /**
- * const a = new Anounce('library-name', 12001);
+ * const a = new Announce('library-name', 12001);
  */
-export class Anounce {
+export class Announce {
 
   constructor(name, port) {
     this._name = name;
