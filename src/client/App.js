@@ -13,6 +13,7 @@ import Workspace from './Workspace';
 import {DISPATCHERS} from './GangComponent';
 import {VBox} from './Layout';
 import {boxShadow, rgba, border} from './StyleUtils';
+import Dispatcher from '../Dispatcher';
 
 const debugState = debug('gang:state');
 const debugAction = debug('gang:action');
@@ -121,6 +122,10 @@ var App = React.createClass({
     DISPATCHERS.player.data = actions[name](DISPATCHERS.player.data);
   },
 
+  onDispatchAction(action) {
+    Dispatcher.dispatch(action);
+  },
+
   componentDidMount() {
     const ioPort = parseInt(window.location.search.slice(1), 10);
     var url;
@@ -135,6 +140,7 @@ var App = React.createClass({
     this._socket.on('state', this.onState);
     this._socket.on('library', this.onLibrary);
     this._socket.on('action', this.onAction);
+    this._socket.on('dispatch-action', this.onDispatchAction);
   },
 
   render() {

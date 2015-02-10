@@ -11,6 +11,10 @@ const actions = require('../shared/actions');
 const itunesLoader = require('./itunes-loader');
 const libraryUtils = require('../shared/libraryUtils');
 const {getLocalAddrs, PingMonitor} = require('./util');
+import LocalPartyStore from '../LocalPartyStore';
+import Dispatcher from '../Dispatcher';
+import DiscoveryService from './DiscoveryService';
+import {bootstrapStores} from '../Actions';
 
 var state = require('../shared/emptyState');
 var library = require('../shared/emptyLibrary');
@@ -19,11 +23,26 @@ const connectionDebug = debug('gang:connection');
 const eventDebug = debug('gang:event');
 const broadcastDebug = debug('gang:broadcast');
 
+const SERVICES = [
+  DiscoveryService
+];
+
+
 function start(ioPort) {
   const webpackPort = ioPort + 1;
 
   const io = new SocketIO(ioPort);
   connectionDebug('api listening on 0.0.0.0:' + ioPort);
+
+  SERVICES.forEach(serviceClass => {
+    let config = {};
+    let service = new serviceClass(config);
+    service.start();
+    // TODO: make it work, currently it just makes weird things to shutdown
+    // process
+    //process.on('beforeExit', service.stop);
+    //process.on('SIGINT', service.stop);
+  });
 
   const player = new MPV;
 
@@ -147,6 +166,7 @@ function start(ioPort) {
       connectionDebug('connected');
       socket.emit('state', state);
       socket.emit('library', {name: 'load', payload: library});
+      socket.emit('dispatch-action', bootstrapStores(LocalPartyStore));
       socket.on('event', ({type, payload}) => handleClientEvent(type, payload));
     });
     socket.on('server', function() {
@@ -155,6 +175,10 @@ function start(ioPort) {
         version: 'git'
       });
     });
+  });
+
+  Dispatcher.register(action => {
+    sendBroadcast('dispatch-action', action);
   });
 
   /**
