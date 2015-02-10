@@ -47,7 +47,7 @@ class UiStore extends Store {
         this.emitChange();
         break;
       default:
-        this.handleAction(action)
+        this.handleAction(action);
         break;
     }
   }

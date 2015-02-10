@@ -1,6 +1,5 @@
 const path = require('path');
 const debug = require('debug');
-const fs = require('fs');
 const SocketIO = require('socket.io');
 const S = require('string');
 const Immutable = require('immutable');
@@ -13,8 +12,10 @@ import LibraryStore from '../LibraryStore';
 import Dispatcher from '../Dispatcher';
 import DiscoveryService from './DiscoveryService';
 import PlayerService from './PlayerService';
+import TaggingService from './TaggingService';
 import ActionTypes from '../ActionTypes';
 import {bootstrapStores, loadLibrary} from '../Actions';
+import mm from 'musicmetadata';
 
 const connectionDebug = debug('gang:connection');
 const eventDebug = debug('gang:event');
@@ -22,7 +23,8 @@ const broadcastDebug = debug('gang:broadcast');
 
 const SERVICES = [
   DiscoveryService,
-  PlayerService
+  PlayerService,
+  TaggingService
 ];
 
 

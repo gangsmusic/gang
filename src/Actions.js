@@ -33,6 +33,20 @@ export function loadLibrary(tracks: object[]) {
   });
 }
 
+export function addFile(path: string) {
+  Dispatcher.dispatch({
+    type: ActionTypes.ADD_FILE,
+    payload: path
+  });
+}
+
+export function addTrack(track: object) {
+  Dispatcher.dispatch({
+    type: ActionTypes.ADD_TRACK,
+    payload: track
+  });
+}
+
 export function updatePlayerState(state: object) {
   Dispatcher.dispatch({
     type: ActionTypes.UPDATE_PLAYER_STATE,

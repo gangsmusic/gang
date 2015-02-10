@@ -29,6 +29,10 @@ class LibraryStore extends Store {
         this.tracks = Immutable.fromJS(action.payload);
         this.emitChange();
         break;
+      case ActionTypes.ADD_TRACK:
+        this.tracks = this.tracks.push(Immutable.fromJS(action.payload));
+        this.emitChange();
+        break;
     }
   }
 

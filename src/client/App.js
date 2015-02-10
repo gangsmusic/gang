@@ -10,6 +10,8 @@ import {VBox} from './Layout';
 import {boxShadow, rgba, border} from './StyleUtils';
 import Dispatcher from '../Dispatcher';
 import LibraryStore from '../LibraryStore';
+import {DragDropMixin, NativeDragItemTypes} from 'react-dnd';
+import {addFile} from '../Actions'
 import ActionTypes from '../ActionTypes';
 import UiStore from './UiStore';
 import StateFromStore from '../StateFromStore';
@@ -43,7 +45,21 @@ const AppStyle = {
 
 var App = React.createClass({
 
-  mixins: [StateFromStore(UiStore)],
+  mixins: [require('./Pure'), StateFromStore(UiStore), DragDropMixin],
+
+  configureDragDrop(registerType) {
+    registerType(NativeDragItemTypes.FILE, {
+      dropTarget: {
+        acceptDrop(item) {
+          item.files.map(_ => addFile(_.path));
+        }
+      }
+    });
+  },
+
+  childContextTypes: {
+    dispatch: React.PropTypes.func.isRequired
+  },
 
   dispatch(ev, data) {
     debugDispatch(ev, data);
@@ -87,9 +103,13 @@ var App = React.createClass({
 
   render() {
     const drawUi = this.state.UiStore.connected && this.state.UiStore.ready;
+    const fileDropState = this.getDropState(NativeDragItemTypes.FILE);
     return (
-      <VBox style={AppStyle.self}>
+      <VBox style={AppStyle.self} {...this.dropTargetFor(NativeDragItemTypes.FILE)}>
         {drawUi && <Player style={AppStyle.player} />}
+        {drawUi && fileDropState.isDragging &&
+          <div>Drop files anywhere to add to your library</div>
+        }
         {drawUi && <Workspace style={AppStyle.workspace} />}
         {!drawUi && <div style={AppStyle.splash} />}
       </VBox>

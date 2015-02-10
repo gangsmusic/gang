@@ -5,6 +5,8 @@ let ActionTypes = keyMirror({
   LOCAL_PARTY_PARTICIPANT_ADDED: null,
   LOCAL_PARTY_PARTICIPANT_REMOVED: null,
   LOAD_LIBRARY: null,
+  ADD_FILE: null,
+  ADD_TRACK: null,
   UPDATE_PLAYER_STATE: null,
   UI_PLAY: null,
   UI_PAUSE: null,
