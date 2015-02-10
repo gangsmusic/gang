@@ -5,6 +5,7 @@ import SocketIO from 'socket.io-client';
 import Immutable from 'immutable';
 import debug from 'debug';
 import Player from './Player';
+import DropZone from './DropZone';
 import Workspace from './Workspace';
 import {VBox} from './Layout';
 import {boxShadow, rgba, border} from './StyleUtils';
@@ -106,10 +107,8 @@ var App = React.createClass({
     const fileDropState = this.getDropState(NativeDragItemTypes.FILE);
     return (
       <VBox style={AppStyle.self} {...this.dropTargetFor(NativeDragItemTypes.FILE)}>
+        {drawUi && fileDropState.isDragging && <DropZone />}
         {drawUi && <Player style={AppStyle.player} />}
-        {drawUi && fileDropState.isDragging &&
-          <div>Drop files anywhere to add to your library</div>
-        }
         {drawUi && <Workspace style={AppStyle.workspace} />}
         {!drawUi && <div style={AppStyle.splash} />}
       </VBox>
