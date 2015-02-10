@@ -14,7 +14,10 @@ let ActionTypes = keyMirror({
   UI_SEEK: null,
   UI_CHANGE_SCREEN: null,
   UI_SET_CONNECTED: null,
-  UI_CHANGE_SETTINGS_SCREEN: null
+  UI_CHANGE_SETTINGS_SCREEN: null,
+  UI_WINDOW_CLOSE: null,
+  UI_WINDOW_MAXIMIZE: null,
+  UI_WINDOW_MINIMIZE: null
 });
 
 export default ActionTypes;

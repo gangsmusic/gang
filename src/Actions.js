@@ -103,4 +103,25 @@ export function uiChangeSettingsScreen(screen: string) {
   });
 }
 
+export function uiWindowClose() {
+  Dispatcher.dispatch({
+    type: ActionTypes.UI_WINDOW_CLOSE,
+    payload: null
+  });
+}
+
+export function uiWindowMaximize() {
+  Dispatcher.dispatch({
+    type: ActionTypes.UI_WINDOW_MAXIMIZE,
+    payload: null
+  });
+}
+
+export function uiWindowMinimize() {
+  Dispatcher.dispatch({
+    type: ActionTypes.UI_WINDOW_MINIMIZE,
+    payload: null
+  });
+}
+
 module.hot && module.hot.decline();

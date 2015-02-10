@@ -1,5 +1,7 @@
 import React from 'react';
 import {HBox} from './Layout';
+import {uiWindowClose, uiWindowMaximize, uiWindowMinimize} from '../Actions';
+import Hoverable from './Hoverable';
 
 const WindowButtonsStyle = {
   self: {
@@ -13,7 +15,11 @@ const WindowButtonsStyle = {
     height: 12,
     borderRadius: 6,
     boxSizing: 'border-box',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    WebkitAppRegion: 'no-drag'
+  },
+  hover: {
+    opacity: 0.7
   },
   close: {
     border: '1px solid #f1544c',
@@ -29,14 +35,34 @@ const WindowButtonsStyle = {
   }
 };
 
+const WindowButton = React.createClass({
+
+  mixins: [Hoverable],
+
+  propTypes: {
+    type: React.PropTypes.oneOf(['close', 'minimize', 'maximize'])
+  },
+
+  render() {
+    const {type, ...props} = this.props;
+    const style = {
+      ...WindowButtonsStyle.base,
+      ...WindowButtonsStyle[this.props.type],
+      ...(this.state.hover && WindowButtonsStyle.hover)
+    };
+    return <div {...this.hoverableProps} {...props} style={style} />;
+  }
+
+});
+
 const WindowButtons = React.createClass({
 
   render() {
     return (
       <HBox style={WindowButtonsStyle.self}>
-        <div style={{...WindowButtonsStyle.base, ...WindowButtonsStyle.close}} />
-        <div style={{...WindowButtonsStyle.base, ...WindowButtonsStyle.minimize}} />
-        <div style={{...WindowButtonsStyle.base, ...WindowButtonsStyle.maximize}} />
+        <WindowButton type='close' onClick={uiWindowClose} />
+        <WindowButton type='minimize' onClick={uiWindowMinimize} />
+        <WindowButton type='maximize' onClick={uiWindowMaximize} />
       </HBox>
     );
   }

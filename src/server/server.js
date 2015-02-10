@@ -126,6 +126,31 @@ function start(ioPort) {
 
     app.on('ready', openMainWindow);
     app.on('activate-with-no-open-windows', openMainWindow);
+
+    Dispatcher.register(({type}) => {
+      if (mainWindow) {
+        switch(type) {
+          case ActionTypes.UI_WINDOW_CLOSE:
+            mainWindow.close();
+            break;
+          case ActionTypes.UI_WINDOW_MAXIMIZE:
+            if (mainWindow.isMaximized()) {
+              mainWindow.unmaximize();
+            } else {
+              mainWindow.maximize();
+            }
+            break;
+          case ActionTypes.UI_WINDOW_MINIMIZE:
+            if (mainWindow.isMinimized()) {
+              mainWindow.restore();
+            } else {
+              mainWindow.minimize();
+            }
+            break;
+        }
+      }
+    });
+
   } else {
     if (!process.env.DEBUG) {
       open('http://127.0.0.1:' + webpackPort + '?' + ioPort);
