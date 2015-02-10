@@ -100,6 +100,11 @@ var App = React.createClass({
     this._socket.on('connect', this.onConnect);
     this._socket.on('disconnect', this.onDisconnect);
     this._socket.on('dispatch-action', this.onDispatchAction);
+    Dispatcher.register(action => {
+      if (action.origin === 'client') {
+        this._socket.emit('dispatch-action', action);
+      }
+    });
   },
 
   render() {

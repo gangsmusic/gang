@@ -7,12 +7,16 @@ let log = debug('gang:Dispatcher');
 
 class Dispatcher extends BaseDispatcher {
 
-  constructor() {
+  constructor(origin) {
     super();
+    this.origin = origin;
     this.stores = Immutable.OrderedMap();
   }
 
   dispatch(action) {
+    if (!action.origin) {
+      action = {...action, origin: this.origin};
+    }
     log('action', action);
     super.dispatch(action);
   }
@@ -28,7 +32,7 @@ class Dispatcher extends BaseDispatcher {
   }
 }
 
-let dispatcher = new Dispatcher();
+let dispatcher = new Dispatcher(typeof window === 'undefined' ? 'server' : 'client');
 
 export default dispatcher;
 

@@ -4,7 +4,6 @@ import Immutable from 'immutable';
 import {HBox, VBox, VBoxStyle} from './Layout';
 import {rgba} from './StyleUtils';
 import Icon from './Icon';
-import {Mixin as GangComponentMixin} from './GangComponent';
 import ProgressBar from './ProgressBar';
 import {colors} from './Theme';
 import VolumeBar from './VolumeBar';
@@ -12,6 +11,7 @@ import CurrentDisplay from './CurrentDisplay';
 import StateFromStore from '../StateFromStore';
 import LibraryStore from '../LibraryStore';
 import PlayerStore from '../PlayerStore';
+import {uiPlay, uiPause, uiSeek} from '../Actions';
 
 
 const IconButtonStyle = {
@@ -104,29 +104,25 @@ const PlayerStyle = {
 
 const Player = React.createClass({
 
-  mixins: [GangComponentMixin, StateFromStore(LibraryStore, PlayerStore)],
-
-  statics: {
-    observe: {}
-  },
+  mixins: [StateFromStore(LibraryStore, PlayerStore)],
 
   play() {
     if (this.state.PlayerStore.progress !== null) {
-      this.dispatch('play');
+      uiPlay();
     } else if (this.state.PlayerStore.current) {
-      this.dispatch('play', this.state.PlayerStore.current);
+      uiPlay(this.state.PlayerStore.current);
     }
   },
 
   pause() {
-    this.dispatch('pause');
+    uiPause();
   },
 
   next() {
     const tracks = this.state.LibraryStore.tracks;
     const index = tracks.indexOf(Immutable.fromJS(this.state.PlayerStore.current));
     if (index !== -1 && index < tracks.count() - 1) {
-      this.dispatch('play', tracks.get(index + 1));
+      uiPlay(tracks.get(index + 1));
     }
   },
 
@@ -134,12 +130,12 @@ const Player = React.createClass({
     const tracks = this.state.LibraryStore.tracks;
     const index = tracks.indexOf(Immutable.fromJS(this.state.PlayerStore.current));
     if (index > 0) {
-      this.dispatch('play', tracks.get(index - 1));
+      uiPlay(tracks.get(index - 1));
     }
   },
 
   seek(position) {
-    this.dispatch('seek', position);
+    uiSeek(position);
   },
 
   render() {

@@ -39,6 +39,12 @@ class PlayerStore extends Store {
           this.emitChange();
         }
         break;
+      case ActionTypes.UI_PLAY:
+        if (action.payload) {
+          this.state = this.state.merge(Immutable.fromJS({current: action.payload}));
+          this.emitChange();
+        }
+        break;
     }
   }
 

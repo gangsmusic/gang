@@ -40,4 +40,32 @@ export function updatePlayerState(state: object) {
   });
 }
 
+export function uiPause() {
+  Dispatcher.dispatch({
+    type: ActionTypes.UI_PAUSE,
+    payload: null
+  });
+}
+
+export function uiPlay(track: object) {
+  Dispatcher.dispatch({
+    type: ActionTypes.UI_PLAY,
+    payload: track
+  });
+}
+
+export function uiSetVolume(volume: number) {
+  Dispatcher.dispatch({
+    type: ActionTypes.UI_SET_VOLUME,
+    payload: volume
+  });
+}
+
+export function uiSeek(position: number) {
+  Dispatcher.dispatch({
+    type: ActionTypes.UI_SEEK,
+    payload: position
+  });
+}
+
 module.hot && module.hot.decline();

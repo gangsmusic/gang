@@ -39,7 +39,7 @@ const CurrentDisplay = React.createClass({
       duration: player_duration,
       progress: player_progress,
       idle: player_idle
-    } = this.state;
+    } = this.state.PlayerStore;
     const {style, ...props} = this.props;
     var playhead = null;
     if (player_progress !== null && player_duration !== null && !player_idle) {
@@ -54,11 +54,11 @@ const CurrentDisplay = React.createClass({
         <VBox style={CurrentDisplayStyle.meta}>
           {player_current &&
             <VBox style={CurrentDisplayStyle.name}>
-              {player_current.get('name')}
+              {player_current.name}
             </VBox>}
           {player_current &&
             <VBox style={CurrentDisplayStyle.artist}>
-              {player_current.get('artist')}
+              {player_current.artist}
             </VBox>}
         </VBox>
         {playhead}

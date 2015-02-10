@@ -1,11 +1,11 @@
 import React from 'react';
 import {rgba, border} from './StyleUtils';
 import {colors} from './Theme';
-import {Mixin as GangComponent} from './GangComponent';
 import ProgressBar from './ProgressBar'
 import {VBox} from './Layout';
 import StateFromStore from '../StateFromStore';
 import PlayerStore from '../PlayerStore';
+import {uiSetVolume} from '../Actions';
 
 const VolumeBarStyle = {
   self: {
@@ -15,7 +15,7 @@ const VolumeBarStyle = {
 
 let VolumeBar = React.createClass({
 
-  mixins: [GangComponent, StateFromStore(PlayerStore)],
+  mixins: [StateFromStore(PlayerStore)],
 
   statics: {
     observe: {}
@@ -37,7 +37,7 @@ let VolumeBar = React.createClass({
   },
 
   onSeek(volume) {
-    this.dispatch('volume', Math.round(volume));
+    uiSetVolume(Math.round(volume));
   }
 
 });

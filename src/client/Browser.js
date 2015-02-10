@@ -9,7 +9,7 @@ import {colors} from './Theme';
 import StateFromStore from '../StateFromStore';
 import LibraryStore from '../LibraryStore';
 import PlayerStore from '../PlayerStore';
-import {Mixin as GangComponentMixin} from './GangComponent';
+import {uiPlay} from '../Actions';
 
 const debugBrowser = debug('gang:browser');
 
@@ -133,7 +133,7 @@ const BrowserStyle = {
 
 var Browser = React.createClass({
 
-  mixins: [GangComponentMixin, StateFromStore(LibraryStore, PlayerStore)],
+  mixins: [StateFromStore(LibraryStore, PlayerStore)],
 
   statics: {
     observe: {}
@@ -161,7 +161,7 @@ var Browser = React.createClass({
 
   onTrackClicked(track) {
     debugBrowser('select track', track.toString());
-    this.dispatch('play', track);
+    uiPlay(track.toJS());
   },
 
   render() {

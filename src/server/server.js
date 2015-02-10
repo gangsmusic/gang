@@ -6,22 +6,23 @@ const S = require('string');
 const Immutable = require('immutable');
 const portfinder = require('portfinder');
 const open = require('open');
-const MPV = require('./mpv');
 const itunesLoader = require('./itunes-loader');
 const {getLocalAddrs, PingMonitor} = require('./util');
 import LocalPartyStore from '../LocalPartyStore';
 import LibraryStore from '../LibraryStore';
-import PlayerStore from '../PlayerStore';
 import Dispatcher from '../Dispatcher';
 import DiscoveryService from './DiscoveryService';
-import {bootstrapStores, loadLibrary, updatePlayerState} from '../Actions';
+import PlayerService from './PlayerService';
+import ActionTypes from '../ActionTypes';
+import {bootstrapStores, loadLibrary} from '../Actions';
 
 const connectionDebug = debug('gang:connection');
 const eventDebug = debug('gang:event');
 const broadcastDebug = debug('gang:broadcast');
 
 const SERVICES = [
-  DiscoveryService
+  DiscoveryService,
+  PlayerService
 ];
 
 
@@ -40,8 +41,6 @@ function start(ioPort) {
     //process.on('beforeExit', service.stop);
     //process.on('SIGINT', service.stop);
   });
-
-  const player = new MPV;
 
   if (process.env.NODE_ENV !== 'production') {
 
@@ -75,48 +74,11 @@ function start(ioPort) {
 
   itunesLoader().then(tracks => loadLibrary(tracks));
 
-  player.on('playing', playing => updatePlayerState({playing}));
-  player.on('progress', progress => updatePlayerState({progress}));
-  player.on('duration', duration => updatePlayerState({duration}));
-  player.on('idle', idle => updatePlayerState({idle}));
-  player.on('volume', volume => updatePlayerState({volume}));
-  player.on('seekable', seekable => updatePlayerState({seekable}));
-
-  /**
-   * handle data from client connection
-   * @param {string} type
-   * @param {any} payload
-   */
-  function handleClientEvent(type, payload) {
-    eventDebug(type, payload);
-    switch(type) {
-      case 'play':
-        if (payload) {
-          updatePlayerState({current: payload});
-          player.play(payload.url);
-        } else {
-          player.play();
-        }
-        break;
-      case 'pause':
-        player.pause();
-        break;
-      case 'seek':
-        player.seek(payload);
-        break;
-      case 'volume':
-        player.setVolume(payload);
-        break;
-      default:
-        throw new Error(`unsupported event type ${type}`);
-    }
-  }
-
   io.on('connection', function(socket:SocketIO.Socket) {
     socket.on('client', function() {
       connectionDebug('connected');
       socket.emit('dispatch-action', bootstrapStores());
-      socket.on('event', ({type, payload}) => handleClientEvent(type, payload));
+      socket.on('dispatch-action', action => Dispatcher.dispatch(action));
     });
     socket.on('server', function() {
       connectionDebug('server connected');
@@ -127,7 +89,9 @@ function start(ioPort) {
   });
 
   Dispatcher.register(action => {
-    sendBroadcast('dispatch-action', action);
+    if (action.origin === 'server') {
+      sendBroadcast('dispatch-action', action);
+    }
   });
 
   /**
