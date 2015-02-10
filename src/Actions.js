@@ -33,4 +33,11 @@ export function loadLibrary(tracks: object[]) {
   });
 }
 
+export function updatePlayerState(state: object) {
+  Dispatcher.dispatch({
+    type: ActionTypes.UPDATE_PLAYER_STATE,
+    payload: state
+  });
+}
+
 module.hot && module.hot.decline();

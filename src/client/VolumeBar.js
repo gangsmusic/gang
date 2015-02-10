@@ -4,6 +4,8 @@ import {colors} from './Theme';
 import {Mixin as GangComponent} from './GangComponent';
 import ProgressBar from './ProgressBar'
 import {VBox} from './Layout';
+import StateFromStore from '../StateFromStore';
+import PlayerStore from '../PlayerStore';
 
 const VolumeBarStyle = {
   self: {
@@ -13,17 +15,15 @@ const VolumeBarStyle = {
 
 let VolumeBar = React.createClass({
 
-  mixins: [GangComponent],
+  mixins: [GangComponent, StateFromStore(PlayerStore)],
 
   statics: {
-    observe: {
-      player: ['volume', 'idle']
-    }
+    observe: {}
   },
 
   render() {
     const {style, ...props} = this.props;
-    const {player_volume} = this.state;
+    const {volume: player_volume} = this.state.PlayerStore;
     const volume = player_volume === null ? 100 : player_volume;
     return (
       <ProgressBar

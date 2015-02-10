@@ -2,7 +2,8 @@ import React from 'react';
 import numeral from 'numeral';
 import {colors} from './Theme';
 import {VBox, HBox} from './Layout';
-import {Mixin as GangComponent} from './GangComponent';
+import StateFromStore from '../StateFromStore';
+import PlayerStore from '../PlayerStore';
 
 
 const CurrentDisplayStyle = {
@@ -30,16 +31,15 @@ const CurrentDisplayStyle = {
 
 const CurrentDisplay = React.createClass({
 
-  mixins: [GangComponent],
-
-  statics: {
-    observe: {
-      player: ['current', 'duration', 'progress', 'idle']
-    }
-  },
+  mixins: [StateFromStore(PlayerStore)],
 
   render() {
-    const {player_current, player_duration, player_progress, player_idle} = this.state;
+    const {
+      current: player_current,
+      duration: player_duration,
+      progress: player_progress,
+      idle: player_idle
+    } = this.state;
     const {style, ...props} = this.props;
     var playhead = null;
     if (player_progress !== null && player_duration !== null && !player_idle) {

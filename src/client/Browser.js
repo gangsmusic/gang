@@ -8,6 +8,8 @@ import {rgba, border, boxShadow} from './StyleUtils';
 import {colors} from './Theme';
 import StateFromStore from '../StateFromStore';
 import LibraryStore from '../LibraryStore';
+import PlayerStore from '../PlayerStore';
+import {Mixin as GangComponentMixin} from './GangComponent';
 
 const debugBrowser = debug('gang:browser');
 
@@ -131,12 +133,10 @@ const BrowserStyle = {
 
 var Browser = React.createClass({
 
-  mixins: [require('./GangComponent').Mixin, StateFromStore(LibraryStore)],
+  mixins: [GangComponentMixin, StateFromStore(LibraryStore, PlayerStore)],
 
   statics: {
-    observe: {
-      player: ['current']
-    }
+    observe: {}
   },
 
   getInitialState() {
@@ -166,6 +166,8 @@ var Browser = React.createClass({
 
   render() {
     var tracks = this.state.LibraryStore.tracks;
+    const current = Immutable.fromJS(this.state.PlayerStore.current);
+
     var artists = distinct(tracks, 'artist').sortBy();
 
     if (this.state.artist) {
@@ -205,7 +207,7 @@ var Browser = React.createClass({
             style={BrowserStyle.tracks}
             title='Tracks'
             itemHeight={24}
-            selectedItem={this.state.player_current}
+            selectedItem={current}
             onItemClick={this.onTrackClicked}
             items={tracks}
             tabIndex={3}

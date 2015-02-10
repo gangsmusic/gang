@@ -4,11 +4,8 @@ import React from 'react';
 import SocketIO from 'socket.io-client';
 import Immutable from 'immutable';
 import debug from 'debug';
-import emptyState from '../shared/emptyState';
-import actions from '../shared/actions';
 import Player from './Player';
 import Workspace from './Workspace';
-import {DISPATCHERS} from './GangComponent';
 import {VBox} from './Layout';
 import {boxShadow, rgba, border} from './StyleUtils';
 import Dispatcher from '../Dispatcher';
@@ -45,8 +42,7 @@ var App = React.createClass({
   mixins: [require('./Pure')],
 
   childContextTypes: {
-    dispatch: React.PropTypes.func.isRequired,
-    execute: React.PropTypes.func.isRequired
+    dispatch: React.PropTypes.func.isRequired
   },
 
   dispatch(ev, data) {
@@ -57,18 +53,9 @@ var App = React.createClass({
     });
   },
 
-  execute(name) {
-    debugDispatch('action', name);
-    this._socket.emit('event', {
-      type: 'action',
-      payload: name
-    });
-  },
-
   getChildContext() {
     return {
-      dispatch: this.dispatch,
-      execute: this.execute
+      dispatch: this.dispatch
     };
   },
 
@@ -90,17 +77,6 @@ var App = React.createClass({
     this.setState({
       connected: false
     });
-    DISPATCHERS.player.data = require('../shared/emptyState');
-  },
-
-  onState(data) {
-    debugState('', data);
-    DISPATCHERS.player.data = DISPATCHERS.player.data.mergeDeep(data);
-  },
-
-  onAction(name) {
-    debugAction(name);
-    DISPATCHERS.player.data = actions[name](DISPATCHERS.player.data);
   },
 
   onDispatchAction(action) {
@@ -123,8 +99,6 @@ var App = React.createClass({
     this._socket = SocketIO.connect(url);
     this._socket.on('connect', this.onConnect);
     this._socket.on('disconnect', this.onDisconnect);
-    this._socket.on('state', this.onState);
-    this._socket.on('action', this.onAction);
     this._socket.on('dispatch-action', this.onDispatchAction);
   },
 

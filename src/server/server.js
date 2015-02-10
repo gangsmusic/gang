@@ -7,16 +7,14 @@ const Immutable = require('immutable');
 const portfinder = require('portfinder');
 const open = require('open');
 const MPV = require('./mpv');
-const actions = require('../shared/actions');
 const itunesLoader = require('./itunes-loader');
 const {getLocalAddrs, PingMonitor} = require('./util');
 import LocalPartyStore from '../LocalPartyStore';
 import LibraryStore from '../LibraryStore';
+import PlayerStore from '../PlayerStore';
 import Dispatcher from '../Dispatcher';
 import DiscoveryService from './DiscoveryService';
-import {bootstrapStores, loadLibrary} from '../Actions';
-
-var state = require('../shared/emptyState');
+import {bootstrapStores, loadLibrary, updatePlayerState} from '../Actions';
 
 const connectionDebug = debug('gang:connection');
 const eventDebug = debug('gang:event');
@@ -75,42 +73,14 @@ function start(ioPort) {
     io.sockets.emit(name, data);
   }
 
-
-  /**
-   * execute action and broadcast state
-   * @param {string} name
-   */
-  function executeAction(name) {
-    if (!actions[name]) {
-      throw new Error(`unsupported action ${name}`);
-    }
-    const newState = actions[name](state);
-    if (!Immutable.is(newState, state)) {
-      state = newState;
-      sendBroadcast('action', name);
-    }
-  }
-
-  /**
-   * merge and broadcast state
-   * @param {object} data
-   */
-  function mergeState(data) {
-    const newState = state.mergeDeep(data);
-    if (!Immutable.is(newState, state)) {
-      state = newState;
-      sendBroadcast('state', data);
-    }
-  }
-
   itunesLoader().then(tracks => loadLibrary(tracks));
 
-  player.on('playing', playing => mergeState({playing}));
-  player.on('progress', progress => mergeState({progress}));
-  player.on('duration', duration => mergeState({duration}));
-  player.on('idle', idle => mergeState({idle}));
-  player.on('volume', volume => mergeState({volume}));
-  player.on('seekable', seekable => mergeState({seekable}));
+  player.on('playing', playing => updatePlayerState({playing}));
+  player.on('progress', progress => updatePlayerState({progress}));
+  player.on('duration', duration => updatePlayerState({duration}));
+  player.on('idle', idle => updatePlayerState({idle}));
+  player.on('volume', volume => updatePlayerState({volume}));
+  player.on('seekable', seekable => updatePlayerState({seekable}));
 
   /**
    * handle data from client connection
@@ -120,15 +90,9 @@ function start(ioPort) {
   function handleClientEvent(type, payload) {
     eventDebug(type, payload);
     switch(type) {
-      case 'state':
-        mergeState(payload);
-        break;
-      case 'action':
-        executeAction(payload);
-        break;
       case 'play':
         if (payload) {
-          mergeState({current: payload});
+          updatePlayerState({current: payload});
           player.play(payload.url);
         } else {
           player.play();
@@ -151,7 +115,6 @@ function start(ioPort) {
   io.on('connection', function(socket:SocketIO.Socket) {
     socket.on('client', function() {
       connectionDebug('connected');
-      socket.emit('state', state);
       socket.emit('dispatch-action', bootstrapStores());
       socket.on('event', ({type, payload}) => handleClientEvent(type, payload));
     });
