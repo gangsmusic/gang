@@ -38,3 +38,5 @@ class LocalPartyStore extends Store {
 }
 
 export default LocalPartyStore.getInstance();
+
+module.hot && module.hot.decline();

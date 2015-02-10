@@ -7,3 +7,5 @@ let ActionTypes = keyMirror({
 });
 
 export default ActionTypes;
+
+module.hot && module.hot.decline();

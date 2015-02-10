@@ -82,3 +82,5 @@ class Store extends EventEmitter {
 }
 
 export default Store;
+
+module.hot && module.hot.decline();

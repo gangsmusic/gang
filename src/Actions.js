@@ -22,3 +22,5 @@ export function localPartyParticipantRemoved(name: string) {
     payload: {name}
   });
 }
+
+module.hot && module.hot.decline();

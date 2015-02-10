@@ -14,3 +14,5 @@ class Dispatcher extends BaseDispatcher {
 let dispatcher = new Dispatcher();
 
 export default dispatcher;
+
+module.hot && module.hot.decline();
