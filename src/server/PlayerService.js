@@ -3,6 +3,7 @@ import MPV from './mpv';
 import Dispatcher from '../Dispatcher';
 import ActionTypes from '../ActionTypes';
 import {updatePlayerState} from '../Actions';
+import PlayerStore from '../PlayerStore';
 
 export default class PlayerService extends Service {
 
@@ -29,7 +30,7 @@ export default class PlayerService extends Service {
           break;
       }
     });
-    
+
     player.on('playing', playing => updatePlayerState({playing}));
     player.on('progress', progress => updatePlayerState({progress}));
     player.on('duration', duration => updatePlayerState({duration}));
