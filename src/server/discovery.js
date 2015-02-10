@@ -25,10 +25,11 @@ export class Discovery extends EventEmitter {
       .pipe(es.map(function(line, cb) {
         const match = /(\w+)\._gang-ipc\._tcp\s+SRV\s+\d+\s+\d+\s+(\d+)\s+([^\s]+)/.exec(line);
         if (match) {
-          let [_, name, port, domain] = match;
+          let [_, name, port, host] = match;
           port = parseInt(port, 10);
-          debug('change event', name, domain, port);
-          this.emit(EVENT_NAME, {name, port, domain});
+          host = host.replace(/\.$/, '');
+          debug('change event', name, host, port);
+          this.emit(EVENT_NAME, {name, port, host});
         }
         cb();
       }.bind(this)));

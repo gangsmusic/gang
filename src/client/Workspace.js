@@ -6,6 +6,8 @@ import {colors} from './Theme';
 import Home from './Home';
 import Settings from './Settings';
 import {Menu, MenuSeparator} from './Menu';
+import StateFromStore from '../StateFromStore';
+import LocalPartyStore from '../LocalPartyStore';
 
 const SCREENS = [
   {
@@ -41,6 +43,24 @@ const WorkspaceStyle = {
   }
 };
 
+let LocalParty = React.createClass({
+  mixins: [StateFromStore(LocalPartyStore)],
+
+  render() {
+    // XXX: we don't need .toArray() when we are on React 0.13
+    let items = this.state.LocalPartyStore.map(item => ({
+      id: item.name,
+      icon: 'user',
+      title: `${item.name}@${item.host}`
+    })).toArray();
+    return (
+      <Menu
+        items={items}
+        />
+    );
+  }
+});
+
 let Workspace = React.createClass({
 
   render() {
@@ -55,7 +75,8 @@ let Workspace = React.createClass({
             onActive={this.onActiveScreen}
             />
           <MenuSeparator>Recent</MenuSeparator>
-          <MenuSeparator>Party</MenuSeparator>
+          <MenuSeparator>Local Party</MenuSeparator>
+          <LocalParty />
         </VBox>
         <VBox style={WorkspaceStyle.main}>
           {activeScreen === 'home' && <Home />}

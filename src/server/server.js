@@ -7,23 +7,39 @@ const Immutable = require('immutable');
 const portfinder = require('portfinder');
 const open = require('open');
 const MPV = require('./mpv');
-const actions = require('../shared/actions');
 const itunesLoader = require('./itunes-loader');
-const libraryUtils = require('../shared/libraryUtils');
 const {getLocalAddrs, PingMonitor} = require('./util');
-
-var state = require('../shared/emptyState');
-var library = require('../shared/emptyLibrary');
+import LocalPartyStore from '../LocalPartyStore';
+import LibraryStore from '../LibraryStore';
+import PlayerStore from '../PlayerStore';
+import Dispatcher from '../Dispatcher';
+import DiscoveryService from './DiscoveryService';
+import {bootstrapStores, loadLibrary, updatePlayerState} from '../Actions';
 
 const connectionDebug = debug('gang:connection');
 const eventDebug = debug('gang:event');
 const broadcastDebug = debug('gang:broadcast');
+
+const SERVICES = [
+  DiscoveryService
+];
+
 
 function start(ioPort) {
   const webpackPort = ioPort + 1;
 
   const io = new SocketIO(ioPort);
   connectionDebug('api listening on 0.0.0.0:' + ioPort);
+
+  SERVICES.forEach(serviceClass => {
+    let config = {};
+    let service = new serviceClass(config);
+    service.start();
+    // TODO: make it work, currently it just makes weird things to shutdown
+    // process
+    //process.on('beforeExit', service.stop);
+    //process.on('SIGINT', service.stop);
+  });
 
   const player = new MPV;
 
@@ -57,55 +73,15 @@ function start(ioPort) {
     io.sockets.emit(name, data);
   }
 
+  itunesLoader().then(tracks => loadLibrary(tracks));
 
-  /**
-   * execute action and broadcast state
-   * @param {string} name
-   */
-  function executeAction(name) {
-    if (!actions[name]) {
-      throw new Error(`unsupported action ${name}`);
-    }
-    const newState = actions[name](state);
-    if (!Immutable.is(newState, state)) {
-      state = newState;
-      sendBroadcast('action', name);
-    }
-  }
+  player.on('playing', playing => updatePlayerState({playing}));
+  player.on('progress', progress => updatePlayerState({progress}));
+  player.on('duration', duration => updatePlayerState({duration}));
+  player.on('idle', idle => updatePlayerState({idle}));
+  player.on('volume', volume => updatePlayerState({volume}));
+  player.on('seekable', seekable => updatePlayerState({seekable}));
 
-  /**
-   * merge and broadcast state
-   * @param {object} data
-   */
-  function mergeState(data) {
-    const newState = state.mergeDeep(data);
-    if (!Immutable.is(newState, state)) {
-      state = newState;
-      sendBroadcast('state', data);
-    }
-  }
-
-  function executeLibraryUtilFn(name, payload) {
-    const utilFn = libraryUtils[name];
-    if (!utilFn) {
-      throw new Error(`unknown library util function ${name}`);
-    }
-    const newLibrary = utilFn(payload, library);
-    if (!Immutable.is(library, newLibrary)) {
-      library = newLibrary;
-      sendBroadcast('library', {name, payload});
-    }
-  }
-
-  itunesLoader().then(tracks => executeLibraryUtilFn('load', {tracks}));
-
-  player.on('playing', playing => mergeState({playing}));
-  player.on('progress', progress => mergeState({progress}));
-  player.on('duration', duration => mergeState({duration}));
-  player.on('idle', idle => mergeState({idle}));
-  player.on('volume', volume => mergeState({volume}));
-  player.on('seekable', seekable => mergeState({seekable}));
-  
   /**
    * handle data from client connection
    * @param {string} type
@@ -114,15 +90,9 @@ function start(ioPort) {
   function handleClientEvent(type, payload) {
     eventDebug(type, payload);
     switch(type) {
-      case 'state':
-        mergeState(payload);
-        break;
-      case 'action':
-        executeAction(payload);
-        break;
       case 'play':
         if (payload) {
-          mergeState({current: payload});
+          updatePlayerState({current: payload});
           player.play(payload.url);
         } else {
           player.play();
@@ -145,8 +115,7 @@ function start(ioPort) {
   io.on('connection', function(socket:SocketIO.Socket) {
     socket.on('client', function() {
       connectionDebug('connected');
-      socket.emit('state', state);
-      socket.emit('library', {name: 'load', payload: library});
+      socket.emit('dispatch-action', bootstrapStores());
       socket.on('event', ({type, payload}) => handleClientEvent(type, payload));
     });
     socket.on('server', function() {
@@ -155,6 +124,10 @@ function start(ioPort) {
         version: 'git'
       });
     });
+  });
+
+  Dispatcher.register(action => {
+    sendBroadcast('dispatch-action', action);
   });
 
   /**

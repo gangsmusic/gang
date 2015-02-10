@@ -1,5 +1,6 @@
 import React from 'react';
 import numeral from 'numeral';
+import Immutable from 'immutable';
 import {HBox, VBox, VBoxStyle} from './Layout';
 import {rgba} from './StyleUtils';
 import Icon from './Icon';
@@ -8,6 +9,9 @@ import ProgressBar from './ProgressBar';
 import {colors} from './Theme';
 import VolumeBar from './VolumeBar';
 import CurrentDisplay from './CurrentDisplay';
+import StateFromStore from '../StateFromStore';
+import LibraryStore from '../LibraryStore';
+import PlayerStore from '../PlayerStore';
 
 
 const IconButtonStyle = {
@@ -100,20 +104,17 @@ const PlayerStyle = {
 
 const Player = React.createClass({
 
-  mixins: [GangComponentMixin],
+  mixins: [GangComponentMixin, StateFromStore(LibraryStore, PlayerStore)],
 
   statics: {
-    observe: {
-      player: ['duration', 'idle', 'current', 'playing', 'progress', 'seekable'],
-      library: ['tracks']
-    }
+    observe: {}
   },
 
   play() {
-    if (this.state.player_progress !== null) {
+    if (this.state.PlayerStore.progress !== null) {
       this.dispatch('play');
-    } else if (this.state.player_current) {
-      this.dispatch('play', this.state.player_current);
+    } else if (this.state.PlayerStore.current) {
+      this.dispatch('play', this.state.PlayerStore.current);
     }
   },
 
@@ -122,16 +123,18 @@ const Player = React.createClass({
   },
 
   next() {
-    const index = this.state.library_tracks.indexOf(this.state.player_current);
-    if (index !== -1 && index < this.state.library_tracks.count() - 1) {
-      this.dispatch('play', this.state.library_tracks.get(index + 1));
+    const tracks = this.state.LibraryStore.tracks;
+    const index = tracks.indexOf(Immutable.fromJS(this.state.PlayerStore.current));
+    if (index !== -1 && index < tracks.count() - 1) {
+      this.dispatch('play', tracks.get(index + 1));
     }
   },
 
   prev() {
-    const index = this.state.library_tracks.indexOf(this.state.player_current);
+    const tracks = this.state.LibraryStore.tracks;
+    const index = tracks.indexOf(Immutable.fromJS(this.state.PlayerStore.current));
     if (index > 0) {
-      this.dispatch('play', this.state.library_tracks.get(index - 1));
+      this.dispatch('play', tracks.get(index - 1));
     }
   },
 
@@ -140,13 +143,20 @@ const Player = React.createClass({
   },
 
   render() {
-    let {player_current, player_playing, player_idle, player_progress, player_duration, player_seekable} = this.state;
+    let {
+      current: player_current,
+      playing: player_playing,
+      idle: player_idle,
+      progress: player_progress,
+      duration: player_duration,
+      seekable: player_seekable
+    } = this.state.PlayerStore;
+
     let {style, ...props} = this.props;
     player_playing = player_playing && !player_idle;
     var current = null;
     if (player_current && !player_idle) {
-      const track = player_current.toJS();
-      current = <VBox>{`${track.artist} - ${track.name}`}</VBox>;
+      current = <VBox>{`${player_current.artist} - ${player_current.name}`}</VBox>;
     }
     return (
       <HBox {...props} style={{...PlayerStyle.self, ...style}}>
