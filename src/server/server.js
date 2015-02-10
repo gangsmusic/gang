@@ -114,6 +114,9 @@ function start(ioPort) {
 
     function openMainWindow() {
       mainWindow = new BrowserWindow({width: 800, height: 600, frame: false});
+      if (process.env.DEBUG) {
+        mainWindow.openDevTools();
+      }
       if (process.env.NODE_ENV === 'production') {
         mainWindow.loadUrl('file://' + path.join(__dirname, 'index.html') + '?' + ioPort);
       } else {
