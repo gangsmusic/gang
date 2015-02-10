@@ -6,7 +6,7 @@ class LocalPartyStore extends Store {
 
   constructor() {
     super();
-    this.state = new Immutable.OrderedMap();
+    this.state = Immutable.OrderedMap();
   }
 
   getState() {

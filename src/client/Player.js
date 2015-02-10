@@ -8,6 +8,8 @@ import ProgressBar from './ProgressBar';
 import {colors} from './Theme';
 import VolumeBar from './VolumeBar';
 import CurrentDisplay from './CurrentDisplay';
+import StateFromStore from '../StateFromStore';
+import LibraryStore from '../LibraryStore';
 
 
 const IconButtonStyle = {
@@ -100,12 +102,11 @@ const PlayerStyle = {
 
 const Player = React.createClass({
 
-  mixins: [GangComponentMixin],
+  mixins: [GangComponentMixin, StateFromStore(LibraryStore)],
 
   statics: {
     observe: {
-      player: ['duration', 'idle', 'current', 'playing', 'progress', 'seekable'],
-      library: ['tracks']
+      player: ['duration', 'idle', 'current', 'playing', 'progress', 'seekable']
     }
   },
 
@@ -122,16 +123,18 @@ const Player = React.createClass({
   },
 
   next() {
-    const index = this.state.library_tracks.indexOf(this.state.player_current);
-    if (index !== -1 && index < this.state.library_tracks.count() - 1) {
-      this.dispatch('play', this.state.library_tracks.get(index + 1));
+    const tracks = this.state.LibraryStore.tracks;
+    const index = tracks.indexOf(this.state.player_current);
+    if (index !== -1 && index < tracks.count() - 1) {
+      this.dispatch('play', tracks.get(index + 1));
     }
   },
 
   prev() {
-    const index = this.state.library_tracks.indexOf(this.state.player_current);
+    const tracks = this.state.LibraryStore.tracks;
+    const index = tracks.indexOf(this.state.player_current);
     if (index > 0) {
-      this.dispatch('play', this.state.library_tracks.get(index - 1));
+      this.dispatch('play', tracks.get(index - 1));
     }
   },
 

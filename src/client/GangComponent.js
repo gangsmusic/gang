@@ -6,7 +6,6 @@ import Pure from './Pure';
 const debugComponent = debug('gang:component');
 
 const DISPATCHERS = exports.DISPATCHERS = {
-  library: new Dispatcher(require('../shared/emptyLibrary')),
   player: new Dispatcher(require('../shared/emptyState'))
 };
 

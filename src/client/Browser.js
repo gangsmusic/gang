@@ -6,6 +6,8 @@ import Pure from './Pure';
 import {VBox, HBox} from './Layout';
 import {rgba, border, boxShadow} from './StyleUtils';
 import {colors} from './Theme';
+import StateFromStore from '../StateFromStore';
+import LibraryStore from '../LibraryStore';
 
 const debugBrowser = debug('gang:browser');
 
@@ -129,11 +131,10 @@ const BrowserStyle = {
 
 var Browser = React.createClass({
 
-  mixins: [require('./GangComponent').Mixin],
+  mixins: [require('./GangComponent').Mixin, StateFromStore(LibraryStore)],
 
   statics: {
     observe: {
-      library: ['tracks'],
       player: ['current']
     }
   },
@@ -164,7 +165,7 @@ var Browser = React.createClass({
   },
 
   render() {
-    var tracks = this.state.library_tracks;
+    var tracks = this.state.LibraryStore.tracks;
     var artists = distinct(tracks, 'artist').sortBy();
 
     if (this.state.artist) {

@@ -9,15 +9,14 @@ const open = require('open');
 const MPV = require('./mpv');
 const actions = require('../shared/actions');
 const itunesLoader = require('./itunes-loader');
-const libraryUtils = require('../shared/libraryUtils');
 const {getLocalAddrs, PingMonitor} = require('./util');
 import LocalPartyStore from '../LocalPartyStore';
+import LibraryStore from '../LibraryStore';
 import Dispatcher from '../Dispatcher';
 import DiscoveryService from './DiscoveryService';
-import {bootstrapStores} from '../Actions';
+import {bootstrapStores, loadLibrary} from '../Actions';
 
 var state = require('../shared/emptyState');
-var library = require('../shared/emptyLibrary');
 
 const connectionDebug = debug('gang:connection');
 const eventDebug = debug('gang:event');
@@ -104,19 +103,7 @@ function start(ioPort) {
     }
   }
 
-  function executeLibraryUtilFn(name, payload) {
-    const utilFn = libraryUtils[name];
-    if (!utilFn) {
-      throw new Error(`unknown library util function ${name}`);
-    }
-    const newLibrary = utilFn(payload, library);
-    if (!Immutable.is(library, newLibrary)) {
-      library = newLibrary;
-      sendBroadcast('library', {name, payload});
-    }
-  }
-
-  itunesLoader().then(tracks => executeLibraryUtilFn('load', {tracks}));
+  itunesLoader().then(tracks => loadLibrary(tracks));
 
   player.on('playing', playing => mergeState({playing}));
   player.on('progress', progress => mergeState({progress}));
@@ -124,7 +111,7 @@ function start(ioPort) {
   player.on('idle', idle => mergeState({idle}));
   player.on('volume', volume => mergeState({volume}));
   player.on('seekable', seekable => mergeState({seekable}));
-  
+
   /**
    * handle data from client connection
    * @param {string} type
@@ -165,7 +152,6 @@ function start(ioPort) {
     socket.on('client', function() {
       connectionDebug('connected');
       socket.emit('state', state);
-      socket.emit('library', {name: 'load', payload: library});
       socket.emit('dispatch-action', bootstrapStores());
       socket.on('event', ({type, payload}) => handleClientEvent(type, payload));
     });

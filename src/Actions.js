@@ -26,4 +26,11 @@ export function localPartyParticipantRemoved(name: string) {
   });
 }
 
+export function loadLibrary(tracks: object[]) {
+  Dispatcher.dispatch({
+    type: ActionTypes.LOAD_LIBRARY,
+    payload: tracks
+  });
+}
+
 module.hot && module.hot.decline();
