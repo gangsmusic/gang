@@ -7,6 +7,7 @@ import Icon from './Icon';
 import ProgressBar from './ProgressBar';
 import {colors} from './Theme';
 import VolumeBar from './VolumeBar';
+import WindowButtons from './WindowButtons';
 import CurrentDisplay from './CurrentDisplay';
 import StateFromStore from '../StateFromStore';
 import LibraryStore from '../LibraryStore';
@@ -79,7 +80,8 @@ const PlayerStyle = {
     WebkitAppRegion: 'drag',
     height: 60,
     background: colors.background,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingLeft: 24
   },
   controls: {
     width: 130,
@@ -156,6 +158,7 @@ const Player = React.createClass({
     }
     return (
       <HBox {...props} style={{...PlayerStyle.self, ...style}}>
+        <WindowButtons />
         <PlayerControls
           playing={player_playing}
           disabled={!player_current}
