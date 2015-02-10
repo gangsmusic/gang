@@ -76,7 +76,8 @@ var App = React.createClass({
 
   onDisconnect() {
     this.setState({
-      connected: false
+      connected: false,
+      initialized: false
     });
   },
 
