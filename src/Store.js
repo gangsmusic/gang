@@ -51,6 +51,11 @@ class Store extends EventEmitter {
     throw new Error('not implemented');
   }
 
+  transformState(func) {
+    this.state = func(this.state);
+    this.emitChange();
+  }
+
   dehydrate() {
     return this.state;
   }
