@@ -17,7 +17,8 @@ let ActionTypes = keyMirror({
   UI_CHANGE_SETTINGS_SCREEN: null,
   UI_WINDOW_CLOSE: null,
   UI_WINDOW_MAXIMIZE: null,
-  UI_WINDOW_MINIMIZE: null
+  UI_WINDOW_MINIMIZE: null,
+  REMOTE_ACTION: null
 });
 
 export default ActionTypes;

@@ -1,3 +1,4 @@
+import {hostname} from 'os';
 const path = require('path');
 const debug = require('debug');
 const SocketIO = require('socket.io');
@@ -27,6 +28,8 @@ const SERVICES = [
   TaggingService
 ];
 
+let CLIENTS = [];
+let SERVERS = Immutable.OrderedMap();
 
 function start(ioPort, webpackPort) {
   const io = new SocketIO(ioPort);
@@ -67,30 +70,51 @@ function start(ioPort, webpackPort) {
    * @param {string} name
    * @param {any} data
    */
-  function sendBroadcast(name, data) {
-    broadcastDebug(name, S(JSON.stringify(data)).truncate(120).s);
-    io.sockets.emit(name, data);
+  function sendBroadcastToClients(name, data) {
+    broadcastDebug(
+      `client broadcast ${name} (${CLIENTS.length})`,
+      S(JSON.stringify(data)).truncate(120).s
+    );
+    CLIENTS.forEach(socket => socket.emit(name, data));
+  }
+
+  function sendBroadcastToServers(name, data) {
+    broadcastDebug(
+      `server broadcast ${name} (${SERVERS.size})`,
+      S(JSON.stringify(data)).truncate(120).s
+    );
+    SERVERS.forEach(socket => socket.emit(name, data));
   }
 
   itunesLoader().then(tracks => loadLibrary(tracks));
 
   io.on('connection', function(socket:SocketIO.Socket) {
     socket.on('client', function() {
-      connectionDebug('connected');
+      CLIENTS.push(socket);
+      connectionDebug(`client connected (${CLIENTS.length})`);
       socket.emit('dispatch-action', bootstrapStores());
-      socket.on('dispatch-action', action => Dispatcher.dispatch(action));
+      socket.on('dispatch-action', action => {
+        Dispatcher.dispatch(action);
+      });
+      socket.on('disconnect', function() {
+        CLIENTS.splice(CLIENTS.indexOf(socket), 1);
+      });
     });
-    socket.on('server', function() {
-      connectionDebug('server connected');
-      socket.emit('manifest', {
-        version: 'git'
+    socket.on('server', function(name) {
+      SERVERS = SERVERS.set(name, socket);
+      connectionDebug(`server connected (${SERVERS.size})`);
+      socket.on('disconnect', function() {
+        SERVERS = SERVERS.remove(name);
       });
     });
   });
 
   Dispatcher.register(action => {
     if (action.origin === 'server') {
-      sendBroadcast('dispatch-action', action);
+      sendBroadcastToClients('dispatch-action', action);
+    }
+    if (action.share) {
+      sendBroadcastToServers('dispatch-action', action);
     }
   });
 

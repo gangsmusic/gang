@@ -1,3 +1,5 @@
+import SocketIO from 'socket.io-client';
+import Immutable from 'immutable';
 import {hostname} from 'os';
 import debug from 'debug';
 import {checkPortStatus} from 'portscanner';
@@ -5,6 +7,8 @@ import Service from './Service';
 import {Discovery, Announce} from './discovery';
 import {localPartyParticipantAdded, localPartyParticipantRemoved} from '../Actions';
 import LocalPartyStore from '../LocalPartyStore';
+import ActionTypes from '../ActionTypes';
+import {remoteAction} from '../Actions';
 
 const log = debug('gang:DiscoveryService');
 
@@ -14,13 +18,13 @@ class DiscoveryService extends Service {
     super(config);
     this._discovery = null;
     this._announce = null;
+    this._sockets = Immutable.Map();
   }
 
   didStart() {
     this._announce = new Announce(hostname(), 12001);
     this._discovery = new Discovery();
     this._discovery.addChangeListener(this._onChange.bind(this));
-    this._checkLivenessTimer = setInterval(this._onCheckLiveness.bind(this), 5000);
   }
 
   willStop() {
@@ -28,36 +32,30 @@ class DiscoveryService extends Service {
     this._discovery.stop();
     this._announce = null;
     this._discovery = null;
-    clearInterval(this._checkLivenessTimer);
   }
 
   _onChange({name, host, port}) {
-    this._checkLiveness(name, host, port);
+    // for the time being
+    name = host;
+    let socket = SocketIO.connect(`http://${host}:${port}`);
+    socket.on('connect', this._onSocketConnect.bind(null, name, socket));
+    socket.on('disconnect', this._onSocketDisconnect.bind(null, name, socket));
+    socket.on('dispatch-action', this._onSocketDispatchAction.bind(null, name));
+    this._sockets = this._sockets.set(name, socket);
   }
 
-  _onCheckLiveness() {
-    log('initiating regular check for liveness');
-    LocalPartyStore.getState().forEach(({name, host, port}) => {
-      this._checkLiveness(name, host, port, true);
-    });
+  _onSocketConnect(name, socket) {
+    socket.emit('server', name);
+    localPartyParticipantAdded(name);
   }
 
-  _checkLiveness(name, host, port, removeOnly = false) {
-    log(`checking ${host}:${port}`);
-    checkPortStatus(port, host, (error, open) => {
-      log(`result for ${host}:${port}: ${open}`);
-      if (error) {
-        log('checking port status resulted in error', error);
-        open = 'closed';
-      }
-      if (open === 'open') {
-        if (!removeOnly) {
-          localPartyParticipantAdded(name, host, port);
-        }
-      } else {
-        localPartyParticipantRemoved(name, host, port);
-      }
-    });
+  _onSocketDisconnect(socket) {
+    localPartyParticipantRemoved(name);
+    this._sockets = this._sockets.remove(name);
+  }
+
+  _onSocketDispatchAction(name, action) {
+    remoteAction(action, name);
   }
 }
 

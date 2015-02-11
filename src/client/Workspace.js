@@ -45,15 +45,60 @@ const WorkspaceStyle = {
   }
 };
 
+let LocalPartyMemberStyle = {
+  name: {
+  },
+  nowPlaying: {
+    color: '#AAA',
+    fontSize: 12
+  },
+  nowPlayingName: {
+    marginRight: 3
+  },
+  nowPlayingArtist: {
+    marginLeft: 3
+  }
+};
+
+let LocalPartyMember = React.createClass({
+
+  render() {
+    let {name, nowPlaying, ...props} = this.props;
+    return (
+      <VBox {...props}>
+        <VBox style={LocalPartyMemberStyle.name}>
+          {name}
+        </VBox>
+        {nowPlaying &&
+          <HBox style={LocalPartyMemberStyle.nowPlaying}>
+            <span style={LocalPartyMemberStyle.nowPlayingName}>
+              {nowPlaying.get('name')}
+            </span>
+            by
+            <span style={LocalPartyMemberStyle.nowPlayingArtist}>
+              {nowPlaying.get('artist')}
+            </span>
+          </HBox>}
+      </VBox>
+    );
+  }
+});
+
 let LocalParty = React.createClass({
   mixins: [StateFromStore(LocalPartyStore)],
 
   render() {
+    console.log(this.state.LocalPartyStore.toString());
     // XXX: we don't need .toArray() when we are on React 0.13
     let items = this.state.LocalPartyStore.map(item => ({
       id: item.name,
-      icon: 'user',
-      title: `${item.name}@${item.host}`
+      icon: item.nowPlaying ? 'music' : 'user',
+      title: (
+        <LocalPartyMember
+          name={item.name}
+          nowPlaying={item.nowPlaying}
+          />
+      )
     })).toArray();
     return (
       <Menu

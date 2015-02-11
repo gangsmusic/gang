@@ -8,28 +8,32 @@ export function bootstrapStores() {
     .toArray();
   return {
     type: ActionTypes.BOOTSTRAP_STORES,
-    payload
+    payload,
+    share: false
   };
 }
 
-export function localPartyParticipantAdded(name: string, host: string, port: number) {
+export function localPartyParticipantAdded(name: string) {
   Dispatcher.dispatch({
     type: ActionTypes.LOCAL_PARTY_PARTICIPANT_ADDED,
-    payload: {name, host, port}
+    payload: {name},
+    share: false
   });
 }
 
 export function localPartyParticipantRemoved(name: string) {
   Dispatcher.dispatch({
     type: ActionTypes.LOCAL_PARTY_PARTICIPANT_REMOVED,
-    payload: {name}
+    payload: {name},
+    share: false
   });
 }
 
 export function loadLibrary(tracks: object[]) {
   Dispatcher.dispatch({
     type: ActionTypes.LOAD_LIBRARY,
-    payload: tracks
+    payload: tracks,
+    share: false
   });
 }
 
@@ -50,56 +54,72 @@ export function addTrack(track: object) {
 export function updatePlayerState(state: object) {
   Dispatcher.dispatch({
     type: ActionTypes.UPDATE_PLAYER_STATE,
-    payload: state
+    payload: state,
+    share: true
   });
 }
 
 export function uiPause() {
   Dispatcher.dispatch({
     type: ActionTypes.UI_PAUSE,
-    payload: null
+    payload: null,
+    share: false
   });
 }
 
 export function uiPlay(track: object) {
   Dispatcher.dispatch({
     type: ActionTypes.UI_PLAY,
-    payload: track
+    payload: track,
+    share: true
   });
 }
 
 export function uiSetVolume(volume: number) {
   Dispatcher.dispatch({
     type: ActionTypes.UI_SET_VOLUME,
-    payload: volume
+    payload: volume,
+    share: false
   });
 }
 
 export function uiSeek(position: number) {
   Dispatcher.dispatch({
     type: ActionTypes.UI_SEEK,
-    payload: position
+    payload: position,
+    share: false
   });
 }
 
 export function uiChangeScreen(screen: string) {
   Dispatcher.dispatch({
     type: ActionTypes.UI_CHANGE_SCREEN,
-    payload: screen
+    payload: screen,
+    share: false
   });
 }
 
 export function uiSetConnected(connected: boolean) {
   Dispatcher.dispatch({
     type: ActionTypes.UI_SET_CONNECTED,
-    payload: connected
+    payload: connected,
+    share: false
   });
 }
 
 export function uiChangeSettingsScreen(screen: string) {
   Dispatcher.dispatch({
     type: ActionTypes.UI_CHANGE_SETTINGS_SCREEN,
-    payload: screen
+    payload: screen,
+    share: false
+  });
+}
+
+export function remoteAction(action, name) {
+  Dispatcher.dispatch({
+    type: ActionTypes.REMOTE_ACTION,
+    payload: {action, name},
+    share: false
   });
 }
 
