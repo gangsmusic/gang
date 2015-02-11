@@ -14,9 +14,10 @@ class Store extends EventEmitter {
 
   constructor() {
     invariant(
-      _ALLOW_STORE_CREATE, 
+      _ALLOW_STORE_CREATE,
       'Store instance could only be created via Store.getInstance() static method'
     );
+    this.debug = debug(`gang:${this.constructor.name}`);
     this.dispatcher = Dispatcher;
     this.handled = this.dispatcher.registerStore(this);
     this.state = null;

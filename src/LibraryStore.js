@@ -23,6 +23,11 @@ class LibraryStore extends Store {
     this.tracks = Immutable.fromJS(tracks);
   }
 
+  emitChange() {
+    super.emitChange();
+    this.debug(`library contains ${this.tracks.count()} tracks`);
+  }
+
   handleAction(action) {
     switch (action.type) {
       case ActionTypes.LOAD_LIBRARY:
