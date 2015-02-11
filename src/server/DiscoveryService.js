@@ -49,7 +49,7 @@ class DiscoveryService extends Service {
     localPartyParticipantAdded(name);
   }
 
-  _onSocketDisconnect(socket) {
+  _onSocketDisconnect(name, socket) {
     localPartyParticipantRemoved(name);
     this._sockets = this._sockets.remove(name);
   }

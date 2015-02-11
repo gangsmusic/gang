@@ -26,7 +26,7 @@ class LocalPartyStore extends Store {
     this.state = Immutable.fromJS(state).map(item =>
       PartyMemeber({
         name: item.get('name'),
-        nowPlaying: item.get('nowPlaying') ? Immutable.Map(nowPlaying.get('nowPlaying')) : null
+        nowPlaying: item.get('nowPlaying') ? Immutable.Map(item.get('nowPlaying')) : null
       }));
   }
 
