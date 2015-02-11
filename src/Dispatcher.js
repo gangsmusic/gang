@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import string from 'string';
 import debug from 'debug';
 import {Dispatcher as BaseDispatcher} from 'flux';
 import S from 'string';
@@ -18,7 +19,10 @@ class Dispatcher extends BaseDispatcher {
     if (!action.origin) {
       action = {...action, origin: this.origin};
     }
-    log('action', S(JSON.stringify(action)).truncate(255).s);
+    log(
+      action.type,
+      string(String(JSON.stringify(action.payload))).truncate(80).s
+    );
     super.dispatch(action);
   }
 
