@@ -1,10 +1,9 @@
 import debug from 'debug';
 
-const log = debug('gang:Service');
-
 class Service {
 
   constructor(config) {
+    this.debug = debug(`gang:${this.constructor.name}`);
     this.config = config;
     this.started = false;
     this.start = this.start.bind(this);
@@ -13,7 +12,7 @@ class Service {
 
   start() {
     if (!this.started) {
-      log('starting service', this.constructor.name);
+      this.debug('starting');
       this.didStart();
       this.started = true;
     }
@@ -21,7 +20,7 @@ class Service {
 
   stop() {
     if (this.started) {
-      log('stopping service', this.constructor.name);
+      this.debug('stopping');
       this.willStop();
       this.started = false;
     }

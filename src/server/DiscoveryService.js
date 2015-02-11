@@ -1,7 +1,6 @@
 import SocketIO from 'socket.io-client';
 import Immutable from 'immutable';
 import {hostname} from 'os';
-import debug from 'debug';
 import {checkPortStatus} from 'portscanner';
 import Service from './Service';
 import {Discovery, Announce} from './discovery';
@@ -9,8 +8,6 @@ import {localPartyParticipantAdded, localPartyParticipantRemoved} from '../Actio
 import LocalPartyStore from '../LocalPartyStore';
 import ActionTypes from '../ActionTypes';
 import {remoteAction} from '../Actions';
-
-const log = debug('gang:DiscoveryService');
 
 class DiscoveryService extends Service {
 

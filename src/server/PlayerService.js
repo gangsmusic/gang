@@ -31,12 +31,9 @@ export default class PlayerService extends Service {
       }
     });
 
-    player.on('playing', playing => updatePlayerState({playing}));
-    player.on('progress', progress => updatePlayerState({progress}));
-    player.on('duration', duration => updatePlayerState({duration}));
-    player.on('idle', idle => updatePlayerState({idle}));
-    player.on('volume', volume => updatePlayerState({volume}));
-    player.on('seekable', seekable => updatePlayerState({seekable}));
+    for (let event of ['playing', 'progress', 'duration', 'idle', 'volume', 'seekable']) {
+      player.on(event, value => updatePlayerState({[event]: value}));
+    }
   }
 
 }
