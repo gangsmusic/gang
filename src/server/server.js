@@ -28,9 +28,7 @@ const SERVICES = [
 ];
 
 
-function start(ioPort) {
-  const webpackPort = ioPort + 1;
-
+function start(ioPort, webpackPort) {
   const io = new SocketIO(ioPort);
   connectionDebug('api listening on 0.0.0.0:' + ioPort);
 
@@ -164,9 +162,9 @@ function start(ioPort) {
 
 portfinder.basePort = 12001;
 
-portfinder.getPort(function(err, ioPort) {
+portfinder.getPorts(2, function(err, [ioPort, webpackPort]) {
   if (err) {
     throw err;
   }
-  start(ioPort);
+  start(ioPort, webpackPort);
 });
