@@ -38,9 +38,9 @@ class DiscoveryService extends Service {
     // for the time being
     name = host;
     let socket = SocketIO.connect(`http://${host}:${port}`);
-    socket.on('connect', this._onSocketConnect.bind(null, name, socket));
-    socket.on('disconnect', this._onSocketDisconnect.bind(null, name, socket));
-    socket.on('dispatch-action', this._onSocketDispatchAction.bind(null, name));
+    socket.on('connect', this._onSocketConnect.bind(this, name, socket));
+    socket.on('disconnect', this._onSocketDisconnect.bind(this, name, socket));
+    socket.on('dispatch-action', this._onSocketDispatchAction.bind(this, name));
     this._sockets = this._sockets.set(name, socket);
   }
 
