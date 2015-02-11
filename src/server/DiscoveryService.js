@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 import {hostname} from 'os';
 import {checkPortStatus} from 'portscanner';
 import Service from './Service';
+import {reader, writer} from '../serialization';
 import {Discovery, Announce} from './discovery';
 import {localPartyParticipantAdded, localPartyParticipantRemoved} from '../Actions';
 import LocalPartyStore from '../LocalPartyStore';
@@ -52,6 +53,7 @@ class DiscoveryService extends Service {
   }
 
   _onSocketDispatchAction(name, action) {
+    action = reader.read(action);
     remoteAction(action, name);
   }
 }

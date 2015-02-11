@@ -7,6 +7,7 @@ import debug from 'debug';
 import Player from './Player';
 import DropZone from './DropZone';
 import Workspace from './Workspace';
+import {reader, writer} from '../serialization';
 import {VBox} from './Layout';
 import {boxShadow, rgba, border} from './StyleUtils';
 import Dispatcher from '../Dispatcher';
@@ -82,6 +83,7 @@ var App = React.createClass({
   },
 
   onDispatchAction(action) {
+    action = reader.read(action);
     Dispatcher.dispatch(action);
   },
 
@@ -99,7 +101,7 @@ var App = React.createClass({
     this._socket.on('dispatch-action', this.onDispatchAction);
     Dispatcher.register(action => {
       if (action.origin === 'client') {
-        this._socket.emit('dispatch-action', action);
+        this._socket.emit('dispatch-action', writer.write(action));
       }
     });
   },
@@ -118,6 +120,5 @@ var App = React.createClass({
   }
 
 });
-
 
 module.exports = App;

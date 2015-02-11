@@ -8,6 +8,7 @@ const portfinder = require('portfinder');
 const open = require('open');
 const itunesLoader = require('./itunes-loader');
 const {getLocalAddrs, PingMonitor} = require('./util');
+import {reader, writer} from '../serialization';
 import LocalPartyStore from '../LocalPartyStore';
 import LibraryStore from '../LibraryStore';
 import Dispatcher from '../Dispatcher';
@@ -75,6 +76,7 @@ function start(ioPort, webpackPort) {
       `client broadcast ${name} (${CLIENTS.length})`,
       S(JSON.stringify(data)).truncate(120).s
     );
+    data = writer.write(data);
     CLIENTS.forEach(socket => socket.emit(name, data));
   }
 
@@ -83,6 +85,7 @@ function start(ioPort, webpackPort) {
       `server broadcast ${name} (${SERVERS.size})`,
       S(JSON.stringify(data)).truncate(120).s
     );
+    data = writer.write(data);
     SERVERS.forEach(socket => socket.emit(name, data));
   }
 
@@ -92,8 +95,9 @@ function start(ioPort, webpackPort) {
     socket.on('client', function() {
       CLIENTS.push(socket);
       connectionDebug(`client connected (${CLIENTS.length})`);
-      socket.emit('dispatch-action', bootstrapStores());
+      socket.emit('dispatch-action', writer.write(bootstrapStores()));
       socket.on('dispatch-action', action => {
+        action = reader.read(action);
         Dispatcher.dispatch(action);
       });
       socket.on('disconnect', function() {
