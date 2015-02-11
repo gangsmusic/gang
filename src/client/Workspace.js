@@ -88,7 +88,6 @@ let LocalParty = React.createClass({
   mixins: [StateFromStore(LocalPartyStore)],
 
   render() {
-    console.log(this.state.LocalPartyStore.toString());
     // XXX: we don't need .toArray() when we are on React 0.13
     let items = this.state.LocalPartyStore.map(item => ({
       id: item.name,
