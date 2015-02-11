@@ -33,7 +33,7 @@
     "portfinder": "^0.4.0",
     "portscanner": "^1.0.0",
     "react": "^0.12.2",
-    "react-dnd": "0.6.3",
+    "react-dnd": "^0.6.4",
     "react-fa": "^3.0.0",
     "react-hot-loader": "^1.1.4",
     "shell-escape": "^0.1.0",

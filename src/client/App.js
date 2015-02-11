@@ -48,14 +48,16 @@ var App = React.createClass({
 
   mixins: [require('./Pure'), StateFromStore(UiStore), DragDropMixin],
 
-  configureDragDrop(registerType) {
-    registerType(NativeDragItemTypes.FILE, {
-      dropTarget: {
-        acceptDrop(item) {
-          item.files.map(_ => addFile(_.path));
+  statics: {
+    configureDragDrop(registerType) {
+      registerType(NativeDragItemTypes.FILE, {
+        dropTarget: {
+          acceptDrop(component, item) {
+            item.files.map(_ => addFile(_.path));
+          }
         }
-      }
-    });
+      });
+    }
   },
 
   childContextTypes: {
