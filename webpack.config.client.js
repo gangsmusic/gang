@@ -60,10 +60,10 @@ if (!prod) {
   config.devtool = 'inline-sourcemap';
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
 } else {
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin({compress: {
-      warnings: false
-    }})
-  );
+  // config.plugins.push(new webpack.optimize.UglifyJsPlugin({compress: {
+  //     warnings: false
+  //   }})
+  // );
 }
 
 module.exports = config;
