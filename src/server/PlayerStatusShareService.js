@@ -13,8 +13,8 @@ export default class PlayerStatusShareService extends Service {
   }
 
   _sharePlayerStatus() {
-    let {current, playing} = PlayerStore.getState();
-    let track = playing ? current : null;
+    let {current, playing, idle} = PlayerStore.getState();
+    let track = playing && !idle ? current : null;
     Actions.playerStatusShared(track);
   }
 }
