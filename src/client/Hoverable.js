@@ -1,27 +1,41 @@
-let Hoverable = {
+import React from 'react';
+import emptyFunction from '../emptyFunction';
 
-  getInitialState() {
-    return {hover: false};
-  },
+export default function Hoverable(Component) {
 
-  componentWillMount() {
-    this.hoverableProps = {
-      onMouseEnter: this.hoverableOnMouseEnter,
-      onMouseLeave: this.hoverableOnMouseLeave
+  return React.createClass({
+    displayName: `${Component.displayName}Hoverable`,
+
+    render() {
+      return (
+        <Component
+          {...this.props}
+          hover={this.state.hover}
+          onMouseEnter={this.onMouseEnter}
+          onMouseLeave={this.onMouseLeave}
+          />
+      );
+    },
+
+    getDefaultProps() {
+      return {
+        onMouseEnter: emptyFunction,
+        onMouseLeave: emptyFunction
+      };
+    },
+
+    getInitialState() {
+      return {hover: false};
+    },
+
+    onMouseEnter(e) {
+      this.setState({hover: true});
+      this.props.onMouseEnter(e);
+    },
+
+    onMouseLeave(e) {
+      this.setState({hover: false});
+      this.props.onMouseLeave(e);
     }
-  },
-
-  componentWillUnmount() {
-    this.hoverableProps = undefined;
-  },
-
-  hoverableOnMouseEnter() {
-    this.setState({hover: true});
-  },
-
-  hoverableOnMouseLeave() {
-    this.setState({hover: false});
-  }
-};
-
-export default Hoverable;
+  });
+}

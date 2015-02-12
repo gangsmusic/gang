@@ -1,29 +1,42 @@
-let Focusable = {
+import React from 'react';
+import emptyFunction from '../emptyFunction';
 
-  getInitialState() {
-    return {focus: false};
-  },
+export default function Focusable(Component) {
 
-  componentWillMount() {
-    this.focusableProps = {
-      tabIndex: 1,
-      onFocus: this.focusableOnFocus,
-      onBlur: this.focusableOnBlur
+  return React.createClass({
+
+    displayName: `${Component.displayName}Focusable`,
+
+    render() {
+      return (
+        <Component
+          {...this.props}
+          focus={this.state.focus}
+          onFocus={this.onFocus}
+          onBlur={this.onBlur}
+          />
+      );
+    },
+
+    getDefaultProps() {
+      return {
+        onFocus: emptyFunction,
+        onBlur: emptyFunction
+      };
+    },
+
+    getInitialState() {
+      return {focus: false};
+    },
+
+    onFocus(e) {
+      this.setState({focus: true});
+      this.props.onFocus(e);
+    },
+
+    onBlur(e) {
+      this.setState({focus: false});
+      this.props.onBlur(e);
     }
-  },
-
-  componentWillUnmount() {
-    this.focusableProps = undefined;
-  },
-
-  focusableOnFocus() {
-    this.setState({focus: true});
-  },
-
-  focusableOnBlur() {
-    this.setState({focus: false});
-  }
-};
-
-export default Focusable;
-
+  });
+}

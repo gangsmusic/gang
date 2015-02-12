@@ -35,25 +35,25 @@ const WindowButtonsStyle = {
   }
 };
 
-const WindowButton = React.createClass({
-
-  mixins: [Hoverable],
+let WindowButton = React.createClass({
 
   propTypes: {
     type: React.PropTypes.oneOf(['close', 'minimize', 'maximize'])
   },
 
   render() {
-    const {type, ...props} = this.props;
+    const {type, hover, ...props} = this.props;
     const style = {
       ...WindowButtonsStyle.base,
       ...WindowButtonsStyle[this.props.type],
-      ...(this.state.hover && WindowButtonsStyle.hover)
+      ...(hover && WindowButtonsStyle.hover)
     };
-    return <div {...this.hoverableProps} {...props} style={style} />;
+    return <div {...props} style={style} />;
   }
 
 });
+
+WindowButton = Hoverable(WindowButton);
 
 const WindowButtons = React.createClass({
 

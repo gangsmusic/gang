@@ -21,15 +21,12 @@ let TextInputStyle = {
 };
 
 let TextInput = React.createClass({
-  mixins: [Focusable],
 
   render() {
-    let {...props} = this.props;
-    let {focus} = this.state;
+    let {focus, ...props} = this.props;
     return (
       <input
         {...props}
-        {...this.focusableProps}
         type="text"
         style={{
           ...TextInputStyle.self,
@@ -39,5 +36,7 @@ let TextInput = React.createClass({
     );
   }
 });
+
+TextInput = Focusable(TextInput);
 
 export default TextInput;
