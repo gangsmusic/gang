@@ -34,19 +34,22 @@ class DiscoveryService extends Service {
   _onChange({name, host, port}) {
     // for the time being
     name = host;
+    this.debug(`received advertisement from ${name}:${port}`);
     let socket = SocketIO.connect(`http://${host}:${port}`);
-    socket.on('connect', this._onSocketConnect.bind(this, name, socket));
-    socket.on('disconnect', this._onSocketDisconnect.bind(this, name, socket));
+    socket.on('connect', this._onSocketConnect.bind(this, name, port, socket));
+    socket.on('disconnect', this._onSocketDisconnect.bind(this, name, port, socket));
     socket.on('dispatch-action', this._onSocketDispatchAction.bind(this, name));
     this._sockets = this._sockets.set(name, socket);
   }
 
-  _onSocketConnect(name, socket) {
+  _onSocketConnect(name, port, socket) {
+    this.debug(`connected to ${name}:${port}`);
     socket.emit('server', name);
     localPartyParticipantAdded(name);
   }
 
-  _onSocketDisconnect(name, socket) {
+  _onSocketDisconnect(name, port, socket) {
+    this.debug(`disconnected from ${name}:${port}`);
     localPartyParticipantRemoved(name);
     this._sockets = this._sockets.remove(name);
   }
