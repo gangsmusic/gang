@@ -47,11 +47,9 @@ let MenuItem = React.createClass({
           ...(active && MenuItemStyle.onActive.self)
         }}>
         {icon &&
-          <Icon
-            name={icon}
-            fixedWidth
-            style={MenuItemStyle.icon}
-            />}
+          <VBox style={MenuItemStyle.icon}>
+            <Icon name={icon} fixedWidth />
+          </VBox>}
         {children}
       </HBox>
     );
