@@ -46,11 +46,17 @@ const WorkspaceStyle = {
 };
 
 let LocalPartyMemberStyle = {
+  self: {
+    flex: 1
+  },
   name: {
   },
   nowPlaying: {
     color: '#AAA',
-    fontSize: 12
+    fontSize: 12,
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap'
   },
   nowPlayingName: {
     marginRight: 3
@@ -63,22 +69,19 @@ let LocalPartyMemberStyle = {
 let LocalPartyMember = React.createClass({
 
   render() {
-    let {name, nowPlaying, ...props} = this.props;
+    let {name, nowPlaying, style, ...props} = this.props;
+    let trackName = nowPlaying ? 
+      `${nowPlaying.get('name')} by ${nowPlaying.get('artist')}` :
+      null;
     return (
-      <VBox {...props}>
+      <VBox {...props} style={{...LocalPartyMemberStyle.self, ...style}}>
         <VBox style={LocalPartyMemberStyle.name}>
           {name}
         </VBox>
         {nowPlaying &&
-          <HBox style={LocalPartyMemberStyle.nowPlaying}>
-            <span style={LocalPartyMemberStyle.nowPlayingName}>
-              {nowPlaying.get('name')}
-            </span>
-            by
-            <span style={LocalPartyMemberStyle.nowPlayingArtist}>
-              {nowPlaying.get('artist')}
-            </span>
-          </HBox>}
+          <div style={LocalPartyMemberStyle.nowPlaying} title={trackName}>
+            {trackName}
+          </div>}
       </VBox>
     );
   }
