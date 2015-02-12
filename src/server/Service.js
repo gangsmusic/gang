@@ -3,7 +3,7 @@ import debug from 'debug';
 class Service {
 
   constructor(config) {
-    this.debug = debug(`gang:${this.constructor.name}`);
+    this.debug = debug(`gang:services:${this.constructor.name}`);
     this.config = config;
     this.started = false;
     this.start = this.start.bind(this);
