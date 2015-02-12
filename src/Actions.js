@@ -55,7 +55,7 @@ export function updatePlayerState(state: object) {
   Dispatcher.dispatch({
     type: ActionTypes.UPDATE_PLAYER_STATE,
     payload: state,
-    share: true
+    share: false
   });
 }
 
@@ -71,7 +71,7 @@ export function uiPlay(track: object) {
   Dispatcher.dispatch({
     type: ActionTypes.UI_PLAY,
     payload: track,
-    share: true
+    share: false
   });
 }
 
@@ -141,6 +141,14 @@ export function uiWindowMinimize() {
   Dispatcher.dispatch({
     type: ActionTypes.UI_WINDOW_MINIMIZE,
     payload: null
+  });
+}
+
+export function playerStatusShared(track) {
+  Dispatcher.dispatch({
+    type: ActionTypes.PLAYER_STATUS_SHARED,
+    payload: {track},
+    share: true
   });
 }
 

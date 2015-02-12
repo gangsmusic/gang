@@ -14,6 +14,7 @@ import Dispatcher from '../Dispatcher';
 import DiscoveryService from './DiscoveryService';
 import PlayerService from './PlayerService';
 import TaggingService from './TaggingService';
+import PlayerStatusShareService from './PlayerStatusShareService';
 import ActionTypes from '../ActionTypes';
 import {bootstrapStores, loadLibrary} from '../Actions';
 import mm from 'musicmetadata';
@@ -25,7 +26,8 @@ const broadcastDebug = debug('gang:broadcast');
 const SERVICES = [
   DiscoveryService,
   PlayerService,
-  TaggingService
+  TaggingService,
+  PlayerStatusShareService
 ];
 
 let CLIENTS = [];

@@ -55,21 +55,13 @@ class LocalPartyStore extends Store {
       return;
     }
     switch (action.type) {
-      case ActionTypes.UI_PLAY:
+      case ActionTypes.PLAYER_STATUS_SHARED:
+        let track = action.payload.track;
+        track = track ? Immutable.Map(track) : null;
         this.transformState(state =>
           state.set(
             name,
-            state.get(name).set('nowPlaying', Immutable.Map(action.payload))
-          ));
-        break;
-      case ActionTypes.UPDATE_PLAYER_STATE:
-        if (action.payload.idle !== false) {
-          return;
-        }
-        this.transformState(state =>
-          state.set(
-            name,
-            state.get(name).set('nowPlaying', null)
+            state.get(name).set('nowPlaying', track)
           ));
         break;
     }
