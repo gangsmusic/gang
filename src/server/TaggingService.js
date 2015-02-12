@@ -8,8 +8,6 @@ import mm from 'musicmetadata';
 export default class TaggingService extends Service {
 
   didStart() {
-    this.debug('TaggingService did start');
-
     Dispatcher.register(({type, payload}) => {
       switch(type) {
         case ActionTypes.ADD_FILE:
