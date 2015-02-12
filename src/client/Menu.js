@@ -2,7 +2,7 @@ import React from 'react';
 import {VBox, HBox} from './Layout';
 import {rgba, border} from './StyleUtils';
 import {colors, NonSelectableMixin} from './Theme';
-import emptyFunction from './emptyFunction';
+import emptyFunction from '../emptyFunction';
 import Hoverable from './Hoverable';
 import Icon from './Icon';
 
@@ -34,16 +34,13 @@ let MenuItemStyle = {
   }
 };
 
-export let MenuItem = React.createClass({
-  mixins: [Hoverable],
+let MenuItem = React.createClass({
 
   render() {
-    let {icon, active, children, ...props} = this.props;
-    let {hover} = this.state;
+    let {icon, active, hover, children, ...props} = this.props;
     return (
       <HBox
         {...props}
-        {...this.hoverableProps}
         style={{
           ...MenuItemStyle.self,
           ...(hover && MenuItemStyle.onHover.self),
@@ -60,6 +57,10 @@ export let MenuItem = React.createClass({
     );
   }
 });
+
+MenuItem = Hoverable(MenuItem);
+
+export {MenuItem};
 
 export let Menu = React.createClass({
 

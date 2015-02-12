@@ -1,7 +1,7 @@
 import React from 'react';
-import Hoverable from './Hoverable';
 import {VBox} from './Layout';
-import emptyFunction from './emptyFunction';
+import emptyFunction from '../emptyFunction';
+import Hoverable from './Hoverable';
 import {rgb, rgba, border, boxShadow} from './StyleUtils';
 import {colors} from './Theme';
 
@@ -42,16 +42,14 @@ const ProgressBarStyle = {
 };
 
 let ProgressBar = React.createClass({
-  mixins: [Hoverable],
 
   render() {
-    var {value, max, style, ...props} = this.props;
-    var {hover, barGhostWidth} = this.state;
+    var {value, max, style, hover, ...props} = this.props;
+    var {barGhostWidth} = this.state;
     var width = `${value / max * 100}%`;
     return (
       <VBox
         {...props}
-        {...this.hoverableProps}
         style={{...ProgressBarStyle.self, ...style}}
         onClick={this.onClick}
         onMouseMove={this.onMouseMove}
@@ -96,5 +94,7 @@ let ProgressBar = React.createClass({
     this.setState({barGhostWidth: e.clientX - left});
   }
 });
+
+ProgressBar = Hoverable(ProgressBar);
 
 export default ProgressBar;
