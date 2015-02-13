@@ -25,7 +25,8 @@ let MenuItemStyle = {
   caption: {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    textOverflow: 'ellipsis'
+    textOverflow: 'ellipsis',
+    flex: 1
   },
   onHover: {
     self: {

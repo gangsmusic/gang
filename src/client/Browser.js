@@ -16,7 +16,8 @@ const debugBrowser = debug('gang:browser');
 const ItemStyle = {
   self: {
     padding: '0 8px',
-    fontSize: '90%',
+    fontSize: 14,
+    color: rgba(0, 0, 0, 0.8),
     lineHeight: '23px',
     boxShadow: boxShadow(0, 1, 0, 0, '#F9F9F9'),
     cursor: 'pointer',
