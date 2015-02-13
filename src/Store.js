@@ -28,7 +28,7 @@ class Store extends EventEmitter {
   }
 
   getState() {
-    throw new Error('not implemented');
+    return this.state;
   }
 
   get isServerOnly() {
