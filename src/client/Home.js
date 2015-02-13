@@ -1,8 +1,9 @@
 import React from 'react/lib/ReactWithAddons';
+import emptyFunction from '../emptyFunction';
 import {rgba, boxShadow} from './StyleUtils';
 import {VBox, HBox} from './Layout';
-import TextInput from './TextInput';
-import Icon from './Icon';
+import IconButton from './IconButton';
+import SearchTextInput from './SearchTextInput';
 
 const CardBaseStyle = {
   self: {
@@ -42,6 +43,7 @@ let Card = React.createClass({
   }
 });
 
+
 const HomeStyle = {
   self: {
     padding: 10,
@@ -55,15 +57,29 @@ let Home = React.createClass({
 
   render() {
     let {style, ...props} = this.props;
+    let {searchValue} = this.state;
     return (
       <HBox {...props} style={{...HomeStyle.self, ...style}}>
         <Card>
         </Card>
         <CardBase>
-          <TextInput placeholder="Search" />
+          <SearchTextInput
+            value={searchValue}
+            onChange={this.onSearchChange}
+            />
         </CardBase>
       </HBox>
     );
+  },
+
+  getInitialState() {
+    return {
+      searchValue: ''
+    };
+  },
+
+  onSearchChange(searchValue) {
+    this.setState({searchValue});
   }
 });
 

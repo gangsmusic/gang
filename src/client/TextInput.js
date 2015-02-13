@@ -1,4 +1,5 @@
 import React from 'react';
+import emptyFunction from '../emptyFunction';
 import {border, boxShadow, rgba} from './StyleUtils';
 import Focusable from './Focusable';
 
@@ -28,12 +29,23 @@ let TextInput = React.createClass({
       <input
         {...props}
         type="text"
+        onChange={this.onChange}
         style={{
           ...TextInputStyle.self,
           ...(focus && TextInputStyle.onFocus.self)
         }}
         />
     );
+  },
+
+  onChange(e) {
+    this.props.onChange(e.target.value);
+  },
+
+  getDefaultProps() {
+    return {
+      onChange: emptyFunction
+    };
   }
 });
 
