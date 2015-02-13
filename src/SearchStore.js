@@ -48,6 +48,7 @@ class SearchStore extends Store {
     tracks = tracks.filter(track =>
       queryRe.exec(track.get('name')) ||
       queryRe.exec(track.get('artist')));
+    tracks = tracks.take(30);
     return tracks;
   }
 }
