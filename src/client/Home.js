@@ -162,8 +162,6 @@ let Home = React.createClass({
     let {style, ...props} = this.props;
     return (
       <HBox {...props} style={{...HomeStyle.self, ...style}}>
-        <Card>
-        </Card>
         <SearchCard />
       </HBox>
     );
