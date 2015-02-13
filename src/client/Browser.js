@@ -112,11 +112,11 @@ var AutoListView = React.createClass({
   },
 
   render() {
-    var {style, ...listProps} = this.props;
+    var {style, title, ...listProps} = this.props;
     var table = this.state.height ? <ListView {...listProps} height={this.state.height - 24} /> : null;
     return (
       <VBox style={{...AutoListViewStyle.self, ...style}}>
-        <div style={AutoListViewStyle.title}>{this.props.title}</div>
+        <div style={AutoListViewStyle.title}>{title}</div>
         {table}
       </VBox>
     );
