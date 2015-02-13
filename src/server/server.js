@@ -11,6 +11,7 @@ const {getLocalAddrs, PingMonitor} = require('./util');
 import LocalPartyStore from '../LocalPartyStore';
 import LibraryStore from '../LibraryStore';
 import RecentPlayedTracksStore from '../RecentPlayedTracksStore';
+import SearchStore from '../SearchStore';
 import Dispatcher from '../Dispatcher';
 import DiscoveryService from './DiscoveryService';
 import PlayerService from './PlayerService';

@@ -19,6 +19,7 @@ let ActionTypes = keyMirror({
   UI_WINDOW_MAXIMIZE: null,
   UI_WINDOW_MINIMIZE: null,
   PLAYER_STATUS_SHARED: null,
+  SEARCH: null,
   REMOTE_ACTION: null
 });
 

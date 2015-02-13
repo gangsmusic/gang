@@ -152,4 +152,12 @@ export function playerStatusShared(track) {
   });
 }
 
+export function search(query) {
+  Dispatcher.dispatch({
+    type: ActionTypes.SEARCH,
+    payload: {query},
+    share: false
+  });
+}
+
 module.hot && module.hot.decline();

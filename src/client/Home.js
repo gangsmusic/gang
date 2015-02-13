@@ -1,14 +1,21 @@
 import React from 'react/lib/ReactWithAddons';
+import * as Actions from '../Actions';
 import emptyFunction from '../emptyFunction';
+import SearchStore from '../SearchStore';
+import StateFromStore from '../StateFromStore';
+import Hoverable from './Hoverable';
 import {rgba, boxShadow} from './StyleUtils';
 import {VBox, HBox} from './Layout';
 import IconButton from './IconButton';
+import Icon from './Icon';
 import SearchTextInput from './SearchTextInput';
 
 const CardBaseStyle = {
   self: {
+    overflowX: 'hidden',
+    overflowY: 'auto',
     minWidth: 360,
-    marginRight: 10
+    marginRight: 10,
   }
 };
 
@@ -53,33 +60,106 @@ const HomeStyle = {
   }
 };
 
+let SearchResultItemStyle = {
+  self: {
+    color: rgba(0, 0, 0, 0.6),
+    cursor: 'pointer'
+  },
+  meta: {
+    margin: '10px 0px'
+  },
+  name: {
+    fontWeight: 'bold'
+  },
+  artist: {
+    fontSize: 12,
+    fontWeight: 'normal'
+  },
+  iconWrapper: {
+    padding: '0px 15px',
+    justifyContent: 'center'
+  },
+  onHover: {
+    self: {
+      background: rgba(0, 0, 0, 0.01)
+    }
+  }
+};
+
+let SearchResultItem = React.createClass({
+
+  render() {
+    let {track, hover, ...props} = this.props;
+    let style = {
+      ...SearchResultItemStyle.self,
+      ...(hover && SearchResultItemStyle.onHover.self)
+    };
+    return (
+      <HBox {...props} style={style}>
+        <VBox style={SearchResultItemStyle.iconWrapper}>
+          <Icon name="music" />
+        </VBox>
+        <VBox style={SearchResultItemStyle.meta}>
+          <VBox style={SearchResultItemStyle.name}>
+            {track.get('name')}
+          </VBox>
+          <VBox style={SearchResultItemStyle.artist}>
+            {track.get('artist')}
+          </VBox>
+        </VBox>
+      </HBox>
+    );
+  }
+});
+
+SearchResultItem = Hoverable(SearchResultItem);
+
+let SearchCardStyle = {
+  self: {
+    width: 360
+  }
+};
+
+let SearchCard = React.createClass({
+  mixins: [StateFromStore(SearchStore)],
+
+  render() {
+    let {query, results} = this.state.SearchStore;
+    return (
+      <CardBase style={SearchCardStyle.self}>
+        <SearchTextInput
+          value={query}
+          onChange={this.onSearch}
+          />
+        {results.map(result =>
+          <SearchResultItem
+            track={result}
+            onClick={this.onResultClick.bind(null, result)}
+            />).toArray()}
+      </CardBase>
+    );
+  },
+
+  onResultClick(track) {
+    Actions.uiPlay(track);
+  },
+
+  onSearch(query) {
+    Actions.search(query); 
+  }
+});
+
 let Home = React.createClass({
 
   render() {
     let {style, ...props} = this.props;
-    let {searchValue} = this.state;
     return (
       <HBox {...props} style={{...HomeStyle.self, ...style}}>
         <Card>
         </Card>
-        <CardBase>
-          <SearchTextInput
-            value={searchValue}
-            onChange={this.onSearchChange}
-            />
-        </CardBase>
+        <SearchCard />
       </HBox>
     );
-  },
-
-  getInitialState() {
-    return {
-      searchValue: ''
-    };
-  },
-
-  onSearchChange(searchValue) {
-    this.setState({searchValue});
   }
 });
 

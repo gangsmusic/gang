@@ -5,7 +5,7 @@ class UiStore extends Store {
 
   constructor() {
     super();
-    this.activeScreen = 'browser';
+    this.activeScreen = 'home';
     this.settingsScreen = 'profile';
     this.ready = false;
     this.connected = false;
