@@ -16,11 +16,13 @@ import Dispatcher from '../Dispatcher';
 import DiscoveryService from './DiscoveryService';
 import PlayerService from './PlayerService';
 import TaggingService from './TaggingService';
+import ResourceService from './ResourceService';
 import PlayerStatusShareService from './PlayerStatusShareService';
 import ActionTypes from '../ActionTypes';
 import {bootstrapStores, loadLibrary} from '../Actions';
 import mm from 'musicmetadata';
 
+const serverDebug = debug('gang:server');
 const connectionDebug = debug('gang:connection');
 const eventDebug = debug('gang:event');
 const broadcastDebug = debug('gang:broadcast');
@@ -29,18 +31,22 @@ const SERVICES = [
   DiscoveryService,
   PlayerService,
   TaggingService,
-  PlayerStatusShareService
+  PlayerStatusShareService,
+  ResourceService,
 ];
 
 let CLIENTS = [];
 let SERVERS = Immutable.OrderedMap();
 
-function start(ioPort, webpackPort) {
+function start(ioPort, webpackPort, resourcePort) {
   const io = new SocketIO(ioPort);
   connectionDebug('api listening on 0.0.0.0:' + ioPort);
 
+  let config = {
+    ioPort, webpackPort, resourcePort
+  };
+
   SERVICES.forEach(serviceClass => {
-    let config = {};
     let service = new serviceClass(config);
     service.start();
     // TODO: make it work, currently it just makes weird things to shutdown
@@ -190,9 +196,10 @@ function start(ioPort, webpackPort) {
 
 portfinder.basePort = 12001;
 
-portfinder.getPorts(2, function(err, [ioPort, webpackPort]) {
+portfinder.getPorts(3, function(err, [ioPort, webpackPort, resourcePort]) {
+  serverDebug(`allocated ioPort=${ioPort}, webpackPort=${webpackPort}, resourcePort=${resourcePort}`);
   if (err) {
     throw err;
   }
-  start(ioPort, webpackPort);
+  start(ioPort, webpackPort, resourcePort);
 });

@@ -66,7 +66,9 @@ let SearchResultItemStyle = {
     cursor: 'pointer'
   },
   meta: {
-    margin: '10px 0px'
+    marginLeft: 10,
+    marginTop: 10,
+    marginBottom: 10
   },
   name: {
     fontWeight: 'bold'
@@ -75,8 +77,9 @@ let SearchResultItemStyle = {
     fontSize: 12,
     fontWeight: 'normal'
   },
-  iconWrapper: {
-    padding: '0px 15px',
+  cover: {
+    height: 48,
+    width: 48,
     justifyContent: 'center'
   },
   onHover: {
@@ -96,8 +99,8 @@ let SearchResultItem = React.createClass({
     };
     return (
       <HBox {...props} style={style}>
-        <VBox style={SearchResultItemStyle.iconWrapper}>
-          <Icon name="music" />
+        <VBox style={SearchResultItemStyle.cover}>
+          <img src={`http://localhost:12003/cover?url=${track.get('url')}`} />
         </VBox>
         <VBox style={SearchResultItemStyle.meta}>
           <VBox style={SearchResultItemStyle.name}>
