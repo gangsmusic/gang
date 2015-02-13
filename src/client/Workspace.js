@@ -7,9 +7,10 @@ import Home from './Home';
 import Settings from './Settings';
 import {Menu, MenuSeparator} from './Menu';
 import StateFromStore from '../StateFromStore';
-import LocalPartyStore from '../LocalPartyStore';
 import UiStore from './UiStore';
 import {uiChangeScreen} from '../Actions';
+import LocalPartyList from './LocalPartyList';
+import RecentPlayedTracksList from './RecentPlayedTracksList';
 
 const SCREENS = [
   {
@@ -45,71 +46,6 @@ const WorkspaceStyle = {
   }
 };
 
-let LocalPartyMemberStyle = {
-  self: {
-    flex: 1
-  },
-  name: {
-  },
-  nowPlaying: {
-    color: '#AAA',
-    fontSize: 12,
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap'
-  },
-  nowPlayingName: {
-    marginRight: 3
-  },
-  nowPlayingArtist: {
-    marginLeft: 3
-  }
-};
-
-let LocalPartyMember = React.createClass({
-
-  render() {
-    let {name, nowPlaying, style, ...props} = this.props;
-    let trackName = nowPlaying ? 
-      `${nowPlaying.get('name')} by ${nowPlaying.get('artist')}` :
-      null;
-    return (
-      <VBox {...props} style={{...LocalPartyMemberStyle.self, ...style}}>
-        <VBox style={LocalPartyMemberStyle.name}>
-          {name}
-        </VBox>
-        {nowPlaying &&
-          <div style={LocalPartyMemberStyle.nowPlaying} title={trackName}>
-            {trackName}
-          </div>}
-      </VBox>
-    );
-  }
-});
-
-let LocalParty = React.createClass({
-  mixins: [StateFromStore(LocalPartyStore)],
-
-  render() {
-    // XXX: we don't need .toArray() when we are on React 0.13
-    let items = this.state.LocalPartyStore.map(item => ({
-      id: item.name,
-      icon: item.nowPlaying ? 'music' : 'user',
-      title: (
-        <LocalPartyMember
-          name={item.name}
-          nowPlaying={item.nowPlaying}
-          />
-      )
-    })).toArray();
-    return (
-      <Menu
-        items={items}
-        />
-    );
-  }
-});
-
 let Workspace = React.createClass({
 
   mixins: [StateFromStore(UiStore)],
@@ -125,9 +61,10 @@ let Workspace = React.createClass({
             active={activeScreen}
             onActive={this.onActiveScreen}
             />
-          <MenuSeparator>Recent</MenuSeparator>
           <MenuSeparator>Local Party</MenuSeparator>
-          <LocalParty />
+          <LocalPartyList />
+          <MenuSeparator>Recent</MenuSeparator>
+          <RecentPlayedTracksList />
         </VBox>
         <VBox style={WorkspaceStyle.main}>
           {activeScreen === 'home' && <Home />}

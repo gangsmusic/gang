@@ -10,6 +10,7 @@ const itunesLoader = require('./itunes-loader');
 const {getLocalAddrs, PingMonitor} = require('./util');
 import LocalPartyStore from '../LocalPartyStore';
 import LibraryStore from '../LibraryStore';
+import RecentPlayedTracksStore from '../RecentPlayedTracksStore';
 import Dispatcher from '../Dispatcher';
 import DiscoveryService from './DiscoveryService';
 import PlayerService from './PlayerService';

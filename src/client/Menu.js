@@ -16,10 +16,16 @@ let MenuItemStyle = {
     fontWeight: 'bold',
     color: colors.fadedText,
     cursor: 'pointer',
-    alignItems: 'center'
+    alignItems: 'center',
+    overflow: 'hidden'
   },
   icon: {
     marginRight: 10
+  },
+  caption: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
   },
   onHover: {
     self: {
@@ -50,7 +56,7 @@ let MenuItem = React.createClass({
           <VBox style={MenuItemStyle.icon}>
             <Icon name={icon} fixedWidth />
           </VBox>}
-        {children}
+        <VBox style={MenuItemStyle.caption}>{children}</VBox>
       </HBox>
     );
   }
@@ -70,7 +76,7 @@ export let Menu = React.createClass({
           <MenuItem
             key={item.id}
             active={active === item.id}
-            onClick={this.props.onActive.bind(null, item.id)}
+            onClick={this.onActive.bind(null, item)}
             icon={item.icon}>
             {item.title}
           </MenuItem>)}
@@ -80,8 +86,15 @@ export let Menu = React.createClass({
 
   getDefaultProps() {
     return {
-      onActive: emptyFunction
+      onActive: emptyFunction,
     };
+  },
+
+  onActive(item) {
+    this.props.onActive(item.id);
+    if (item.onClick) {
+      item.onClick();
+    }
   }
 });
 
