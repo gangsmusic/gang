@@ -23,9 +23,9 @@ let SearchTextInputStyle = {
 let SearchTextInput = React.createClass({
 
   render() {
-    let {value, onChange, ...props} = this.props;
+    let {value, onChange, style, ...props} = this.props;
     return (
-      <HBox style={SearchTextInputStyle.self}>
+      <HBox style={{...SearchTextInputStyle.self, ...style}}>
         <VBox style={SearchTextInputStyle.input}>
           <TextInput {...props} value={value} onChange={onChange} />
         </VBox>

@@ -36,3 +36,11 @@ export function boxShadow(offsetX, offsetY, blurRadius, spreadRadius, color) {
 export function insetBoxShadow(offsetX, offsetY, blurRadius, spreadRadius, color) {
   return `inset ${boxShadow(offsetX, offsetY, blurRadius, spreadRadius, color)}`;
 }
+
+export function backgroundImage(image, repeat = 'no-repeat', size = 'contain') {
+  return {
+    backgroundImage: `url(${image})`,
+    backgroundRepeat: repeat,
+    backgroundSize: size
+  };
+}

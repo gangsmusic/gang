@@ -7,6 +7,7 @@ import Icon from './Icon';
 import ProgressBar from './ProgressBar';
 import {colors} from './Theme';
 import VolumeBar from './VolumeBar';
+import CoverArt from './CoverArt';
 import WindowButtons from './WindowButtons';
 import CurrentDisplay from './CurrentDisplay';
 import StateFromStore from '../StateFromStore';
@@ -169,6 +170,11 @@ const Player = React.createClass({
           />
         <VolumeBar style={PlayerStyle.volumeBar} />
         <CurrentDisplay style={PlayerStyle.currentDisplay} />
+        {player_current &&
+          <CoverArt
+            track={Immutable.fromJS(player_current)}
+            size={PlayerStyle.self.height}
+            />}
         {!player_idle && player_seekable &&
           <ProgressBar
             style={PlayerStyle.progressBar}

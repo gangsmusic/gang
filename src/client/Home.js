@@ -9,6 +9,7 @@ import {VBox, HBox} from './Layout';
 import IconButton from './IconButton';
 import Icon from './Icon';
 import SearchTextInput from './SearchTextInput';
+import CoverArt from './CoverArt';
 
 const CardBaseStyle = {
   self: {
@@ -63,7 +64,8 @@ const HomeStyle = {
 let SearchResultItemStyle = {
   self: {
     color: rgba(0, 0, 0, 0.6),
-    cursor: 'pointer'
+    cursor: 'pointer',
+    height: 50
   },
   meta: {
     marginLeft: 10,
@@ -78,8 +80,6 @@ let SearchResultItemStyle = {
     fontWeight: 'normal'
   },
   cover: {
-    height: 48,
-    width: 48,
     justifyContent: 'center'
   },
   onHover: {
@@ -100,7 +100,7 @@ let SearchResultItem = React.createClass({
     return (
       <HBox {...props} style={style}>
         <VBox style={SearchResultItemStyle.cover}>
-          <img src={`http://localhost:12003/cover?url=${track.get('url')}`} />
+          <CoverArt size={SearchResultItemStyle.self.height} track={track} />
         </VBox>
         <VBox style={SearchResultItemStyle.meta}>
           <VBox style={SearchResultItemStyle.name}>
@@ -120,6 +120,9 @@ SearchResultItem = Hoverable(SearchResultItem);
 let SearchCardStyle = {
   self: {
     width: 360
+  },
+  input: {
+    marginBottom: 10
   }
 };
 
@@ -131,6 +134,7 @@ let SearchCard = React.createClass({
     return (
       <CardBase style={SearchCardStyle.self}>
         <SearchTextInput
+          style={SearchCardStyle.input}
           value={query}
           onChange={this.onSearch}
           />
