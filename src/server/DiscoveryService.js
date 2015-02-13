@@ -9,6 +9,8 @@ import LocalPartyStore from '../LocalPartyStore';
 import ActionTypes from '../ActionTypes';
 import {remoteAction} from '../Actions';
 
+const SERVICE_NAME = '_gang-ipc';
+
 class DiscoveryService extends Service {
 
   constructor(config) {
@@ -19,8 +21,8 @@ class DiscoveryService extends Service {
   }
 
   didStart() {
-    this._announce = new Announce(hostname(), 12001);
-    this._discovery = new Discovery();
+    this._announce = new Announce(SERVICE_NAME, 12001);
+    this._discovery = new Discovery(SERVICE_NAME);
     this._discovery.addChangeListener(this._onChange.bind(this));
   }
 

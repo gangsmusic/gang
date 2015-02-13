@@ -6,8 +6,8 @@
   "author": "Victor Kotseruba <barbuzaster@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "6to5": "^3.3.7",
-    "6to5-core": "^3.3.7",
+    "6to5": "3.5.3",
+    "6to5-core": "3.5.3",
     "6to5-loader": "^3.0.0",
     "acoustid": "^1.2.1",
     "bluebird": "^2.9.6",
@@ -17,6 +17,7 @@
     "event-stream": "^3.2.2",
     "file-loader": "^0.8.1",
     "flux": "^2.0.1",
+    "mdns": "git+https://github.com/andreypopp/node_mdns.git#patch-1",
     "html-webpack-plugin": "^1.1.0",
     "immutable": "^3.6.2",
     "json-loader": "^0.5.1",
