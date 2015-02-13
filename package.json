@@ -6,8 +6,8 @@
   "author": "Victor Kotseruba <barbuzaster@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "6to5": "3.5.3",
-    "6to5-core": "3.5.3",
+    "6to5": "3.6.1",
+    "6to5-core": "3.6.1",
     "6to5-loader": "^3.0.0",
     "acoustid": "^1.2.1",
     "bluebird": "^2.9.6",
