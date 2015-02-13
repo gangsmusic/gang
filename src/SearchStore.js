@@ -1,3 +1,4 @@
+import debounce from 'debounce';
 import Immutable from 'immutable';
 import Store from './Store';
 import ActionTypes from './ActionTypes';
@@ -13,6 +14,7 @@ class SearchStore extends Store {
   constructor() {
     super();
     this.state = SearchState();
+    this._search = debounce(this._search, 500);
   }
 
   dehydrate() {
@@ -34,22 +36,23 @@ class SearchStore extends Store {
           this.transformState(state =>
             SearchState({query, results: Immutable.List()}));
         } else {
-          let results = this._search(query);
           this.transformState(state =>
-            SearchState({query, results}));
+            state.set('query', query));
+          this._search();
         }
         break;
     }
   }
 
-  _search(query) {
-    let queryRe = new RegExp(query, 'i');
+  _search() {
+    let queryRe = new RegExp(this.state.query, 'i');
     let {tracks} = LibraryStore.getState();
-    tracks = tracks.filter(track =>
-      queryRe.exec(track.get('name')) ||
-      queryRe.exec(track.get('artist')));
-    tracks = tracks.take(30);
-    return tracks;
+    let results = tracks
+      .filter(track =>
+        queryRe.exec(track.get('name')) ||
+        queryRe.exec(track.get('artist')))
+      .take(30);
+    this.transformState(state => state.set('results', results));
   }
 }
 
