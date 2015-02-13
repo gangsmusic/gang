@@ -10,6 +10,7 @@ import StateFromStore from '../StateFromStore';
 import LibraryStore from '../LibraryStore';
 import PlayerStore from '../PlayerStore';
 import {uiPlay} from '../Actions';
+import Hoverable from './Hoverable';
 
 const debugBrowser = debug('gang:browser');
 
@@ -25,6 +26,11 @@ const ItemStyle = {
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     overflow: 'hidden'
+  },
+  onHover: {
+    self: {
+      background: rgba(0, 0, 0, 0.01)
+    }
   },
   onSelected: {
     self: {
@@ -59,9 +65,16 @@ var Item = React.createClass({
   },
 
   render() {
-    var {item, onClick, selected, ...props} = this.props;
+    var {item, onClick, selected, hover, ...props} = this.props;
     return (
-      <div {...props} style={{...ItemStyle.self, ...(selected && ItemStyle.onSelected.self)}} onClick={this.onClick}>
+      <div
+        {...props}
+        style={{
+          ...ItemStyle.self,
+          ...(hover && ItemStyle.onHover.self),
+          ...(selected && ItemStyle.onSelected.self)
+        }}
+        onClick={this.onClick}>
         {typeof item === 'string' ? item : item.get('name')}
       </div>
     );
@@ -69,6 +82,7 @@ var Item = React.createClass({
 
 });
 
+Item = Hoverable(Item);
 
 const AutoListViewStyle = {
   self: {
