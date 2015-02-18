@@ -13,6 +13,7 @@ import CurrentDisplay from './CurrentDisplay';
 import StateFromStore from '../StateFromStore';
 import LibraryStore from '../LibraryStore';
 import PlayerStore from '../PlayerStore';
+import ClickFeedback from './ClickFeedback';
 import {uiPlay, uiPause, uiSeek} from '../Actions';
 
 
@@ -37,12 +38,20 @@ const IconButtonDisabledStyle = {
 const IconButton = React.createClass({
 
   render() {
-    const {disabled, icon, style, ...props} = this.props;
+    const {disabled, icon, style, onClick, ...props} = this.props;
     const iconStyle = {
       ...(disabled ? IconButtonDisabledStyle : IconButtonStyle),
       style
     };
-    return <Icon {...props} style={iconStyle} name={icon} />;
+    return (
+      <ClickFeedback onClick={onClick}>
+        <Icon
+          {...props}
+          style={iconStyle}
+          name={icon}
+          />
+      </ClickFeedback>
+    );
   }
 
 });
