@@ -41,7 +41,7 @@ const IconButton = React.createClass({
     const {disabled, icon, style, onClick, ...props} = this.props;
     const iconStyle = {
       ...(disabled ? IconButtonDisabledStyle : IconButtonStyle),
-      style
+      ...style
     };
     return (
       <ClickFeedback onClick={onClick}>
@@ -75,9 +75,24 @@ const PlayerControls = React.createClass({
     const {playing, disabled, onPlay, onPause, onNext, onPrev} = this.props;
     return (
       <HBox style={PlayerStyle.controls}>
-        <IconButton icon='backward' disabled={disabled} onClick={onPrev} style={{fontSize: 16}} />
-        <PlayPauseButton onPlay={onPlay} onPause={onPause} playing={playing} disabled={disabled} />
-        <IconButton icon='forward' disabled={disabled} onClick={onNext} style={{fontSize: 16}} />
+        <IconButton
+          icon="backward"
+          disabled={disabled}
+          onClick={onPrev}
+          style={{fontSize: 17}}
+          />
+        <PlayPauseButton
+          onPlay={onPlay}
+          onPause={onPause}
+          playing={playing}
+          disabled={disabled}
+          />
+        <IconButton
+          icon="forward"
+          disabled={disabled}
+          onClick={onNext}
+          style={{fontSize: 17}}
+          />
       </HBox>
     );
   }
