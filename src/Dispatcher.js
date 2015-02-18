@@ -18,10 +18,7 @@ class Dispatcher extends BaseDispatcher {
     if (!action.origin) {
       action = {...action, origin: this.origin};
     }
-    log(
-      action.type,
-      string(String(JSON.stringify(action.payload))).truncate(80).s
-    );
+    log(action.type);
     super.dispatch(action);
   }
 

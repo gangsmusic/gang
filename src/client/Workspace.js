@@ -10,7 +10,6 @@ import StateFromStore from '../StateFromStore';
 import UiStore from './UiStore';
 import {uiChangeScreen} from '../Actions';
 import LocalPartyList from './LocalPartyList';
-import RecentPlayedTracksList from './RecentPlayedTracksList';
 
 const SCREENS = [
   {
@@ -63,8 +62,6 @@ let Workspace = React.createClass({
             />
           <MenuSeparator>Local Party</MenuSeparator>
           <LocalPartyList />
-          <MenuSeparator>Recent</MenuSeparator>
-          <RecentPlayedTracksList />
         </VBox>
         <VBox style={WorkspaceStyle.main}>
           {activeScreen === 'home' && <Home />}
