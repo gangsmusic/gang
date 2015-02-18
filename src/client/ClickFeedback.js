@@ -11,7 +11,7 @@ export let borisFeedbackStyle = createAnimation([
   {
     offset: 0.25,
     opacity: 1,
-    transform: scale3d(0.2, 0.2, 1)
+    transform: scale3d(0.3, 0.3, 1)
   },
   {
     offset: 0.5,
@@ -24,14 +24,14 @@ export let borisFeedbackStyle = createAnimation([
     transform: scale3d(1.2, 1.2, 1)
   }
 ], {
-  duration: 200,
+  duration: 300,
   direction: 'forwards'
 });
 
 
 let ClickFeedbackStyle = {
   ghost: {
-    background: rgba(0, 0, 0, 0.05),
+    background: rgba(0, 0, 0, 0.1),
     position: 'absolute',
     top: '50%',
     left: '50%',
