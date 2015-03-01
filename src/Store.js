@@ -6,8 +6,6 @@ import ActionTypes from './ActionTypes';
 
 const CHANGE_EVENT = 'change';
 
-const log = debug('gang:Store');
-
 let _ALLOW_STORE_CREATE = false;
 
 class Store extends EventEmitter {

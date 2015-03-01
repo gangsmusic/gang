@@ -2,7 +2,6 @@ import Immutable from 'immutable';
 import string from 'string';
 import debug from 'debug';
 import {Dispatcher as BaseDispatcher} from 'flux';
-import S from 'string';
 import invariant from './invariant';
 
 let log = debug('gang:Dispatcher');
