@@ -38,7 +38,7 @@ var config = {
       },
       {
         test: /\.js$/,
-        loaders: prod ? ['6to5?experimental'] : ['react-hot', '6to5?experimental'],
+        loaders: prod ? ['babel?experimental'] : ['react-hot', 'babel?experimental'],
         exclude: /\bnode_modules\b/
       }
     ]

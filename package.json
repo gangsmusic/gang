@@ -6,9 +6,9 @@
   "author": "Victor Kotseruba <barbuzaster@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "6to5": "3.6.1",
-    "6to5-core": "3.6.1",
-    "6to5-loader": "^3.0.0",
+    "babel": "^4.6.6",
+    "babel-core": "^4.6.6",
+    "babel-loader": "^4.0.0",
     "acoustid": "^1.2.1",
     "bluebird": "^2.9.6",
     "css-loader": "^0.9.1",

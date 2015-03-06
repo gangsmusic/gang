@@ -22,7 +22,7 @@ var config = {
     loaders: [
       {
         test: /\.js$/,
-        loader: '6to5?experimental',
+        loader: 'babel?experimental',
         exclude: /node_modules/
       },
       {
