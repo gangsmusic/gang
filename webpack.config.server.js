@@ -1,15 +1,20 @@
+var fs = require('fs');
 var os = require('os');
 var path = require('path');
 var webpack = require('webpack');
 var ExternalsPlugin = require('webpack/lib/ExternalsPlugin');
+
+var nodeModules = fs.readdirSync('node_modules').filter(function(x) { return x !== '.bin' });
 
 var config = {
   entry: './src/server/server',
   output: {
     path: path.join(__dirname, 'build'),
     publicPath: '',
-    filename: 'server.js'
+    filename: 'server.js',
+    libraryTarget: 'commonjs2'
   },
+  externals: nodeModules,
   resolve: {
     extensions: ['', '.js', '.json']
   },
@@ -32,14 +37,10 @@ var config = {
     ]
   },
   plugins: [
-    new ExternalsPlugin('commonjs', ['socket.io']),
     new webpack.NoErrorsPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
-    }),
-    // new webpack.optimize.UglifyJsPlugin({compress: {
-    //   warnings: false
-    // }})
+    })
   ]
 };
 

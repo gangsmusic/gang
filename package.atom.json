@@ -1,11 +1,5 @@
 {
   "name": "gang",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "author": "Victor Kotseruba <barbuzaster@gmail.com>",
-  "license": "ISC",
-  "dependencies": {
-    "socket.io": "^1.3.2"
-  }
+  "main": "server.js"
 }
