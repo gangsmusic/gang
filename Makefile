@@ -25,19 +25,19 @@ dev:
 	@DEBUG=gang:* make start
 
 install:
-	npm install
+	@npm install
 
 app: $(APP_NAME).app
 
 $(APP_NAME).app: Atom.app apm-install build
-	cp package.atom.json build/package.json
-	cp -R Atom.app $(APP_NAME).app
-	cp -R vendor $(APP_NAME).app/Contents/Resources/
-	cp -R build $(APP_NAME).app/Contents/Resources/app
-	cp -R node_modules $(APP_NAME).app/Contents/Resources/app
-	cp gang.icns $(APP_NAME).app/Contents/Resources/atom.icns
-	mv $(APP_NAME).app/Contents/MacOS/Atom $(APP_NAME).app/Contents/MacOS/$(APP_NAME)
-	sed 's/atom.icns/gang.icns/' < Atom.app/Contents/Info.plist | sed 's/Atom</$(APP_NAME)</' > $(APP_NAME).app/Contents/Info.plist
+	@cp package.atom.json build/package.json
+	@cp -R Atom.app $(APP_NAME).app
+	@cp -R vendor $(APP_NAME).app/Contents/Resources/
+	@cp -R build $(APP_NAME).app/Contents/Resources/app
+	@cp -R node_modules $(APP_NAME).app/Contents/Resources/app
+	@cp gang.icns $(APP_NAME).app/Contents/Resources/atom.icns
+	@mv $(APP_NAME).app/Contents/MacOS/Atom $(APP_NAME).app/Contents/MacOS/$(APP_NAME)
+	@sed 's/atom.icns/gang.icns/' < Atom.app/Contents/Info.plist | sed 's/Atom</$(APP_NAME)</' > $(APP_NAME).app/Contents/Info.plist
 
 Atom.app:
 	@wget https://github.com/atom/atom-shell/releases/download/v0.21.3/atom-shell-v0.21.3-darwin-x64.zip
@@ -58,5 +58,5 @@ apm-install:
 build: build/client.js build/server.js
 
 clean:
-	rm -rf build
-	rm -rf $(APP_NAME).app
+	@rm -rf build
+	@rm -rf $(APP_NAME).app
