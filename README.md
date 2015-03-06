@@ -4,6 +4,8 @@
 
 Music player.
 
+![](https://github.com/gangsmusic/gang/blob/master/screenshot.png)
+
 ## Development
 
 ```bash
